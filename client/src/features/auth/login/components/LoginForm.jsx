@@ -8,12 +8,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { FormProvider, RHFTextField } from '../../../../components/hook-form';
 import { Iconify } from '../../../../components';
+import ACTION_STATUS from '../../../../constants/actionStatus';
 
-const LoginForm = () => {
+const LoginForm = ({ submit, status }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required'),
+    email: Yup.string().required('Email is required')
+      .email('Email must be a valid email address'),
     password: Yup.string().required('Password is required')
   });
 
@@ -30,7 +32,7 @@ const LoginForm = () => {
   const { handleSubmit } = methods;
 
   const onSubmit = async (data) => {
-    console.log(data);
+    await submit(data);
   };
 
   return (
@@ -66,7 +68,12 @@ const LoginForm = () => {
           </Link>
         </Box>
         <Box sx={{ my: 3 }}>
-          <LoadingButton fullWidth variant='contained'>
+          <LoadingButton
+            type='submit'
+            fullWidth
+            variant='contained'
+            loading={status === ACTION_STATUS.LOADING ? true : false}
+          >
             Log in
           </LoadingButton>
         </Box>
