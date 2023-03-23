@@ -1,13 +1,14 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Typography } from '@mui/material';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useSnackbar } from 'notistack';
 
 import { AuthLayout } from '../layouts';
 import { AuthFooter } from '../components';
-import { RegisterForm } from './components';
-import { Typography } from '@mui/material';
 import { register } from '../authSlice';
-import { useSnackbar } from 'notistack';
-import { unwrapResult } from '@reduxjs/toolkit';
+import MultiStepsRegisterForm from './components/MultiStepsRegisterForm';
+
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const Register = () => {
       <Typography variant='h3' component='h1' align='center'>
         Create a new account
       </Typography>
-      <RegisterForm submit={submit} status={registerStatus} />
+      <MultiStepsRegisterForm submit={submit} status={registerStatus} />
       <AuthFooter action='sign up for' />
     </AuthLayout>
   );

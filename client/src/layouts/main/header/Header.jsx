@@ -94,7 +94,7 @@ export default function Header({ onOpenNav }) {
 
         <Stack direction='row' spacing={2}>
           {menuItems.map((item) => (
-            <Link component={RouterLink} to={item.path} underline='none' color='text.primary'>
+            <Link key={item.name} component={RouterLink} to={item.path} underline='none' color='text.primary'>
               <Button>
                 {item.name}
               </Button>
