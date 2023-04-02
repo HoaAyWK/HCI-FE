@@ -8,6 +8,9 @@ import { SnackbarProvider } from 'notistack';
 import App from './App';
 import { store } from './store';
 
+import './index.css';
+import 'simplebar-react/dist/simplebar.min.css';
+
 const container = document.getElementById('root');
 const root = createRoot(container);
 
