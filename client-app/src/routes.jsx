@@ -1,7 +1,6 @@
 import React from 'react';
-import { useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes } from 'react-router-dom';
 
-import { ProfileOverview } from './features/profile';
 import { AccountSettings, AdminSettings, PasswordSettings } from './features/settings';
 import { Login, Register } from './features/auth';
 
@@ -17,7 +16,7 @@ const Router = () => {
       element: <MainLayout />,
       children: [
         { path: '/', element: <AHome /> },
-        { path: '/search', element: <SearchPage /> },
+        { path: 'search', element: <SearchPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'products/:id', element: <ProductPage />},
         { path: 'profile', element: <ProfilePage /> },
@@ -26,7 +25,7 @@ const Router = () => {
           path:'settings',
           element: <SettingsLayout />,
           children: [
-            { path: '', element: <ProfileOverview /> },
+            { path: '', element: <Navigate to='profile' /> },
             { path: 'profile', element: <AccountSettings /> },
             { path: 'password', element: <PasswordSettings /> },
             { path: 'admin', element: <AdminSettings /> },
