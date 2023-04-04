@@ -18,7 +18,6 @@ import {
 // components
 import { Iconify } from '../../../components';
 //
-import AvatarPopover from "./AvatarPopover";
 import { AccountPopover } from "../../common/header";
 import { useAppThemeUpdate, useAppTheme } from "../../../context/AppThemeContext";
 import { useLocalStorage } from "../../../hooks";
