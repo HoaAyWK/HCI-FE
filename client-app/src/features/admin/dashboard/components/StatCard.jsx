@@ -1,20 +1,86 @@
-import React from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { styled, alpha, useTheme } from '@mui/material/styles';
+import { Box, Card, CardContent, Grid, Stack, Typography } from '@mui/material';
+import ReactApexChart from 'react-apexcharts';
 
 import { Iconify } from '../../../../components';
 
 const StyledIconBox = styled(Box)(({ theme }) => ({
-  width: 36,
-  height: 36,
+  width: 28,
+  height: 28,
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   borderRadius: '50%',
 }));
 
-const StatCard = ({ stat }) => {
-  const { label, total, icon, isIncrease, value } = stat;
+const chartOptions = {
+  chart: {
+    height: 100,
+    type: 'line',
+    toolbar: {
+      show: false,
+    },
+    sparkline: {
+      enabled: true
+    }
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    curve: 'smooth',
+    width: 2
+  },
+  grid: {
+    show: false
+  },
+};
+
+const StatCard = ({ stat, color }) => {
+  const { label, total, isIncrease, value } = stat;
+
+  const [options, setOptions] = useState(chartOptions);
+  const theme = useTheme();
+
+  const [series, setSeries] = useState([{
+    name: 'Income',
+    data: [
+      435,
+      560,
+      790,
+      600,
+      420,
+      840,
+      750
+    ]
+  }]);
+
+  useEffect(() => {
+    setOptions((prev) => ({
+      ...prev,
+      colors: [theme.palette.primary.main, theme.palette.primary.main[700]],
+      xaxis: {
+        categories: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
+      },
+      tooltip: {
+        theme: 'light',
+        x: {
+          show: false,
+        },
+        y: {
+          title: {
+            formatter: function () {
+              return ''
+            }
+          },
+        },
+        marker: {
+          show: false
+        }
+      }
+    }))
+  }, []);
 
   return (
     <Card>
@@ -22,14 +88,15 @@ const StatCard = ({ stat }) => {
         <Box
           sx={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            alignItems: 'center'
           }}
         >
-          <Stack spacing={1}>
-            <Typography variant='h6' component='span' color='text.secondary'>
+          <Stack spacing={1} sx={{ flexShrink: 0 }}>
+            <Typography variant='subtitle1' component='span' color='text.primary'>
               {label}
             </Typography>
+            <Typography variant='h4' component='span'>{total}</Typography>
             {isIncrease ? (
               <Stack spacing={1} direction='row' alignItems='center'>
                 <StyledIconBox
@@ -38,9 +105,14 @@ const StatCard = ({ stat }) => {
                     color: (theme) => `${theme.palette.success.main}`,
                   }}
                 >
-                  <Iconify icon='material-symbols:trending-up-rounded' width={24} height={24} />
+                  <Iconify icon='material-symbols:trending-up-rounded' width={20} height={20} />
                 </StyledIconBox>
-                <Typography color='text.primary' variant='subtitle1'>+{value}%</Typography>
+                <Typography color='text.primary' variant='subtitle2'>
+                  +{value}%
+                  <Typography color='text.secondary' variant='body2' component='span'>
+                    &nbsp; than last week
+                  </Typography>
+                </Typography>
               </Stack>
             ) : (
               <Stack spacing={1} direction='row' alignItems='center'>
@@ -50,18 +122,20 @@ const StatCard = ({ stat }) => {
                     color: (theme) => `${theme.palette.error.main}`,
                   }}
                 >
-                  <Iconify icon='ic:round-trending-down' width={24} height={24} />
+                  <Iconify icon='ic:round-trending-down' width={20} height={20} />
                 </StyledIconBox>
-                <Typography color='text.primary' variant='subtitle1'>-{value}%</Typography>
+                <Typography color='text.primary' variant='subtitle2'>
+                  -{value}%
+                  <Typography color='text.secondary' variant='body2' component='span'>
+                    &nbsp; than last week
+                  </Typography>
+                </Typography>
               </Stack>
             )}
-            <Typography variant='h4' component='span'>{total}</Typography>
           </Stack>
-          <StyledIconBox
-            sx={{ width: 52, height: 52, backgroundColor: (theme) => theme.palette.background.neutral }}
-          >
-            <Iconify icon={icon} width={32} height={32} sx={{ color: 'text.secondary' }} />
-          </StyledIconBox>
+          <Box sx={{ maxWidth: 150 }}>
+            <ReactApexChart options={options} series={series} type='line' height={100} />
+          </Box>
         </Box>
       </CardContent>
     </Card>
