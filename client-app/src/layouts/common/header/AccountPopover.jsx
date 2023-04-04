@@ -31,7 +31,7 @@ const MENU_OPTIONS = [
   },
 ];
 
-const AccountPopover = ({ user }) => {
+const AccountPopover = ({ user, menuOptions }) => {
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -95,7 +95,7 @@ const AccountPopover = ({ user }) => {
         <Divider sx={{ borderStyle: "dashed" }} />
 
         <Stack sx={{ p: 1 }}>
-          {MENU_OPTIONS.map((option) => (
+          {menuOptions.map((option) => (
             <Link
               key={option.label}
               component={RouterLink}

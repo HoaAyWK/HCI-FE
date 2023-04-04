@@ -96,6 +96,11 @@ const typography = {
         fontSize: pxToRem(14),
         textTransform: 'capitalize',
     },
+    iconLabel: {
+      fontWeight: 600,
+      fontSize: pxToRem(10),
+      textTransform: 'capitalize'
+    }
 };
 
 export default typography;

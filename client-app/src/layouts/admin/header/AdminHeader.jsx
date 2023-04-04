@@ -18,22 +18,26 @@ import {
 // components
 import { Iconify } from '../../../components';
 //
-import AvatarPopover from "./AvatarPopover";
-import { AccountPopover } from "../../common/header";
+import { AccountPopover } from '../../common/header';
 import { useAppThemeUpdate, useAppTheme } from "../../../context/AppThemeContext";
-import { useLocalStorage } from "../../../hooks";
-import AlgoliaSearch from './search-bar/AlgoliaSearch';
+import { useLocalStorage, useResponsive } from "../../../hooks";
 
 // ----------------------------------------------------------------------
-
+const NAV_WIDTH = 280;
 const HEADER_MOBILE = 64;
 
-const StyledRoot = styled(AppBar)(({ theme }) => ({
+const StyledRoot = styled(AppBar, { shouldForwardProp: prop => prop !== 'miniDrawer'})(({ theme, miniDrawer }) => ({
   boxShadow: "none",
   width: `100%`,
   WebkitBackdropFilter: "blur(6px)",
   backdropFilter: "blur(6px)",
   backgroundColor: alpha(theme.palette.background.default, 0.5),
+  [theme.breakpoints.up('lg')]: {
+    width: `calc(100% - ${NAV_WIDTH + 1}px)`,
+    ...(miniDrawer && {
+      width: `calc(100% - (${theme.spacing(10)} + 1px))`,
+    })
+  },
 }));
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -42,23 +46,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-Header.propTypes = {
-  onOpenNav: PropTypes.func,
-};
-
-const menuItems = [
-  {
-    name: 'Products',
-    path: '/products'
-  }
-];
-
 const MENU_OPTIONS = [
-  {
-    label: 'Dashboard',
-    icon: 'material-symbols:space-dashboard-rounded',
-    path: '/admin/dashboard'
-  },
   {
     label: "Home",
     icon: "eva:home-fill",
@@ -76,9 +64,10 @@ const MENU_OPTIONS = [
   },
 ];
 
-export default function Header({ onOpenNav }) {
+export default function AdminHeader({ openDesktopNav, onOpenMobileNav }) {
   const [, setModeValueStored] = useLocalStorage('darkMode', null);
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const isDesktop = useResponsive('up', 'lg');
 
   const darkTheme = useAppTheme();
   const { setLightMode, setDarkMode } = useAppThemeUpdate();
@@ -121,10 +110,10 @@ export default function Header({ onOpenNav }) {
   }
 
   return (
-    <StyledRoot>
+    <StyledRoot miniDrawer={isDesktop && !openDesktopNav}>
       <StyledToolbar>
         <IconButton
-          onClick={onOpenNav}
+          onClick={onOpenMobileNav}
           sx={{
             mr: 1,
             color: "text.primary",
@@ -140,21 +129,9 @@ export default function Header({ onOpenNav }) {
             component="span"
             sx={{ color: "text.primary", mr: 2 }}
           >
-            HCI
+            Logo
           </Typography>
         </Box>
-
-        <AlgoliaSearch />
-
-        <Stack direction='row' spacing={2} sx={{ ml: 2 }}>
-          {menuItems.map((item) => (
-            <Link key={item.name} component={RouterLink} to={item.path} underline='none' color='text.primary'>
-              <Button>
-                {item.name}
-              </Button>
-            </Link>
-          ))}
-        </Stack>
 
         <Box sx={{ flexGrow: 1 }} />
 
@@ -169,15 +146,6 @@ export default function Header({ onOpenNav }) {
           <IconButton onClick={toggleTheme(darkTheme)}>
             <Iconify icon={icon()} width={24} height={24} />
           </IconButton>
-
-          <Link component={RouterLink} to='/checkout' underline='none'>
-            <IconButton size='medium' color='default'>
-              <Badge badgeContent={4} color='error'>
-                <Iconify icon='ic:outline-shopping-cart' width={28} height={28} />
-              </Badge>
-            </IconButton>
-          </Link>
-
           <AccountPopover menuOptions={MENU_OPTIONS} />
         </Stack>
       </StyledToolbar>

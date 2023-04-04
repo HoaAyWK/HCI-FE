@@ -92,7 +92,7 @@ const Cart = ({ step }) => {
               />
               <TableBody>
                 {lineItems.map((item) => (
-                  <LineItem item={item} selected={selected} handleClick={handleClick} />
+                  <LineItem key={item.id} item={item} selected={selected} handleClick={handleClick} />
                 ))}
               </TableBody>
             </Table>

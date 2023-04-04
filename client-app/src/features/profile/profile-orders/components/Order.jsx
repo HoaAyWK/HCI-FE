@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Box, Button, Divider, Typography, Stack } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Button, Typography, Stack } from '@mui/material';
 
 import ProductItem from './ProductItem';
 import { Label } from '../../../../components';
@@ -65,7 +66,7 @@ const Order = ({ order }) => {
         }}
       >
         <Stack spacing={2}>
-          <Button color='inherit' variant='outlined'>Details</Button>
+          <Button LinkComponent={RouterLink} to='/orders/12099' color='inherit' variant='outlined'>Details</Button>
           {status === STATUS.PROCESSING && (
             <Button color='error' variant='outlined'>Cancel</Button>
           )}

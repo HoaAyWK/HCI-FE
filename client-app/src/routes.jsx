@@ -4,9 +4,10 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import { AccountSettings, AdminSettings, PasswordSettings } from './features/settings';
 import { Login, Register } from './features/auth';
 
-import { MainLayout, SettingsLayout } from './layouts';
+import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
 
-import { HomePage, CheckoutPage, ProductsPage, ProductPage, ProfilePage, SearchPage } from './pages';
+import { HomePage, CheckoutPage, ProductsPage, ProductPage, ProfilePage, SearchPage, OrderDetailsPage } from './pages';
+import { DashboardPage } from './pages/admin';
 import AHome from './features/home/AHome';
 
 const Router = () => {
@@ -21,6 +22,7 @@ const Router = () => {
         { path: 'products/:id', element: <ProductPage />},
         { path: 'profile', element: <ProfilePage /> },
         { path: 'checkout', element: <CheckoutPage /> },
+        { path: 'orders/:id', element: <OrderDetailsPage /> },
         {
           path:'settings',
           element: <SettingsLayout />,
@@ -40,6 +42,20 @@ const Router = () => {
     {
       path: 'sign-up',
       element: <Register />
+    },
+    {
+      path: 'admin',
+      element: <AdminLayout />,
+      children: [
+        {
+          path: '',
+          element: <Navigate to='dashboard' />
+        },
+        {
+          path: 'dashboard',
+          element: <DashboardPage />
+        },
+      ]
     }
   ]);
 };
