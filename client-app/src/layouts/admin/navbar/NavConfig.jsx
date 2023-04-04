@@ -12,6 +12,20 @@ const navConfig = [
         title: 'user',
         path: '/admin/users',
         icon: getIcon('eva:people-fill'),
+        children: [
+          {
+            title: 'list',
+            path: '/admin/users/list',
+          },
+          {
+            title: 'details',
+            path: '/admin/users/details'
+          },
+          {
+            title: 'create',
+            path: '/admin/users/create'
+          }
+        ]
     },
     {
       title: 'product',
