@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Table, TableContainer, Card, TableBody, TableRow, TableCell, TablePagination } from '@mui/material';
 
-import { AppTableHead, AppTableToolbar } from '../../../components/table';
+import { SearchableTableToolbar, SortableTableHead } from '../../../components/table';
 import { FilterOnTableNotFound } from '../../../components';
+import Scrollbar from '../../../components/scrollbar';
 
 const UserList = ({
   filteredData = [],
@@ -25,36 +26,37 @@ const UserList = ({
 
   return (
     <Card>
-      <AppTableToolbar filterName={filterName} onFilterName={handleFilterByName} title={title} />
-      <TableContainer sx={{ minWidth: 800 }}>
-        <Table>
-          <AppTableHead
-            order={order}
-            orderBy={orderBy}
-            headLabel={tableHead}
-            rowCount={filterName.length}
-            onRequestSort={handleRequestSort}
-          />
-          <TableBody>
-            {children}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-
-          {isRecordNotFound && (
+      <SearchableTableToolbar filterName={filterName} onFilterName={handleFilterByName} title={title} />
+      <Scrollbar>
+        <TableContainer sx={{ minWidth: 800 }}>
+          <Table>
+            <SortableTableHead
+              order={order}
+              orderBy={orderBy}
+              headLabel={tableHead}
+              onRequestSort={handleRequestSort}
+            />
             <TableBody>
-              <TableRow>
-                <TableCell align='center' colSpan={6} sx={{ py: 3 }}>
-                  <FilterOnTableNotFound searchQuery={filterName} />
-                </TableCell>
-              </TableRow>
+              {children}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
             </TableBody>
-          )}
-        </Table>
-      </TableContainer>
+
+            {isRecordNotFound && (
+              <TableBody>
+                <TableRow>
+                  <TableCell align='center' colSpan={6} sx={{ py: 3 }}>
+                    <FilterOnTableNotFound searchQuery={filterName} />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            )}
+          </Table>
+        </TableContainer>
+      </Scrollbar>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component='div'
