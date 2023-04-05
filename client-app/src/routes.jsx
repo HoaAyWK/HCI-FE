@@ -7,7 +7,7 @@ import { Login, Register } from './features/auth';
 import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
 
 import { HomePage, CheckoutPage, ProductsPage, ProductPage, ProfilePage, SearchPage, OrderDetailsPage } from './pages';
-import { DashboardPage, UserListPage } from './pages/admin';
+import { CreateUserPage, DashboardPage, UserDetailsPage, UserListPage } from './pages/admin';
 import AHome from './features/home/AHome';
 
 const Router = () => {
@@ -65,6 +65,14 @@ const Router = () => {
             {
               path: 'list',
               element: <UserListPage />
+            },
+            {
+              path: 'create',
+              element: <CreateUserPage />
+            },
+            {
+              path: 'details',
+              element: <UserDetailsPage />
             }
           ]
         }

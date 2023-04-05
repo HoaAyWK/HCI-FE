@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Typography } from '@mui/material';
 
-import { RHFUploadFile } from '../../../../components/hook-form';
-import { Iconify } from '../../../../components';
+import { RHFUploadFile } from '../hook-form'
+import Iconify from '../iconify';
 import {
   StyledAvatar,
   StyledBoxImage,

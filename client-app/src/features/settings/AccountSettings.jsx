@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { FormProvider, RHFTextField } from '../../components/hook-form';
-import { AvatarUploader } from './components';
+import { AvatarUploader } from '../../components';
 
 const AccountSettings = () => {
   const ProfileSchema = Yup.object().shape({
