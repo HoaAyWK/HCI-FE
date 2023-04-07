@@ -37,11 +37,11 @@ const NavItem = ({ item, miniDrawer }) => {
         <StyledNavItem
           onClick={!miniDrawer ? handleToggle : handleOpenPopover}
           sx={{
+            mb: 1,
             ...(isActiveRoot &&{
               color: theme.palette.primary.main,
               backgroundColor: `${alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)}`,
-              fontWeight: 'fontWeightBold',
-              mb: 1
+              fontWeight: 'fontWeightBold'
             }),
           }}
           aria-describedby={popoverId}
@@ -189,7 +189,6 @@ const NavItem = ({ item, miniDrawer }) => {
           color: theme.palette.primary.main,
           backgroundColor: `${alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)}`,
           fontWeight: 'fontWeightBold',
-          mb: 1
         },
       }}
     >
@@ -221,7 +220,21 @@ const NavSection = ({ data = [], miniDrawer, ...other }) => {
   return (
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
-        {data.map((item) => <NavItem key={item.title} item={item} miniDrawer={miniDrawer} />)}
+        {data.map((item) => item.path ? (
+          <NavItem key={item.title} item={item} miniDrawer={miniDrawer} />
+        ) : (
+          <Box
+            sx={{
+              ml: 3,
+              mb: 0.5,
+              mt: 1
+            }}
+          >
+            <Typography variant='caption' color='text.secondary' fontWeight='bold'>
+              {item.title}
+            </Typography>
+        </Box>
+        ))}
       </List>
     </Box>
   )

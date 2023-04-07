@@ -108,7 +108,6 @@ const DrawerContent = ({ isOpen, isMiniDrawer }) => {
           </StyledAccount>
         </Link>
       </Box>
-
       <NavSection data={navConfig} miniDrawer={isMiniDrawer} />
 
     </Scrollbar>

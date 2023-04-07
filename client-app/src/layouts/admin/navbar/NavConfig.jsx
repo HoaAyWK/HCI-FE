@@ -3,11 +3,17 @@ import { Iconify } from  '../../../components';
 const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
 const navConfig = [
+  {
+    title: 'GENERAL',
+  },
     {
         title: 'dashboard',
         path: '/admin/dashboard',
         icon: getIcon('ri:dashboard-3-line'),
     },
+  {
+    title: 'MANAGEMENT'
+  },
     {
         title: 'user',
         path: '/admin/users',
@@ -31,6 +37,16 @@ const navConfig = [
       title: 'product',
       path: '/admin/products',
       icon: getIcon('ant-design:shop-twotone'),
+      children: [
+        {
+          title: 'list',
+          path: '/admin/products/list'
+        },
+        {
+          title: 'create',
+          path: '/amin/products/create'
+        },
+      ]
     },
     {
         title: 'category',

@@ -7,7 +7,7 @@ import { Login, Register } from './features/auth';
 import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
 
 import { HomePage, CheckoutPage, ProductsPage, ProductPage, ProfilePage, SearchPage, OrderDetailsPage } from './pages';
-import { CreateUserPage, DashboardPage, UserDetailsPage, UserListPage } from './pages/admin';
+import { CreateUserPage, DashboardPage, ProductListPage, UserDetailsPage, UserListPage } from './pages/admin';
 import AHome from './features/home/AHome';
 
 const Router = () => {
@@ -73,6 +73,19 @@ const Router = () => {
             {
               path: 'details',
               element: <UserDetailsPage />
+            }
+          ]
+        },
+        {
+          path: 'products',
+          children: [
+            {
+              path: '',
+              element: <Navigate to='list' />
+            },
+            {
+              path: 'list',
+              element: <ProductListPage />
             }
           ]
         }
