@@ -1,9 +1,8 @@
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useLocation, Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Box, Link, Button, Drawer, Typography, Avatar, Stack, IconButton } from '@mui/material';
+import { Box, Link, Drawer, Typography, Avatar, IconButton } from '@mui/material';
 // mock
 // hooks
 // components
@@ -11,8 +10,8 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './NavConfig';
-import { useResponsive } from '../../../hooks';
 import { Iconify } from '../../../components';
+import hciLogo from '/new_hci_logo.svg';
 
 // ----------------------------------------------------------------------
 
@@ -77,6 +76,12 @@ const StyledIconButton = styled(IconButton, { shouldForwardProp: (prop) => prop 
   })
 );
 
+const StyledTextLogo = styled(Typography)(({ theme }) => ({
+  background: 'linear-gradient(.25turn, #7F0E0E, #0F0D73)',
+  '-webkit-background-clip': 'text',
+  '-webkit-text-fill-color': 'transparent'
+}));
+
 // ----------------------------------------------------------------------
 
 const DrawerContent = ({ isOpen, isMiniDrawer }) => {
@@ -87,8 +92,19 @@ const DrawerContent = ({ isOpen, isMiniDrawer }) => {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
-        Logo
+
+      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex', alignItems: 'center' }}>
+        <Link component={RouterLink} to='/' underline='none' sx={{ display: 'inline-flex', alginItems: 'center' }}>
+          <Box
+            component='img'
+            alt='Logo'
+            src={hciLogo}
+            sx={{ mr: 1 }}
+          />
+          <StyledTextLogo variant='h3' component='h1'>
+            HCI
+          </StyledTextLogo>
+        </Link>
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5, display: isOpen ? 'block' : 'none' }}>

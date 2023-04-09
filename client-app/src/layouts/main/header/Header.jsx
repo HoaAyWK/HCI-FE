@@ -22,6 +22,7 @@ import { AccountPopover } from "../../common/header";
 import { useAppThemeUpdate, useAppTheme } from "../../../context/AppThemeContext";
 import { useLocalStorage } from "../../../hooks";
 import AlgoliaSearch from './search-bar/AlgoliaSearch';
+import hciLogo from '/new_hci_logo.svg';
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +38,12 @@ const StyledRoot = styled(AppBar)(({ theme }) => ({
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   minHeight: HEADER_MOBILE,
+}));
+
+const StyledTextLogo = styled(Typography)(({ theme }) => ({
+  background: 'linear-gradient(.25turn, #7F0E0E, #0F0D73)',
+  '-webkit-background-clip': 'text',
+  '-webkit-text-fill-color': 'transparent'
 }));
 
 // ----------------------------------------------------------------------
@@ -133,14 +140,18 @@ export default function Header({ onOpenNav }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
-        <Box>
-          <Typography
-            variant="h3"
-            component="span"
-            sx={{ color: "text.primary", mr: 2 }}
-          >
-            HCI
-          </Typography>
+        <Box sx={{ mr: 2 }}>
+          <Link component={RouterLink} to='/' underline='none' sx={{ display: 'inline-flex', alginItems: 'center' }}>
+            <Box
+              component='img'
+              alt='Logo'
+              src={hciLogo}
+              sx={{ mr: 1 }}
+            />
+            <StyledTextLogo variant='h3' component='h1'>
+              HCI
+            </StyledTextLogo>
+          </Link>
         </Box>
 
         <AlgoliaSearch />

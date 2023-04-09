@@ -138,6 +138,7 @@ const ImagesUploader = ({ name, ...other }) => {
                       component='img'
                       alt='image'
                       src={image}
+                      loading='lazy'
                     />
                     <IconButton
                       sx={{

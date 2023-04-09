@@ -123,14 +123,7 @@ export default function AdminHeader({ openDesktopNav, onOpenMobileNav }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
-        <Box>
-          <Typography
-            variant="h3"
-            component="span"
-            sx={{ color: "text.primary", mr: 2 }}
-          >
-            Logo
-          </Typography>
+        <Box sx={{ mr: 2 }}>
         </Box>
 
         <Box sx={{ flexGrow: 1 }} />
