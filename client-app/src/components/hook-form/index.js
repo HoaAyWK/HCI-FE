@@ -7,3 +7,4 @@ export { default as RHFUploadFile } from './RHFUploadFile';
 export { default as RHFRadioGroup } from './RHFRadioGroup';
 export { default as RHFDateTextField } from './RHFDateTextField';
 export { default as RHFMultiSelect } from './RHFMultiSelect';
+export { default as RHFEditor } from './RHFEditor';

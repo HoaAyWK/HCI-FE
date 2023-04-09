@@ -2,18 +2,18 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Breadcrumbs, Button, Container, Link, Stack, Typography } from '@mui/material';
 
-import { Iconify, Page } from '../../components';
-import { UserList } from '../../features/admin/users';
+import { Iconify, Page } from '../../../components'
+import { ProductList } from '../../../features/admin/product';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
-  { label: 'User', path: '/admin/users' },
+  { label: 'Product', path: '/admin/products' },
   { label: 'List' },
 ];
 
-const UserListPage = () => {
+const ProductListPage = () => {
   return (
-    <Page title='Users'>
+    <Page title='Products'>
       <Container maxWidth='xl'>
         <Box
           sx={{
@@ -29,7 +29,7 @@ const UserListPage = () => {
           >
             <Stack spacing={1}>
               <Typography variant='h4' component='h1'>
-                User List
+                Product List
               </Typography>
               <Breadcrumbs
                 separator={<Iconify icon='material-symbols:navigate-next' width={20} height={20} />}
@@ -46,20 +46,20 @@ const UserListPage = () => {
                 ))}
               </Breadcrumbs>
             </Stack>
-            <Button LinkComponent={RouterLink} to='/admin/users/create' color='primary' variant='contained'>
+            <Button LinkComponent={RouterLink} to='/admin/product/create' color='primary' variant='contained'>
               <Stack spacing={1} direction='row'>
                 <Iconify icon='eva:plus-fill' width={24} height={24} />
                 <Typography variant='button'>
-                  New User
+                  New Product
                 </Typography>
               </Stack>
             </Button>
           </Box>
-          <UserList />
+          <ProductList />
         </Box>
       </Container>
     </Page>
   );
 };
 
-export default UserListPage;
+export default ProductListPage;

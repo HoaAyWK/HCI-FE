@@ -44,7 +44,7 @@ const navConfig = [
         },
         {
           title: 'create',
-          path: '/amin/products/create'
+          path: '/admin/products/create'
         },
       ]
     },

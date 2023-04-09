@@ -1,19 +1,12 @@
-import React from 'react';
+import React from 'react'
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Breadcrumbs, Button, Container, Link, Stack, Typography } from '@mui/material';
 
-import { Iconify, Page } from '../../components';
-import { ProductList } from '../../features/admin/product';
+import { Iconify, Page } from '../../../components';
 
-const breadcrumbs = [
-  { label: 'Dashboard', path: '/admin/dashboard' },
-  { label: 'Product', path: '/admin/products' },
-  { label: 'List' },
-];
-
-const ProductListPage = () => {
+const AdminPageLayout = ({ pageTitle, pageHeaderName, breadcrumbs, showCreateButton, createPath, createName, children }) => {
   return (
-    <Page title='Products'>
+    <Page title={pageHeaderName}>
       <Container maxWidth='xl'>
         <Box
           sx={{
@@ -29,7 +22,7 @@ const ProductListPage = () => {
           >
             <Stack spacing={1}>
               <Typography variant='h4' component='h1'>
-                Product List
+                {pageTitle}
               </Typography>
               <Breadcrumbs
                 separator={<Iconify icon='material-symbols:navigate-next' width={20} height={20} />}
@@ -46,20 +39,24 @@ const ProductListPage = () => {
                 ))}
               </Breadcrumbs>
             </Stack>
-            <Button LinkComponent={RouterLink} to='/admin/product/create' color='primary' variant='contained'>
-              <Stack spacing={1} direction='row'>
-                <Iconify icon='eva:plus-fill' width={24} height={24} />
-                <Typography variant='button'>
-                  New Product
-                </Typography>
-              </Stack>
-            </Button>
+            {showCreateButton && (
+              <Button LinkComponent={RouterLink} to={createPath} color='primary' variant='contained'>
+                <Stack spacing={1} direction='row'>
+                  <Iconify icon='eva:plus-fill' width={24} height={24} />
+                  <Typography variant='button'>
+                    New {createName}
+                  </Typography>
+                </Stack>
+              </Button>
+            )}
           </Box>
-          <ProductList />
+          <Box sx={{ mt: 4 }}>
+            {children}
+          </Box>
         </Box>
       </Container>
     </Page>
   );
 };
 
-export default ProductListPage;
+export default AdminPageLayout;

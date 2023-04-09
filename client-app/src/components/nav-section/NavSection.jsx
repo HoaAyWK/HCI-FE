@@ -98,7 +98,6 @@ const NavItem = ({ item, miniDrawer }) => {
                     '&.active': {
                       color: theme.palette.primary.main,
                       fontWeight: 'fontWeightBold',
-                      mb: 1
                     },
                     '&.active .item-dot': {
                       transform: 'scale(2)',
@@ -229,6 +228,7 @@ const NavSection = ({ data = [], miniDrawer, ...other }) => {
               mb: 0.5,
               mt: 1
             }}
+            key={item.title}
           >
             <Typography variant='caption' color='text.secondary' fontWeight='bold'>
               {item.title}

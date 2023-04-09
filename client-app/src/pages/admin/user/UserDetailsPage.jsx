@@ -2,9 +2,9 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, Breadcrumbs, Container, Grid, Link, Stack, Typography } from '@mui/material';
 
-import { UserDetails } from '../../features/admin/users';
-import { Page, Iconify } from '../../components';
-import { useResponsive } from '../../hooks';
+import { UserDetails } from '../../../features/admin/users';
+import { Page, Iconify } from '../../../components';
+import { useResponsive } from '../../../hooks';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },

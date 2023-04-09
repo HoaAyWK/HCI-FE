@@ -14,7 +14,7 @@ const MenuProps = {
     }
 };
 
-const RHFSelect = ({ name, id, label, data }) => {
+const RHFSelect = ({ name, id, label, defaultValue, data }) => {
     const { control } = useFormContext();
     const [open, setOpen] = useState(false);
 
@@ -23,7 +23,7 @@ const RHFSelect = ({ name, id, label, data }) => {
             <InputLabel id={id}>
                 {label}
             </InputLabel>
-        
+
             <Controller
                 name={name}
                 control={control}
@@ -45,6 +45,7 @@ const RHFSelect = ({ name, id, label, data }) => {
                                 MenuProps={MenuProps}
                                 error={!!error}
                                 helpertext={error?.message}
+                                defaultValue={defaultValue}
                             >
                                 {data?.map((item) => (
                                     <MenuItem key={item.id} value={item.id}>
@@ -54,7 +55,7 @@ const RHFSelect = ({ name, id, label, data }) => {
                             </Select>
                     )
                 }}
-                
+
             />
         </FormControl>
     );
