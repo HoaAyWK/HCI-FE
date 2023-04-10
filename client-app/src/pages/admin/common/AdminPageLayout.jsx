@@ -4,8 +4,18 @@ import { Box, Breadcrumbs, Button, Container, Link, Stack, Typography } from '@m
 
 import { Iconify, Page } from '../../../components';
 
-const AdminPageLayout = ({ pageTitle, pageHeaderName, breadcrumbs, showCreateButton, createPath, createName, children }) => {
-  return (
+const AdminPageLayout = ({
+  pageTitle,
+  pageHeaderName,
+  breadcrumbs,
+  showCreateButton,
+  createWithDialog,
+  onOpenDialog,
+  createPath,
+  createName,
+  children }) => {
+
+    return (
     <Page title={pageHeaderName}>
       <Container maxWidth='xl'>
         <Box
@@ -39,8 +49,18 @@ const AdminPageLayout = ({ pageTitle, pageHeaderName, breadcrumbs, showCreateBut
                 ))}
               </Breadcrumbs>
             </Stack>
-            {showCreateButton && (
+            {showCreateButton && !createWithDialog && (
               <Button LinkComponent={RouterLink} to={createPath} color='primary' variant='contained'>
+                <Stack spacing={1} direction='row'>
+                  <Iconify icon='eva:plus-fill' width={24} height={24} />
+                  <Typography variant='button'>
+                    New {createName}
+                  </Typography>
+                </Stack>
+              </Button>
+            )}
+            {showCreateButton && createWithDialog && (
+              <Button color='primary' variant='contained' onClick={onOpenDialog}>
                 <Stack spacing={1} direction='row'>
                   <Iconify icon='eva:plus-fill' width={24} height={24} />
                   <Typography variant='button'>

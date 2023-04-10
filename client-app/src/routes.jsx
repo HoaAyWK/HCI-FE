@@ -11,6 +11,7 @@ import { DashboardPage } from './pages/admin';
 import { CreateProductPage, ProductListPage } from './pages/admin/product';
 import { CreateUserPage, UserListPage, UserDetailsPage } from './pages/admin/user';
 import AHome from './features/home/AHome';
+import { CategoryListPage } from './pages/admin/category';
 
 const Router = () => {
   return useRoutes([
@@ -94,6 +95,10 @@ const Router = () => {
               element: <CreateProductPage />
             }
           ]
+        },
+        {
+          path: 'categories',
+          element: <CategoryListPage />
         }
       ]
     }

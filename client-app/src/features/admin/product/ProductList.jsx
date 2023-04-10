@@ -3,7 +3,7 @@ import { Box, Stack, TableRow, TableCell, Typography } from '@mui/material';
 
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { DataTable } from '../components';
-import { SortableTableHead, SearchableTableToolbar, MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
+import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },

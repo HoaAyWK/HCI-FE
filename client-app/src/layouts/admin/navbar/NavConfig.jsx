@@ -50,7 +50,7 @@ const navConfig = [
     },
     {
         title: 'category',
-        path: '/dashboard/categories',
+        path: '/admin/categories',
         icon: getIcon('bxs:category'),
     },
     {
@@ -60,12 +60,12 @@ const navConfig = [
     },
     {
         title: 'order',
-        path: '/dashboard/orders',
+        path: '/admin/orders',
         icon: getIcon('solar:delivery-bold'),
     },
     {
         title: 'invoice',
-        path: '/dashboard/invoices',
+        path: '/admin/invoices',
         icon: getIcon('arcticons:zoho-invoice'),
     }
 ];
