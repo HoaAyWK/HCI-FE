@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
 import { AdminPageLayout } from '../common';
-import { CategoryList, CategoryForm } from '../../../features/admin/category';
+import { BrandList, BrandForm } from '../../../features/admin/brand';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
-  { label: 'Category', path: '/admin/categories' },
+  { label: 'Brand', path: '/admin/brands' },
   { label: 'List' },
 ];
 
-const CategoryListPage = () => {
+const BrandListPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleCloseDialog = () => {
@@ -22,18 +22,18 @@ const CategoryListPage = () => {
 
   return (
     <AdminPageLayout
-      pageTitle='Categories'
-      pageHeaderName='Categories'
+      pageTitle='Brands'
+      pageHeaderName='Brands'
       showCreateButton={true}
       createWithDialog={true}
-      createName='Category'
+      createName='Brand'
       onOpenDialog={handleOpenDialog}
       breadcrumbs={breadcrumbs}
     >
-      <CategoryList />
-      <CategoryForm
-        dialogTitle='Create Category'
-        dialogContent='Create a new category'
+      <BrandList />
+      <BrandForm
+        dialogTitle='Create Brand'
+        dialogContent='Create a new brand'
         isEdit={false}
         open={openDialog}
         handleClose={handleCloseDialog}
@@ -42,4 +42,4 @@ const CategoryListPage = () => {
   );
 };
 
-export default CategoryListPage;
+export default BrandListPage;

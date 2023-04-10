@@ -12,6 +12,7 @@ import { CreateProductPage, ProductListPage } from './pages/admin/product';
 import { CreateUserPage, UserListPage, UserDetailsPage } from './pages/admin/user';
 import AHome from './features/home/AHome';
 import { CategoryListPage } from './pages/admin/category';
+import BrandListPage from './pages/admin/brand/BrandListPage';
 
 const Router = () => {
   return useRoutes([
@@ -99,6 +100,10 @@ const Router = () => {
         {
           path: 'categories',
           element: <CategoryListPage />
+        },
+        {
+          path: 'brands',
+          element: <BrandListPage />
         }
       ]
     }
