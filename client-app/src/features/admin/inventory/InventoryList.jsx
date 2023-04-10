@@ -3,7 +3,8 @@ import { TableRow, TableCell, Typography } from '@mui/material';
 
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { DataTable } from '../components';
-import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
+import { MoreMenu, MoreMenuItem } from '../../../components/table';
+import InventoryLine from './InventoryLine';
 
 const TABLE_HEAD = [
   { id: 'productId', label: 'Product ID', alignRight: false },
@@ -26,6 +27,7 @@ const InventoryList = () => {
   const [filterName, setFilterName] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -48,6 +50,14 @@ const InventoryList = () => {
 
   const filteredInventories = applySortFilter(inventories, getComparator(order, orderBy), filterName);
 
+  const handleOpenEditDialog = () => {
+    setOpenEditDialog(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+  };
+
   return (
     <DataTable
       order={order}
@@ -63,33 +73,9 @@ const InventoryList = () => {
       handleFilterByName={handleFilterByName}
       handleRequestSort={handleRequestSort}
     >
-      {filteredInventories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-        const { productId, productName, quantity } = row;
-
-        return (
-          <TableRow
-            key={productId}
-            hover
-            tabIndex={-1}
-          >
-            <TableCell component='th' scope='row'>
-              <Typography variant='body1'>#{productId}</Typography>
-            </TableCell>
-            <TableCell>
-            <Typography variant='body1'>{productName}</Typography>
-            </TableCell>
-            <TableCell align='right'>
-              {quantity}
-            </TableCell>
-            <TableCell align="right">
-              <MoreMenu>
-                <MoreMenuItemLink title='Edit' to='/admin/products/edit' iconName='eva:edit-outline' />
-                <MoreMenuItem title="Delete" iconName="eva:trash-2-outline"/>
-              </ MoreMenu>
-            </TableCell>
-          </TableRow>
-        );
-      })}
+      {filteredInventories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+        <InventoryLine key={row.productId} inventory={row} />
+      ))}
     </DataTable>
   );
 };

@@ -22,6 +22,7 @@ const MoreMenu = ({ children }) => {
         }}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        onClick={() => setIsOpen(false)}
       >
         {children}
       </Menu>
