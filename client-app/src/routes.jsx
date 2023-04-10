@@ -14,7 +14,7 @@ import AHome from './features/home/AHome';
 import { CategoryListPage } from './pages/admin/category';
 import { BrandListPage } from './pages/admin/brand';
 import { InventoryListPage } from './pages/admin/inventory';
-import { OrderListPage } from './pages/admin/order';
+import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
 
 const Router = () => {
   return useRoutes([
@@ -113,7 +113,11 @@ const Router = () => {
         },
         {
           path: 'orders',
-          element: <OrderListPage />
+          children: [
+            { path: '', element: <Navigate to='list' /> },
+            { path: 'list', element: <OrderListPage /> },
+            { path: 'details', element: <AdminOrderDetailsPage /> }
+          ]
         }
       ]
     }

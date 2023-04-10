@@ -98,8 +98,7 @@ const OrderList = () => {
             </TableCell>
             <TableCell align="right">
               <MoreMenu>
-                <MoreMenuItemLink title='Edit' to='/admin/products/edit' iconName='eva:edit-outline' />
-                <MoreMenuItem title="Delete" iconName="eva:trash-2-outline"/>
+                <MoreMenuItemLink title='Details' to='/admin/orders/details' iconName='eva:edit-outline' />
               </ MoreMenu>
             </TableCell>
           </TableRow>
