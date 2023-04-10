@@ -12,8 +12,9 @@ import { CreateProductPage, ProductListPage } from './pages/admin/product';
 import { CreateUserPage, UserListPage, UserDetailsPage } from './pages/admin/user';
 import AHome from './features/home/AHome';
 import { CategoryListPage } from './pages/admin/category';
-import BrandListPage from './pages/admin/brand/BrandListPage';
-import InventoryListPage from './pages/admin/inventory/InventoryListPage';
+import { BrandListPage } from './pages/admin/brand';
+import { InventoryListPage } from './pages/admin/inventory';
+import { OrderListPage } from './pages/admin/order';
 
 const Router = () => {
   return useRoutes([
@@ -109,6 +110,10 @@ const Router = () => {
         {
           path: 'inventory',
           element: <InventoryListPage />
+        },
+        {
+          path: 'orders',
+          element: <OrderListPage />
         }
       ]
     }
