@@ -67,6 +67,11 @@ const navConfig = [
         title: 'invoice',
         path: '/admin/invoices',
         icon: getIcon('arcticons:zoho-invoice'),
+    },
+    {
+      title: 'inventory',
+      path: '/admin/inventory',
+      icon: getIcon('fluent-mdl2:product-variant')
     }
 ];
 

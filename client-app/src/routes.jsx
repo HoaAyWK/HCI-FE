@@ -13,6 +13,7 @@ import { CreateUserPage, UserListPage, UserDetailsPage } from './pages/admin/use
 import AHome from './features/home/AHome';
 import { CategoryListPage } from './pages/admin/category';
 import BrandListPage from './pages/admin/brand/BrandListPage';
+import InventoryListPage from './pages/admin/inventory/InventoryListPage';
 
 const Router = () => {
   return useRoutes([
@@ -104,6 +105,10 @@ const Router = () => {
         {
           path: 'brands',
           element: <BrandListPage />
+        },
+        {
+          path: 'inventory',
+          element: <InventoryListPage />
         }
       ]
     }

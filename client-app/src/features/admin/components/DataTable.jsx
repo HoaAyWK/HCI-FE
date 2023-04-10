@@ -28,7 +28,7 @@ const UserList = ({
     <Card>
       <SearchableTableToolbar filterName={filterName} onFilterName={handleFilterByName} title={title} />
       <Scrollbar>
-        <TableContainer sx={{ minWidth: 800 }}>
+        <TableContainer sx={{ minWidth: 700 }}>
           <Table>
             <SortableTableHead
               order={order}
