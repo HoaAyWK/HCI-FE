@@ -6,13 +6,15 @@ import algoliaSearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-hooks-web';
 
 import Header from './header/Header';
+import Footer from './footer';
 
 const searchClient = algoliaSearch(import.meta.env.VITE_ALGOLIA_APP_ID, import.meta.env.VITE_ALGOLIA_API_KEY);
 const indexName = import.meta.env.VITE_ALGOLIA_INDEX;
 
 const RootStyle = styled('div')({
     minHeight: '100%',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    position: 'relative',
 });
 
 const searchRouting = {
@@ -42,15 +44,17 @@ const searchRouting = {
 };
 
 export default function Layout() {
-
-    return (
-        <RootStyle>
-            <InstantSearch searchClient={searchClient} indexName={indexName} routing={searchRouting}>
-              <Header />
-              <Container maxWidth='lg' sx={{ mt: 8 }}>
-                <Outlet />
-              </Container>
-            </InstantSearch>
-        </RootStyle>
-    );
+  return (
+    <>
+      <RootStyle>
+        <InstantSearch searchClient={searchClient} indexName={indexName} routing={searchRouting}>
+          <Header />
+          <Container maxWidth='lg' sx={{ mt: 8, mb: 20 }}>
+            <Outlet />
+          </Container>
+        </InstantSearch>
+        <Footer />
+      </RootStyle>
+    </>
+  );
 }

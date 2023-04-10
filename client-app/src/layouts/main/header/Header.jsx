@@ -12,7 +12,8 @@ import {
   Typography,
   Link,
   useMediaQuery,
-  Badge
+  Badge,
+  Container
 } from "@mui/material";
 // utils
 // components
@@ -38,6 +39,8 @@ const StyledRoot = styled(AppBar)(({ theme }) => ({
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   minHeight: HEADER_MOBILE,
+  paddingLeft: '0px !important',
+  paddingRight: '0px !important'
 }));
 
 const StyledTextLogo = styled(Typography)(({ theme }) => ({
@@ -128,69 +131,71 @@ export default function Header({ onOpenNav }) {
 
   return (
     <StyledRoot>
-      <StyledToolbar>
-        <IconButton
-          onClick={onOpenNav}
-          sx={{
-            mr: 1,
-            color: "text.primary",
-            display: { lg: "none" },
-          }}
-        >
-          <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
-
-        <Box sx={{ mr: 2 }}>
-          <Link component={RouterLink} to='/' underline='none' sx={{ display: 'inline-flex', alginItems: 'center' }}>
-            <Box
-              component='img'
-              alt='Logo'
-              src={hciLogo}
-              sx={{ mr: 1 }}
-            />
-            <StyledTextLogo variant='h3' component='h1'>
-              HCI
-            </StyledTextLogo>
-          </Link>
-        </Box>
-
-        <AlgoliaSearch />
-
-        <Stack direction='row' spacing={2} sx={{ ml: 2 }}>
-          {menuItems.map((item) => (
-            <Link key={item.name} component={RouterLink} to={item.path} underline='none' color='text.primary'>
-              <Button>
-                {item.name}
-              </Button>
-            </Link>
-          ))}
-        </Stack>
-
-        <Box sx={{ flexGrow: 1 }} />
-
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={{
-            xs: 0.5,
-            sm: 1,
-          }}
-        >
-          <IconButton onClick={toggleTheme(darkTheme)}>
-            <Iconify icon={icon()} width={24} height={24} />
+      <Container maxWidth='lg'>
+        <StyledToolbar>
+          <IconButton
+            onClick={onOpenNav}
+            sx={{
+              mr: 1,
+              color: "text.primary",
+              display: { lg: "none" },
+            }}
+          >
+            <Iconify icon="eva:menu-2-fill" />
           </IconButton>
 
-          <Link component={RouterLink} to='/checkout' underline='none'>
-            <IconButton size='medium' color='default'>
-              <Badge badgeContent={4} color='error'>
-                <Iconify icon='ic:outline-shopping-cart' width={28} height={28} />
-              </Badge>
-            </IconButton>
-          </Link>
+          <Box sx={{ mr: 2 }}>
+            <Link component={RouterLink} to='/' underline='none' sx={{ display: 'inline-flex', alginItems: 'center' }}>
+              <Box
+                component='img'
+                alt='Logo'
+                src={hciLogo}
+                sx={{ mr: 1 }}
+              />
+              <StyledTextLogo variant='h3' component='h1'>
+                HCI
+              </StyledTextLogo>
+            </Link>
+          </Box>
 
-          <AccountPopover menuOptions={MENU_OPTIONS} />
-        </Stack>
-      </StyledToolbar>
+          <AlgoliaSearch />
+
+          <Stack direction='row' spacing={2} sx={{ ml: 2 }}>
+            {menuItems.map((item) => (
+              <Link key={item.name} component={RouterLink} to={item.path} underline='none' color='text.primary'>
+                <Button>
+                  {item.name}
+                </Button>
+              </Link>
+            ))}
+          </Stack>
+
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={{
+              xs: 0.5,
+              sm: 1,
+            }}
+          >
+            <IconButton onClick={toggleTheme(darkTheme)}>
+              <Iconify icon={icon()} width={24} height={24} />
+            </IconButton>
+
+            <Link component={RouterLink} to='/checkout' underline='none'>
+              <IconButton size='medium' color='default'>
+                <Badge badgeContent={4} color='error'>
+                  <Iconify icon='ic:outline-shopping-cart' width={28} height={28} />
+                </Badge>
+              </IconButton>
+            </Link>
+
+            <AccountPopover menuOptions={MENU_OPTIONS} />
+          </Stack>
+        </StyledToolbar>
+      </Container>
     </StyledRoot>
   );
 }
