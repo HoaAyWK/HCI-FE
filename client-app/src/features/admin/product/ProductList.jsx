@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Stack, TableRow, TableCell, Typography } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { DataTable } from '../components';
 import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
+
+import { getProducts, selectAllProducts, deleteProduct, refresh } from './productSlice';
+import ACTION_STATUS from '../../../constants/actionStatus';
+import { useSnackbar } from 'notistack';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -12,7 +17,7 @@ const TABLE_HEAD = [
   { id: '', label: '', alignRight: false },
 ];
 
-const products = [
+const PRODUCTS = [
   {
     id: '1',
     name: 'MacBook Pro M1 2020',
@@ -57,6 +62,24 @@ const ProductList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+  const { getProductsStatus, deleteProductStatus } = useSelector((state) => state.adminProducts);
+  const products = useSelector(selectAllProducts);
+
+  useEffect(() => {
+    if (getProductsStatus === ACTION_STATUS.IDLE) {
+      dispatch(getProducts());
+    }
+  }, [getProductsStatus]);
+
+  useEffect(() => {
+    if (deleteProductStatus === ACTION_STATUS.SUCCEEDED) {
+      enqueueSnackbar('Deleted successfully', { variant: 'success' });
+      dispatch(refresh());
+    }
+  }, [deleteProductStatus]);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -76,7 +99,11 @@ const ProductList = () => {
     setPage(0);
   };
 
-  const filteredProducts = applySortFilter(products, getComparator(order, orderBy), filterName);
+  const handleClickDelete = (id) => {
+    dispatch(deleteProduct(id));
+  };
+
+  const filteredProducts = applySortFilter(PRODUCTS, getComparator(order, orderBy), filterName);
 
   return (
     <DataTable
@@ -130,7 +157,7 @@ const ProductList = () => {
               <MoreMenu>
                 <MoreMenuItemLink title='Details' to='/admin/products/details' iconName='eva:eye-outline' />
                 <MoreMenuItemLink title='Edit' to='/admin/products/edit' iconName='eva:edit-outline' />
-                <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" id={id}/>
+                <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" id={id} handleClick={handleClickDelete}/>
 
               </ MoreMenu>
             </TableCell>

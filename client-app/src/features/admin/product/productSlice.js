@@ -19,7 +19,7 @@ export const getProducts = createAsyncThunk(
   }
 );
 
-export const createProducts = createAsyncThunk(
+export const createProduct = createAsyncThunk(
   'products/create',
   async (product) => {
     return await productApi.create(product);
@@ -67,14 +67,14 @@ const productSlice = createSlice({
       })
 
 
-      .addCase(createProducts.pending, (state) => {
+      .addCase(createProduct.pending, (state) => {
         state.createProductStatus = ACTION_STATUS.LOADING;
       })
-      .addCase(createProducts.fulfilled, (state, action) => {
+      .addCase(createProduct.fulfilled, (state, action) => {
         state.createProductStatus = ACTION_STATUS.SUCCEEDED;
         productsAdapter.addOne(state, action.payload);
       })
-      .addCase(createProducts.rejected, (state) => {
+      .addCase(createProduct.rejected, (state) => {
         state.createProductStatus = ACTION_STATUS.FAILED;
       })
 

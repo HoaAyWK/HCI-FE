@@ -46,6 +46,10 @@ const navConfig = [
           title: 'create',
           path: '/admin/products/create'
         },
+        {
+          title: 'edit',
+          path: '/admin/products/edit'
+        }
       ]
     },
     {

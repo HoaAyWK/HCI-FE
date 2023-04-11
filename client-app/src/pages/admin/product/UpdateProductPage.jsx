@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { AdminPageLayout } from '../common';
 import { ProductForm } from '../../../features/admin/product';
-import { createProduct } from '../../../features/admin/product/productSlice';
+import { selectProductById, updateProduct } from '../../../features/admin/product/productSlice';
+import { useParams } from 'react-router-dom';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
@@ -11,9 +12,10 @@ const breadcrumbs = [
   { label: 'Create' }
 ];
 
-const CreateProductPage = () => {
-  const { createProductStatus } = useSelector((state) => state.adminProducts);
-
+const UpdateProductPage = () => {
+  const { id } = useParams();
+  const { updateProductStatus } = useSelector((state) => state.adminProducts);
+  const product = useSelector((state) => selectProductById(state, id));
   return (
     <AdminPageLayout
       pageTitle='Create a new product'
@@ -21,9 +23,11 @@ const CreateProductPage = () => {
       breadcrumbs={breadcrumbs}
       showCreateButton={false}
     >
-      <ProductForm isEdit={false} action={createProduct} status={createProductStatus} />
+      {product && (
+        <ProductForm isEdit={true} product={product} action={updateProduct} status={updateProductStatus} />
+      )}
     </AdminPageLayout>
   );
 };
 
-export default CreateProductPage;
+export default UpdateProductPage;

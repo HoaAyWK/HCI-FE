@@ -8,7 +8,7 @@ import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
 
 import { HomePage, CheckoutPage, ProductsPage, ProductPage, ProfilePage, SearchPage, OrderDetailsPage } from './pages';
 import { DashboardPage } from './pages/admin';
-import { CreateProductPage, ProductListPage } from './pages/admin/product';
+import { CreateProductPage, ProductListPage, UpdateProductPage } from './pages/admin/product';
 import { CreateUserPage, UserListPage, UserDetailsPage } from './pages/admin/user';
 import AHome from './features/home/AHome';
 import { CategoryListPage } from './pages/admin/category';
@@ -96,6 +96,10 @@ const Router = () => {
             {
               path: 'create',
               element: <CreateProductPage />
+            },
+            {
+              path: 'edit',
+              element: <UpdateProductPage />
             }
           ]
         },

@@ -11,6 +11,7 @@ import { useSnackbar } from 'notistack';
 import { AvatarUploader } from '../../../components';
 import { FormProvider, RHFDateTextField, RHFRadioGroup, RHFTextField } from '../../../components/hook-form';
 import ACTION_STATUS from '../../../constants/actionStatus';
+import { refresh } from '../product/productSlice';
 
 const genders = ['Male', 'Female'];
 
@@ -66,8 +67,8 @@ const UserForm = ({  isEdit, defaultUser, action, status }) => {
 
       if (result) {
         enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
+        dispatch(refresh());
       }
-
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }

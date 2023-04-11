@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Card, CardContent, Grid, InputAdornment, Stack, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, InputAdornment, Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useSnackbar } from 'notistack';
+import { useDispatch } from 'react-redux';
 
 import { ImagesUploader } from './components';
+import ACTION_STATUS from '../../../constants/actionStatus';
 import { FormProvider, RHFEditor, RHFSelect, RHFTextField } from '../../../components/hook-form';
+import { refresh } from './productSlice';
 
 const colors = [
   { id: 1, name: 'Grey' },
@@ -51,7 +56,9 @@ const categories = [
   }
 ];
 
-const ProductForm = () => {
+const ProductForm = ({ isEdit, product, action, status }) => {
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const ProductSchema = Yup.object().shape({
     name: Yup.string()
@@ -69,7 +76,7 @@ const ProductForm = () => {
       images: Yup.array().required('Images is required')
   });
 
-  const defaultValues = {
+  const defaultValues = product ? product : {
     name: '',
     description: '',
     specification: '',
@@ -89,9 +96,18 @@ const ProductForm = () => {
   const { handleSubmit } = methods;
 
   const onSubmit = async (data) => {
-    console.log(data);
-  };
+    try {
+      const actionResult = action(data);
+      const result = unwrapResult(actionResult);
 
+      if (result) {
+        enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
+        dispatch(refresh());
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  };
 
 
   return (
@@ -153,7 +169,15 @@ const ProductForm = () => {
             </CardContent>
           </Card>
           <Box sx={{ mt: 3 }}>
-            <LoadingButton type='submit' variant='contained' color='primary' fullWidth>Create Product</LoadingButton>
+            <LoadingButton
+              type='submit'
+              variant='contained'
+              color='primary'
+              fullWidth
+              loading={status === ACTION_STATUS.LOADING ? true : false}
+            >
+              Create Product
+            </LoadingButton>
           </Box>
         </Grid>
       </Grid>
