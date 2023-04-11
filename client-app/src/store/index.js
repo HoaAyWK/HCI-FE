@@ -5,7 +5,8 @@ import adminBrandReducer from '../features/admin/brand/brandSlice';
 import adminCategoryReducer from '../features/admin/category/categorySlice';
 import adminInventoryReducer from '../features/admin/inventory/inventorySlice';
 import adminProductReducer from '../features/admin/product/productSlice';
-import adminUserReducer from '../features/admin/user/userSlice';
+import adminUserReducer from '../features/admin/users/userSlice';
+import adminOrderReducer from '../features/admin/order/orderSlice';
 
 
 export const store = configureStore({
@@ -16,5 +17,6 @@ export const store = configureStore({
     adminInventories: adminInventoryReducer,
     adminProdcuts: adminProductReducer,
     adminUsers: adminUserReducer,
+    adminOrders: adminOrderReducer,
   }
 });
