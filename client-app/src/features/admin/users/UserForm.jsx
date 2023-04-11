@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Card, CardContent, Grid, Switch, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useSnackbar } from 'notistack';
 
-import { FormProvider, RHFDateTextField, RHFRadioGroup, RHFTextField } from '../../../components/hook-form';
 import { AvatarUploader } from '../../../components';
+import { FormProvider, RHFDateTextField, RHFRadioGroup, RHFTextField } from '../../../components/hook-form';
+import ACTION_STATUS from '../../../constants/actionStatus';
 
 const genders = ['Male', 'Female'];
 
-const UserForm = ({  isEdit, defaultUser }) => {
+const UserForm = ({  isEdit, defaultUser, action, status }) => {
   const [emailVerified, setEmailVerified] = useState(false);
+
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const UserSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -48,11 +55,22 @@ const UserForm = ({  isEdit, defaultUser }) => {
     defaultValues
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit } = methods;
 
   const onSubmit = async (data) => {
     const formData = { ...data, emailVerified };
-    console.log(formData);
+
+    try {
+      const actionResult = await dispatch(action(formData));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
+      }
+
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   const handleSwitchChange = (event) => {
@@ -124,7 +142,7 @@ const UserForm = ({  isEdit, defaultUser }) => {
                   mt: 3
                 }}
               >
-                <LoadingButton type='submit' variant='contained'>
+                <LoadingButton type='submit' variant='contained' loading={status === ACTION_STATUS.LOADING ? true : false}>
                   {isEdit ? 'Update' : 'Create'}
                 </LoadingButton>
               </Box>

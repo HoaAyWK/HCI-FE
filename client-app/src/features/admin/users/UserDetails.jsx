@@ -1,8 +1,13 @@
 import React from 'react';
 import { Avatar, Box, Card, CardContent, Divider, Grid, Stack, Typography } from '@mui/material';
-import { Label } from '../../../components';
+import { useSelector } from 'react-redux';
 
-const UserDetails = () => {
+import { Label } from '../../../components';
+import { selectUserById } from './userSlice';
+
+const UserDetails = ({ id }) => {
+  const user = useSelector((state) => selectUserById(state, id));
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={4}>

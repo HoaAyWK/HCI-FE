@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { TableRow, TableCell, Stack, Typography } from '@mui/material';
 
 import { applySortFilter, getComparator } from '../../../utils/tableUtil';
 import { DataTable } from '../components';
 import { Label, LetterAvatar } from '../../../components';
 import { MoreMenu, MoreMenuItem, MoreMenuItemLink } from '../../../components/table';
+
+import ACTION_STATUS from '../../../constants/actionStatus';
+import { getUsers, selectAllUsers } from './userSlice';
 
 const TABLE_HEAD = [
   { id: 'firstName', label: 'Name', alignRight: false },
@@ -14,7 +18,7 @@ const TABLE_HEAD = [
   { id: '', label: '', alignRight: false }
 ];
 
-const users = [
+const USERS = [
   { id: 1, firstName: 'Lucas', lastName: 'Steve', email: 'ls@gmail.com', role: 'user', status: 'Active' },
   { id: 2, firstName: 'Sam', lastName: 'Feldt', email: 'sf@gmail.com', role: 'user', status: 'Banned' },
   { id: 3, firstName: 'Justin', lastName: 'Mylo', email: 'jm@gmail.com', role: 'user', status: 'Banned' },
@@ -28,6 +32,16 @@ const UserList = () => {
   const [filterName, setFilterName] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const dispatch = useDispatch();
+  const users = useSelector(selectAllUsers);
+  const { getUsersStatus } = useSelector((state) => state.adminUsers);
+
+  useEffect(() => {
+    if (getUsersStatus === ACTION_STATUS.IDLE) {
+      dispatch(getUsers);
+    }
+  }, [getUsersStatus]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -48,7 +62,7 @@ const UserList = () => {
     setPage(0);
   };
 
-  const filteredUsers = applySortFilter(users, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(USERS, getComparator(order, orderBy), filterName);
 
   return (
     <DataTable
