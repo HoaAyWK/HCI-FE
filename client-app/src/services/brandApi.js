@@ -20,7 +20,9 @@ class BrandApi {
   };
 
   delete = (id) => {
-    return axiosClient.delete(id);
+    const url = `/brands/${id}`;
+
+    return axiosClient.delete(url);
   };
 };
 

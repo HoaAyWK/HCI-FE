@@ -43,7 +43,7 @@ export const deleteCategory = createAsyncThunk(
 );
 
 const categorySlice = createSlice({
-  name: 'categories',
+  name: 'adminCategories',
   initialState,
   reducers: {
     refresh: (state) => {

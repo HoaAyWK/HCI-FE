@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 
 import ACTION_STATUS from '../../../constants/actionStatus';
-import categoryApi from '../../../services/categoryApi';
+import brandApi from '../../../services/brandApi';
 
 const brandsAdapter = createEntityAdapter();
 
@@ -15,35 +15,35 @@ const initialState = brandsAdapter.getInitialState({
 export const getBrands = createAsyncThunk(
   'brands/all',
   async () => {
-    return await categoryApi.getAll();
+    return await brandApi.getAll();
   }
 );
 
 export const createBrand = createAsyncThunk(
   'brands/create',
-  async (category) => {
-    return await categoryApi.create(category);
+  async (brand) => {
+    return await brandApi.create(brand);
   }
 );
 
 export const updateBrand = createAsyncThunk(
   'brands/update',
-  async (category) => {
-    const { id, ...data } = category;
+  async (brand) => {
+    const { id, ...data } = brand;
 
-    return await categoryApi.update(id, data);
+    return await brandApi.update(id, data);
   }
 );
 
 export const deleteBrand = createAsyncThunk(
   'brands/delete',
   async (id) => {
-    return await categoryApi.delete(id);
+    return await brandApi.delete(id);
   }
 );
 
 const brandSlice = createSlice({
-  name: 'brands',
+  name: 'adminBrands',
   initialState,
   reducers: {
     refresh: (state) => {
@@ -85,10 +85,10 @@ const brandSlice = createSlice({
       .addCase(updateBrand.fulfilled, (state, action) => {
         state.updateBrandStatus = ACTION_STATUS.SUCCEEDED;
 
-        let existingCategory = state.entities[action.payload.id];
+        let existingBrand = state.entities[action.payload.id];
 
-        if (existingCategory) {
-          existingCategory = action.payload;
+        if (existingBrand) {
+          existingBrand = action.payload;
         }
       })
       .addCase(updateBrand.rejected, (state) => {
