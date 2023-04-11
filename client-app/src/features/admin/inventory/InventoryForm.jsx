@@ -3,12 +3,20 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
+import { useDispatch } from 'react-redux';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useSnackbar } from 'notistack';
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Stack, Grid, Typography } from '@mui/material';
 
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { refresh } from './inventorySlice';
+import ACTION_STATUS from '../../../constants/actionStatus';
 
 const InventoryForm = (props) => {
-  const { dialogTitle, dialogContent, open, handleClose, isEdit, inventory } = props;
+  const { dialogTitle, dialogContent, open, handleClose, isEdit, inventory, action, status } = props;
+
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const InventorySchema = Yup.object().shape({
     quantity: Yup.number()
@@ -26,7 +34,17 @@ const InventoryForm = (props) => {
   const { handleSubmit } = methods;
 
   const onSubmit = async (data) => {
-    console.log(data);
+    try {
+      const actionResult = await dispatch(action(data));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`);
+        dispatch(refresh());
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   return (
@@ -51,7 +69,12 @@ const InventoryForm = (props) => {
       <DialogActions>
         <Stack spacing={1} direction='row' sx={{ mb: 1 }}>
           <Button variant='contained' color='inherit' onClick={handleClose}>Cancel</Button>
-          <LoadingButton variant='contained' color='primary' type='submit'>
+          <LoadingButton
+            variant='contained'
+            color='primary'
+            type='submit'
+            loading={status === ACTION_STATUS.LOADING ? true : false}
+          >
             {isEdit ? 'Update' : 'Create' }
           </LoadingButton>
         </Stack>

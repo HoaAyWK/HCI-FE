@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { TableRow, TableCell, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 import { MoreMenu, MoreMenuItem } from '../../../components/table';
 import InventoryForm from './InventoryForm';
+import { updateInventory } from './inventorySlice';
 
 const InventoryLine = ({ inventory }) => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const { productId, productName, quantity } = inventory;
+  const { updateInventoryStatus } = useSelector((state) => state.adminInventories);
 
   const handleOpenEditDialog = () => {
     setOpenEditDialog(true);
@@ -46,6 +49,8 @@ const InventoryLine = ({ inventory }) => {
         open={openEditDialog}
         handleClose={handleCloseEditDialog}
         inventory={inventory}
+        action={updateInventory}
+        status={updateInventoryStatus}
       />
     </>
   );

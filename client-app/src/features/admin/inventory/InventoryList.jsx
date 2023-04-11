@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { TableRow, TableCell, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { DataTable } from '../components';
-import { MoreMenu, MoreMenuItem } from '../../../components/table';
 import InventoryLine from './InventoryLine';
+import { selectAllInventories, getInventories } from './inventorySlice';
 
 const TABLE_HEAD = [
   { id: 'productId', label: 'Product ID', alignRight: false },
@@ -13,7 +13,7 @@ const TABLE_HEAD = [
   { id: '', label: '', alignRight: false },
 ];
 
-const inventories = [
+const INVENTORIES = [
   { productId: 120391, productName: 'ThinkPad X1 Carbon', quantity: 312 },
   { productId: 120392, productName: 'MacBook Air M1 2020', quantity: 935 },
   { productId: 120393, productName: 'MacBook Pro M1 2020', quantity: 290 },
@@ -27,7 +27,16 @@ const InventoryList = () => {
   const [filterName, setFilterName] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  const dispatch = useDispatch();
+  const inventories = useSelector(selectAllInventories);
+  const { getInventoriesStatus } = useDispatch((state) => state.adminInventories);
+
+  useEffect(() => {
+    if (getInventoriesStatus) {
+      dispatch(getInventories());
+    }
+  }, [getInventoriesStatus]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -48,15 +57,8 @@ const InventoryList = () => {
     setPage(0);
   };
 
-  const filteredInventories = applySortFilter(inventories, getComparator(order, orderBy), filterName);
+  const filteredInventories = applySortFilter(INVENTORIES, getComparator(order, orderBy), filterName);
 
-  const handleOpenEditDialog = () => {
-    setOpenEditDialog(true);
-  };
-
-  const handleCloseEditDialog = () => {
-    setOpenEditDialog(false);
-  };
 
   return (
     <DataTable
