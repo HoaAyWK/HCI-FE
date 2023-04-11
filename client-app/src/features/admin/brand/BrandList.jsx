@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
-import { TableRow, TableCell, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { DataTable } from '../components';
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
-import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
+import { getBrands, selectAllBrands } from './brandSlice';
+import ACTION_STATUS from '../../../constants/actionStatus';
+import BrandLine from './BrandLine';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: '', label: '', alignRight: false },
 ];
 
-const brands = [
-  { name: 'Samsung' },
-  { name: 'Apple' },
-  { name: 'Oppo' },
+const BRANDS = [
+  { id: 1, name: 'Samsung' },
+  { id: 2, name: 'Apple' },
+  { id: 3, name: 'Oppo' },
 ];
 
 const BrandList = () => {
@@ -22,6 +24,16 @@ const BrandList = () => {
   const [filterName, setFilterName] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const dispatch = useDispatch();
+  const brands = useSelector(selectAllBrands);
+  const { getBrandsStatus } = useSelector((state) => state.adminBrands);
+
+  useEffect(() => {
+    if (getBrandsStatus === ACTION_STATUS.IDLE) {
+      dispatch(getBrands());
+    }
+  }, [getBrandsStatus]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -42,7 +54,7 @@ const BrandList = () => {
     setPage(0);
   };
 
-  const filteredBrands = applySortFilter(brands, getComparator(order, orderBy), filterName);
+  const filteredBrands = applySortFilter(BRANDS, getComparator(order, orderBy), filterName);
 
   return (
     <DataTable
@@ -59,27 +71,9 @@ const BrandList = () => {
       handleFilterByName={handleFilterByName}
       handleRequestSort={handleRequestSort}
     >
-      {filteredBrands.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-        const { name } = row;
-
-        return (
-          <TableRow
-            key={name}
-            hover
-            tabIndex={-1}
-          >
-            <TableCell component='th' scope='row'>
-              <Typography variant='body1'>{name}</Typography>
-            </TableCell>
-            <TableCell align="right">
-              <MoreMenu>
-                <MoreMenuItemLink title='Edit' to='/admin/products/edit' iconName='eva:edit-outline' />
-                <MoreMenuItem title="Delete" iconName="eva:trash-2-outline"/>
-              </ MoreMenu>
-            </TableCell>
-          </TableRow>
-        );
-      })}
+      {filteredBrands.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+        <BrandLine key={row.id} brand={row} />
+      ))}
     </DataTable>
   );
 };

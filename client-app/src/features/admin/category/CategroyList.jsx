@@ -74,7 +74,7 @@ const CategroyList = () => {
       handleRequestSort={handleRequestSort}
     >
       {filterdCategories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-        <CategoryLine key={row.id} />
+        <CategoryLine key={row.id} category={row} />
       ))}
     </DataTable>
   );
