@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
-import { Box, Grid, Stack, Typography, Rating, Divider, Button, Tab, Pagination } from '@mui/material';
+import { Box, Grid, Stack, Typography, Rating, Divider, Button, Tab, Pagination, LinearProgress } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 import { ProductReview, SyncSlider } from './components';
 import { StyledPaper } from './components/styles';
-import { Iconify } from '../../components';
+import { Iconify, QuantityControl } from '../../components';
+import ProductReviewDialog from './ProductReviewDialog';
 
+const RATINGS  = [
+  { name: '5 Star', percentage: 70, numOfRatings: 16 },
+  { name: '4 Star', percentage: 12, numOfRatings: 7 },
+  { name: '3 Star', percentage: 8, numOfRatings: 5 },
+  { name: '2 Star', percentage: 7, numOfRatings: 3 },
+  { name: '1 Star', percentage: 3, numOfRatings: 1 },
+];
 
 const ProductDetail = (props) => {
-  const [tabValue, setTabValue] = useState(0);
+  const [openReview, setOpenReview] = useState(false);
 
-  const handleTabValueChange = (event, newValue) => {
-    setTabValue(newValue);
+  const handleCloseReview = () => {
+    setOpenReview(false);;
+  };
+
+  const handleOpenReview = () => {
+    setOpenReview(true);
   };
 
   const product = {
@@ -71,41 +83,59 @@ const ProductDetail = (props) => {
                   ({product.numOfReviews} reviews)
                 </Typography>
               </Stack>
-              <Divider />
-              <Typography variant='body1' color='text.secondary'>
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-
-  Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
-
-  Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
-              </Typography>
-              <Divider />
-              <Typography variant='body1'>
-                Colors
-              </Typography>
-              <Stack direction='row' spacing={1}>
-                {product.colors.map((color) => (
-                  <Box
-                    key={color}
-                    sx={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: '50%',
-                      backgroundColor: `${color}`
-                    }}
-                  />
-                ))}
+              <Stack spacing={1} direction='row' alignItems='center'>
+                <Typography variant='h3' component='span' color='error'>
+                  ${product.price}
+                </Typography>
+                <Typography variant='h4' component='span' color='text.secondary'>
+                  <s>${2999}</s>
+                </Typography>
               </Stack>
+            </Stack>
+            <Box
+              sx={{
+                width: '100%',
+                borderBottom: 1,
+                borderColor: (theme) => theme.palette.divider,
+                borderBottomStyle: 'dashed',
+                my: 2
+              }}
+            />
+            <Stack spacing={3} sx={{ mt: 4 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                <Typography variant='body1'>
+                  Colors
+                </Typography>
+                <Stack direction='row' spacing={1}>
+                  {product.colors.map((color) => (
+                    <Box
+                      key={color}
+                      sx={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: '50%',
+                        backgroundColor: `${color}`
+                      }}
+                    />
+                  ))}
+                </Stack>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                <Typography variant='body1'>
+                  Quantity
+                </Typography>
+                <QuantityControl quantity={1} />
+              </Box>
             </Stack>
             <Grid container spacing={2} sx={{ mt: 4 }}>
               <Grid item xs={6}>
-                <Button variant='contained' color='primary' fullWidth>
+                <Button variant='contained' color='primary' fullWidth size='large'>
                   <Iconify icon='material-symbols:add-shopping-cart-outline-rounded' width={24} height={24} />
                   Add To Cart
                 </Button>
               </Grid>
               <Grid item xs={6}>
-                <Button variant='contained' color='warning' fullWidth>
+                <Button variant='contained' color='warning' fullWidth size='large'>
                   Buy Now
                 </Button>
               </Grid>
@@ -116,36 +146,120 @@ const ProductDetail = (props) => {
         sx={{ width: '100%', my: 4 }}
       >
         <StyledPaper>
-          <TabContext value={tabValue}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={handleTabValueChange} aria-label='product tab'>
-                <Tab label='Description' value={0} />
-                <Tab label='Reviews' value={1} />
-              </TabList>
-            </Box>
-            <TabPanel value={0}>
-              Hello
-            </TabPanel>
-            <TabPanel value={1}>
-              <Stack spacing={3}>
-                <ProductReview />
-                <ProductReview />
-                <ProductReview />
-                <ProductReview />
-                <ProductReview />
-              </Stack>
+          <Grid container spacing={2}
+            sx={{
+              borderBottom: (theme) => `1px dashed ${theme.palette.divider}`,
+              mb: 4
+            }}
+          >
+            <Grid item xs={12}>
               <Box
                 sx={{
-                  mt: 2,
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  alignItems: 'center'
+                  background: (theme) => theme.palette.background.neutral,
+                  width: '100%',
+                  p: 2
                 }}
               >
-                <Pagination count={10} color='primary' />
+                <Typography variant='h6' component='h1'>Reviews</Typography>
               </Box>
-            </TabPanel>
-          </TabContext>
+            </Grid>
+            <Grid item xs={12} md={4}
+              sx={{
+                borderRight: (theme) => `1px dashed ${theme.palette.divider}`,
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  my: 3
+                }}
+              >
+                <Typography varaint='subtitle1' color='text.secondary' fontWeight='bold'>
+                  Average Rating
+                </Typography>
+                <Typography variant='h2' color='text.primary' sx={{ my: 1 }}>
+                  4.5/5
+                </Typography>
+                <Stack spacing={0.5}>
+                  <Rating readOnly value={4.6} precision={0.5} />
+                  <Typography variant='caption' color='text.secondary' textAlign='center'>(25 reviews)</Typography>
+                </Stack>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alginItems: 'center',
+                  my: 2
+                }}
+              >
+                <Stack spacing={1}>
+                  {RATINGS.map((rating) => (
+                    <Stack spacing={2} direction='row' key={rating.name} alignItems='center'>
+                      <Typography varaint='subtitle1' color='text.primary'>
+                        {rating.name}
+                      </Typography>
+                      <LinearProgress color='inherit' variant='determinate' value={rating.percentage} sx={{ minWidth: 200 }} />
+                      <Typography variant='subtitle1' color='text.secondary'>
+                        {rating.numOfRatings}
+                      </Typography>
+                    </Stack>
+                  ))}
+                </Stack>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={4}
+              sx={{
+                borderLeft: (theme) => `1px dashed ${theme.palette.divider}`,
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  mb: 4
+                }}
+              >
+                <Button variant='outlined' color='inherit' size='large' onClick={handleOpenReview}>
+                  <Iconify icon='eva:edit-outline' width={24} height={24} />
+                  &nbsp;
+                  Write your review
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+          <ProductReviewDialog
+            dialogTitle='Write Review'
+            open={openReview}
+            handleClose={handleCloseReview}
+            isEdit={false}
+          />
+          <Box sx={{ p: 2 }}>
+            <Stack spacing={3}>
+              <ProductReview />
+              <ProductReview />
+              <ProductReview />
+              <ProductReview />
+              <ProductReview />
+            </Stack>
+            <Box
+              sx={{
+                mt: 2,
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center'
+              }}
+            >
+              <Pagination count={10} color='primary' />
+            </Box>
+          </Box>
         </StyledPaper>
       </Box>
     </>

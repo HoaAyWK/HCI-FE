@@ -16,7 +16,8 @@ const SyncSlider = ({ images }) => {
     infinite: true,
     slidesToShow: 1,
     slidesToScroll: 1,
-    asNavFor: subNav
+    asNavFor: subNav,
+    arrows: false
   };
 
   const subNavSettings = {
@@ -27,6 +28,7 @@ const SyncSlider = ({ images }) => {
     centerMode: true,
     focusOnSelect: true,
     asNavFor: mainNav,
+    arrows: false,
   };
 
   return (

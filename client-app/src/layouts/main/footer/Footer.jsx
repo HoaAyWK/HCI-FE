@@ -26,7 +26,7 @@ const Footer = () => {
       sx={{
         width: '100%',
         minHeight: 120,
-        backgroundColor: (theme) => theme.palette.background.neutral,
+        backgroundColor: (theme) => theme.palette.background.default,
         position: 'absolute',
         top: `calc(100% - 120px)`
       }}

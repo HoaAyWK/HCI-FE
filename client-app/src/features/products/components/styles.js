@@ -8,7 +8,6 @@ export const StyledPaper = styled(Paper)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   zIndex: 0,
   boxShadow: theme.shadows[2],
-  padding: theme.spacing(2),
 }));
 
 export const StyledAvatar = styled(Avatar)(({ theme }) => ({

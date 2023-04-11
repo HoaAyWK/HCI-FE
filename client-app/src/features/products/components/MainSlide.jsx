@@ -39,6 +39,7 @@ const MainSlide = ({ image }) => {
             }}
             src={image}
             alt='Product Image'
+            loading='lazy'
           />
         </Box>
       </Box>

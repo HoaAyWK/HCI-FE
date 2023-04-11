@@ -42,6 +42,7 @@ const SubSlide = ({ image }) => {
             }}
             src={image}
             alt='thumbnail'
+            loading='lazy'
           />
         </Box>
       </Box>

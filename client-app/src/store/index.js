@@ -15,7 +15,7 @@ export const store = configureStore({
     adminBrands: adminBrandReducer,
     adminCategories: adminCategoryReducer,
     adminInventories: adminInventoryReducer,
-    adminProdcuts: adminProductReducer,
+    adminProducts: adminProductReducer,
     adminUsers: adminUserReducer,
     adminOrders: adminOrderReducer,
   }
