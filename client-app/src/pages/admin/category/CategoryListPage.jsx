@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { AdminPageLayout } from '../common';
 import { CategoryList, CategoryForm } from '../../../features/admin/category';
+import { createCategory } from '../../../features/admin/category/categorySlice';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
@@ -11,6 +13,7 @@ const breadcrumbs = [
 
 const CategoryListPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
+  const { createCategoryStatus } = useSelector((state) => adminCategories);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -37,6 +40,8 @@ const CategoryListPage = () => {
         isEdit={false}
         open={openDialog}
         handleClose={handleCloseDialog}
+        action={createCategory}
+        actionStatus={createCategoryStatus}
       />
     </AdminPageLayout>
   );

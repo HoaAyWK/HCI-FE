@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Stack, TableRow, TableCell, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useSnackbar } from 'notistack';
 
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { DataTable } from '../components';
 import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
 
-import { getProducts, selectAllProducts, deleteProduct, refresh } from './productSlice';
+import { getProducts, selectAllProducts, deleteProduct } from './productSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { useSnackbar } from 'notistack';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -64,7 +65,7 @@ const ProductList = () => {
 
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const { getProductsStatus, deleteProductStatus } = useSelector((state) => state.adminProducts);
+  const { getProductsStatus } = useSelector((state) => state.adminProducts);
   const products = useSelector(selectAllProducts);
 
   useEffect(() => {
@@ -72,13 +73,6 @@ const ProductList = () => {
       dispatch(getProducts());
     }
   }, [getProductsStatus]);
-
-  useEffect(() => {
-    if (deleteProductStatus === ACTION_STATUS.SUCCEEDED) {
-      enqueueSnackbar('Deleted successfully', { variant: 'success' });
-      dispatch(refresh());
-    }
-  }, [deleteProductStatus]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -99,8 +93,17 @@ const ProductList = () => {
     setPage(0);
   };
 
-  const handleClickDelete = (id) => {
-    dispatch(deleteProduct(id));
+  const handleClickDelete = async (id) => {
+    try {
+      const actionResult = await dispatch(deleteProduct(id));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar('Deleted successfully', { variant: 'success' });
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, {variant: 'error' });
+    }
   };
 
   const filteredProducts = applySortFilter(PRODUCTS, getComparator(order, orderBy), filterName);

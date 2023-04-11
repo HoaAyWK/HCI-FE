@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TableRow, TableCell, Typography } from '@mui/material';
 
+import CategoryLine from './CategoryLine';
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { DataTable } from '../components';
-import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
-import { Label } from '../../../components';
+import { getCategories, selectAllCategories } from './categorySlice';
+import ACTION_STATUS from '../../../constants/actionStatus';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -14,10 +14,10 @@ const TABLE_HEAD = [
   { id: '', label: '', alignRight: false },
 ];
 
-const categories = [
-  { name: 'Laptop', status: 'Available', numberOfProducts: 212 },
-  { name: 'Smartphone', status: 'Available', numberOfProducts: 495 },
-  { name: 'components', status: 'Unavailable', numberOfProducts: 87 },
+const CATEGORIES = [
+  { id: 1, name: 'Laptop', status: 'Available', numberOfProducts: 212 },
+  { id: 2, name: 'Smartphone', status: 'Available', numberOfProducts: 495 },
+  { id: 3, name: 'components', status: 'Unavailable', numberOfProducts: 87 },
 ];
 
 const CategroyList = () => {
@@ -26,6 +26,16 @@ const CategroyList = () => {
   const [filterName, setFilterName] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const dispatch = useDispatch();
+  const categories = useSelector(selectAllCategories);
+  const { getCategoriesStatus } = useSelector((state) => state.adminCategories);
+
+  useEffect(() => {
+    if (getCategoriesStatus === ACTION_STATUS.IDLE) {
+      dispatch(getCategories());
+    }
+  }, [getCategoriesStatus]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -46,7 +56,7 @@ const CategroyList = () => {
     setPage(0);
   };
 
-  const filterdCategories = applySortFilter(categories, getComparator(order, orderBy), filterName);
+  const filterdCategories = applySortFilter(CATEGORIES, getComparator(order, orderBy), filterName);
 
   return (
     <DataTable
@@ -63,33 +73,9 @@ const CategroyList = () => {
       handleFilterByName={handleFilterByName}
       handleRequestSort={handleRequestSort}
     >
-      {filterdCategories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-        const { name, status, numberOfProducts } = row;
-
-        return (
-          <TableRow
-            key={name}
-            hover
-            tabIndex={-1}
-          >
-            <TableCell component='th' scope='row'>
-              <Typography variant='body1'>{name}</Typography>
-            </TableCell>
-            <TableCell>
-              <Label color={ status === 'Available' ? 'success' : 'error' }>{status}</Label>
-            </TableCell>
-            <TableCell align='right'>
-              {numberOfProducts}
-            </TableCell>
-            <TableCell align="right">
-              <MoreMenu>
-                <MoreMenuItemLink title='Edit' to='/admin/products/edit' iconName='eva:edit-outline' />
-                <MoreMenuItem title="Delete" iconName="eva:trash-2-outline"/>
-              </ MoreMenu>
-            </TableCell>
-          </TableRow>
-        );
-      })}
+      {filterdCategories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+        <CategoryLine key={row.id} />
+      ))}
     </DataTable>
   );
 };

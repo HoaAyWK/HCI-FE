@@ -4,8 +4,13 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Stack } from '@mui/material';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useSnackbar } from 'notistack';
+import { useDispatch } from 'react-redux';
 
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
+import { refresh } from './categorySlice';
+import ACTION_STATUS from '../../../constants/actionStatus';
 
 const status = [
   { id: 1, name: 'Available' },
@@ -13,7 +18,10 @@ const status = [
 ];
 
 const CategoryForm = (props) => {
-  const { dialogTitle, dialogContent, open, handleClose, isEdit } = props;
+  const { dialogTitle, dialogContent, open, handleClose, isEdit, action, actionStatus } = props;
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
   const CategorySchema = Yup.object().shape({
     name: Yup.string()
       .required('Name is required'),
@@ -33,7 +41,17 @@ const CategoryForm = (props) => {
   const { handleSubmit } = methods;
 
   const onSubmit = async (data) => {
-    console.log(data);
+    try {
+      const actionResult = await dispatch(action(data));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
+        dispatch(refresh());
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   return (
@@ -51,7 +69,12 @@ const CategoryForm = (props) => {
       <DialogActions>
         <Stack spacing={1} direction='row' sx={{ mb: 1 }}>
           <Button variant='contained' color='inherit' onClick={handleClose}>Cancel</Button>
-          <LoadingButton variant='contained' color='primary' type='submit'>
+          <LoadingButton
+            variant='contained'
+            color='primary'
+            type='submit'
+            loading={actionStatus === ACTION_STATUS.LOADING ? true : false}
+          >
             {isEdit ? 'Update' : 'Create' }
           </LoadingButton>
         </Stack>
