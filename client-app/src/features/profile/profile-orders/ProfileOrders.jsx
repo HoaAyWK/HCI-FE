@@ -7,6 +7,7 @@ import 'slick-carousel/slick/slick-theme.css';
 
 import { ORDER_STATUS, STATUS } from '../../../constants/orderStatus';
 import { Order } from './components';
+import { Page } from '../../../components';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   '& .slick-slide': {
@@ -89,7 +90,7 @@ const ProfileOrders = () => {
   };
 
   return (
-    <Box>
+    <Page title='My Orders'>
       <StyledBox>
         <Slider {...navSettings} ref={slider => setNav(slider)}>
           <Box sx={{ mr: 2 }}>
@@ -128,7 +129,7 @@ const ProfileOrders = () => {
           </Box>
         ))}
       </Stack>
-    </Box>
+    </Page>
   );
 };
 

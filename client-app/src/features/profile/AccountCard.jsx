@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import { Box, Avatar, Button, Link, Stack, Typography } from '@mui/material';
+import { Box, Avatar, Button, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 import { Iconify } from '../../components';
 
@@ -42,8 +43,9 @@ const StyledBoxAvatar = styled(Box)(({ theme }) => ({
   }
 }));
 
-const AccountCard = ({ account }) => {
-  const { avatar, firstName, lastName, email, gender } = account;
+const AccountCard = () => {
+  const { user } = useSelector((state) => state.auth);
+
 
   return (
     <Box>
@@ -57,18 +59,18 @@ const AccountCard = ({ account }) => {
             justifyContent: 'center'
           }}
         >
-          <StyledAvatar src={avatar} />
+          <StyledAvatar src={user?.avatar} />
         </Box>
         <StyledBoxName>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant='h6' color='text.primary' sx={{ mr: 1 }}>{`${firstName} ${lastName}`}</Typography>
-            {gender === 'male' ? (
+            <Typography variant='h6' color='text.primary' sx={{ mr: 1 }}>{`${user?.firstName} ${user?.lastName}`}</Typography>
+            {user?.gender === 'male' ? (
               <Iconify icon='mdi:gender-male' width={24} height={24} />
             ) : (
               <Iconify icon='mdi:gender-female' width={24} height={24} />
             )}
           </Box>
-          <Typography vairant='subittle2' color='text.secondary'>{email}</Typography>
+          <Typography vairant='subittle2' color='text.secondary'>{user?.email}</Typography>
         </StyledBoxName>
       </StyledBoxAvatar>
       <Button

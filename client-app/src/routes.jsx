@@ -1,5 +1,6 @@
-import React from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, useRoutes, Outlet } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { AccountSettings, AdminSettings, PasswordSettings } from './features/settings';
 import { Login, Register } from './features/auth';
@@ -15,6 +16,12 @@ import { CategoryListPage } from './pages/admin/category';
 import { BrandListPage } from './pages/admin/brand';
 import { InventoryListPage } from './pages/admin/inventory';
 import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
+
+const RejectedRoute = () => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  return isAuthenticated ? <Navigate to='/' /> : <Outlet />;
+};
 
 const Router = () => {
   return useRoutes([
@@ -40,14 +47,6 @@ const Router = () => {
           ]
         }
       ],
-    },
-    {
-      path: 'login',
-      element: <Login />
-    },
-    {
-      path: 'sign-up',
-      element: <Register />
     },
     {
       path: 'admin',
@@ -124,7 +123,21 @@ const Router = () => {
           ]
         }
       ]
-    }
+    },
+    {
+      path: '',
+      element: <RejectedRoute />,
+      children: [
+        {
+          path: 'login',
+          element: <Login />
+        },
+        {
+          path: 'sign-up',
+          element: <Register />
+        },
+      ]
+    },
   ]);
 };
 

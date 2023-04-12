@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, Divider, Stack, Typography } from '@mui/material';
+import { Divider, Stack, Typography } from '@mui/material';
 
 import { ProductFavorite } from './components';
+import { Page } from '../../../components';
 
 const favorites = [
   {
@@ -26,7 +27,7 @@ const favorites = [
 
 const ProfileFavorites = () => {
   return (
-    <Box>
+    <Page title='Product favorites'>
       <Typography variant='h6' component='h1'>
         My Favorites
       </Typography>
@@ -40,7 +41,7 @@ const ProfileFavorites = () => {
           </>
         ))}
       </Stack>
-    </Box>
+    </Page>
   );
 };
 

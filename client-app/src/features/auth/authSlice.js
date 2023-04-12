@@ -5,6 +5,7 @@ import authApi from '../../services/authApi';
 
 const initialState = {
   user: null,
+  isAuthenticated: false,
   loginStatus: ACTION_STATUS.IDLE,
   getCurrentUserStatus: ACTION_STATUS.IDLE,
   registerStatus: ACTION_STATUS.IDLE,
@@ -47,6 +48,7 @@ const authSlice = createSlice({
     logout: (state) => {
       localStorage.setItem('accessToken', null);
       state.user = null;
+      state.isAuthenticated = false;
       state.getCurrentUserStatus = ACTION_STATUS.IDLE;
       state.loginStatus = ACTION_STATUS.IDLE;
       state.registerStatus = ACTION_STATUS.IDLE;
@@ -70,6 +72,7 @@ const authSlice = createSlice({
       })
       .addCase(getCurrentUserInfo.fulfilled, (state, action) => {
         state.getCurrentUserStatus = ACTION_STATUS.SUCCEEDED;
+        state.isAuthenticated = true;
         state.user = action.payload;
       })
       .addCase(getCurrentUserInfo.rejected, (state) => {
