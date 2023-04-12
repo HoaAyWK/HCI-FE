@@ -24,6 +24,7 @@ import { useAppThemeUpdate, useAppTheme } from "../../../context/AppThemeContext
 import { useLocalStorage } from "../../../hooks";
 import AlgoliaSearch from './search-bar/AlgoliaSearch';
 import hciLogo from '/new_hci_logo.svg';
+import { useSelector } from "react-redux";
 
 // ----------------------------------------------------------------------
 
@@ -88,6 +89,7 @@ const MENU_OPTIONS = [
 export default function Header({ onOpenNav }) {
   const [, setModeValueStored] = useLocalStorage('darkMode', null);
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const { user } = useSelector((state) => state.auth);
 
   const darkTheme = useAppTheme();
   const { setLightMode, setDarkMode } = useAppThemeUpdate();
@@ -191,8 +193,21 @@ export default function Header({ onOpenNav }) {
                 </Badge>
               </IconButton>
             </Link>
-
-            <AccountPopover menuOptions={MENU_OPTIONS} />
+            {user ? (<AccountPopover user={user} menuOptions={MENU_OPTIONS} />)
+              : (<Button
+                  LinkComponent={RouterLink}
+                  to='/login'
+                  variant='text'
+                  color='primary'
+                  sx={{
+                    borderRadius: 2
+                  }}
+                >
+                  <Iconify icon='material-symbols:account-circle' width={24} height={24} />
+                  &nbsp;
+                  Login
+                </Button>)
+            }
           </Stack>
         </StyledToolbar>
       </Container>

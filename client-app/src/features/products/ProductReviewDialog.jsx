@@ -6,7 +6,7 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Stack, Typography, Rating } from '@mui/material';
 
 import ACTION_STATUS from '../../constants/actionStatus';
-import { FormProvider, RHFEditor } from '../../components/hook-form';
+import { FormProvider, RHFEditor, RHFRating } from '../../components/hook-form';
 
 const ProductReviewDialog = (props) => {
   const { dialogTitle, dialogContent, open, handleClose, isEdit, action, status } = props;
@@ -43,7 +43,7 @@ const ProductReviewDialog = (props) => {
           <Stack spacing={2}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant='body1'>Your review about this product:</Typography>
-              <Rating sx={{ ml: 2 }} />
+              <RHFRating name='rating' />
             </Box>
             <RHFEditor name='content' label='Content' />
           </Stack>

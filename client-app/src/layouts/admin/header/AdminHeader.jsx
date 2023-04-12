@@ -21,6 +21,7 @@ import { Iconify } from '../../../components';
 import { AccountPopover } from '../../common/header';
 import { useAppThemeUpdate, useAppTheme } from "../../../context/AppThemeContext";
 import { useLocalStorage, useResponsive } from "../../../hooks";
+import { useSelector } from "react-redux";
 
 // ----------------------------------------------------------------------
 const NAV_WIDTH = 280;
@@ -68,6 +69,7 @@ export default function AdminHeader({ openDesktopNav, onOpenMobileNav }) {
   const [, setModeValueStored] = useLocalStorage('darkMode', null);
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const isDesktop = useResponsive('up', 'lg');
+  const { user } = useSelector((state) => state.auth);
 
   const darkTheme = useAppTheme();
   const { setLightMode, setDarkMode } = useAppThemeUpdate();
@@ -139,7 +141,7 @@ export default function AdminHeader({ openDesktopNav, onOpenMobileNav }) {
           <IconButton onClick={toggleTheme(darkTheme)}>
             <Iconify icon={icon()} width={24} height={24} />
           </IconButton>
-          <AccountPopover menuOptions={MENU_OPTIONS} />
+          <AccountPopover user={user} menuOptions={MENU_OPTIONS} />
         </Stack>
       </StyledToolbar>
     </StyledRoot>

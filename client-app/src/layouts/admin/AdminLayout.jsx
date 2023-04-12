@@ -16,7 +16,7 @@ const StyledRoot = styled('div')({
   display: 'flex',
   minHeight: '100%',
   position: 'relative',
-  overflow: 'auto'
+  // overflow: 'auto'
 });
 
 const Main = styled('div', { shouldForwardProp: prop => prop !== 'miniDrawer' })(({ theme, miniDrawer }) => ({

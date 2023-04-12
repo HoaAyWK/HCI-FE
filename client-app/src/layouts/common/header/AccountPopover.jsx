@@ -11,28 +11,16 @@ import {
   Typography,
   Link
 } from "@mui/material";
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
 
-const MENU_OPTIONS = [
-  {
-    label: "Home",
-    icon: "eva:home-fill",
-    path: '/'
-  },
-  {
-    label: "Profile",
-    icon: "eva:person-fill",
-    path: '/profile'
-  },
-  {
-    label: "Settings",
-    icon: "eva:settings-2-fill",
-    path: '/settings'
-  },
-];
+import { logout } from "../../../features/auth/authSlice";
+
 
 const AccountPopover = ({ user, menuOptions }) => {
   const [open, setOpen] = useState(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -40,6 +28,12 @@ const AccountPopover = ({ user, menuOptions }) => {
 
   const handleClose = () => {
     setOpen(null);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    setOpen(null);
+    navigate('/');
   };
 
   return (
@@ -85,10 +79,10 @@ const AccountPopover = ({ user, menuOptions }) => {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            Sioay
+            {`${user?.firstName} ${user?.lastName}`}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            sioay@gmail.com
+            {user?.email}
           </Typography>
         </Box>
 
@@ -113,7 +107,7 @@ const AccountPopover = ({ user, menuOptions }) => {
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </Popover>

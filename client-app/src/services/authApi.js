@@ -2,17 +2,17 @@ import axiosClient from './axios';
 
 class AuthApi {
   login = (data) => {
-    const url = '/login';
+    const url = '/account/api';
     return axiosClient.post(url, data);
   };
 
   register = (data) => {
-    const url = '/register';
+    const url = '/user/api';
     return axiosClient.post(url, data);
   };
 
   getCurrentUserInfo = () => {
-    const url = '/profile';
+    const url = '/user/info';
     return axiosClient.get(url);
   };
 }

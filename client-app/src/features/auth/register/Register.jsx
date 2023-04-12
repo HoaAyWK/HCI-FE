@@ -8,12 +8,15 @@ import { AuthLayout } from '../layouts';
 import { AuthFooter } from '../components';
 import { register } from '../authSlice';
 import MultiStepsRegisterForm from './components/MultiStepsRegisterForm';
+import { Page } from '../../../components';
+import { useNavigate } from 'react-router-dom';
 
 
 const Register = () => {
   const dispatch = useDispatch();
   const { registerStatus } = useSelector(state => state.auth);
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   const submit = async (data) => {
     try {
@@ -22,6 +25,7 @@ const Register = () => {
 
       if (result.success) {
         enqueueSnackbar('Register successfully', { variant: 'success' });
+        navigate('/login');
       }
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -30,11 +34,13 @@ const Register = () => {
 
   return (
     <AuthLayout>
-      <Typography variant='h3' component='h1' align='center'>
-        Create a new account
-      </Typography>
-      <MultiStepsRegisterForm submit={submit} status={registerStatus} />
-      <AuthFooter action='sign up for' />
+      <Page title='Register'>
+        <Typography variant='h3' component='h1' align='center'>
+          Create a new account
+        </Typography>
+        <MultiStepsRegisterForm submit={submit} status={registerStatus} />
+        <AuthFooter action='sign up for' />
+      </Page>
     </AuthLayout>
   );
 };

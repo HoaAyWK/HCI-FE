@@ -46,6 +46,10 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.setItem('accessToken', null);
+      state.user = null;
+      state.getCurrentUserStatus = ACTION_STATUS.IDLE;
+      state.loginStatus = ACTION_STATUS.IDLE;
+      state.registerStatus = ACTION_STATUS.IDLE;
     },
   },
   extraReducers: (builder) => {
