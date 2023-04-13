@@ -1,15 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 // @mui
 import { styled } from '@mui/material/styles';
 //
 import AdminHeader from './header';
 import AdminNavbar from './navbar';
 import { useResponsive } from '../../hooks';
-import { getCurrentUserInfo } from '../../features/auth/authSlice';
-import ACTION_STATUS from '../../constants/actionStatus';
-import { Loading } from '../../components';
 
 // ----------------------------------------------------------------------
 const NAV_WIDTH = 280;

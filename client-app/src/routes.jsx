@@ -52,7 +52,7 @@ const RejectedRoute = () => {
 const ProtectedRoute = () => {
   const dispatch = useDispatch();
   const [accessToken] = useLocalStorage('accessToken', null);
-  const { getCurrentUserStatus, user } = useSelector((state) => state.auth);
+  const { getCurrentUserStatus } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (accessToken && getCurrentUserStatus === ACTION_STATUS.IDLE) {
@@ -60,7 +60,23 @@ const ProtectedRoute = () => {
     }
   }, []);
 
-  return user ? <Outlet /> : <Navigate to='/' />;
+  if (getCurrentUserStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  if (getCurrentUserStatus === ACTION_STATUS.SUCCEEDED) {
+    return <Outlet />;
+  }
+
+  if (getCurrentUserStatus === ACTION_STATUS.FAILED) {
+    return <Navigate to='/' />;
+  }
+
+  if (accessToken) {
+    return <Outlet />;
+  }
+
+  return <Navigate to='/' />;
 };
 
 const ProtectedAdminRoute = () => {

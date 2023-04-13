@@ -5,26 +5,33 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { FormProvider, RHFTextField } from '../../components/hook-form';
+import { FormProvider, RHFDateTextField, RHFRadioGroup, RHFTextField } from '../../components/hook-form';
 import { AvatarUploader } from '../../components';
+import { useSelector } from 'react-redux';
+
+const genders = ['Male', 'Female'];
 
 const AccountSettings = () => {
+  const { user } = useSelector((state) => state.auth);
+
   const ProfileSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
-    phone: Yup.string().required('Last Name is required'),
+    phone: Yup.string().required('Phone is required'),
     address: Yup.string().required('Address is required'),
-    bio: Yup.string(),
+    birthDate: Yup.string().required('Date of birth is required'),
+    gender: Yup.string(),
     image: Yup.mixed()
   });
 
   const defaultValues = {
-    firstName: 'Sioay',
-    lastName: 'Here',
-    phone: '09128321399',
-    address: 'TD, HCM city, Viet Nam',
-    bio: '',
-    image: ''
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    phone: user?.phone,
+    address: user?.address,
+    birthDate: user?.birthDate,
+    gender: user?.gender === 'male' ? 'Male' : 'Female',
+    image: user?.avatar ? user.avatar : ''
   };
 
   const methods = useForm({
@@ -61,13 +68,8 @@ const AccountSettings = () => {
                 <RHFTextField name='firstName' label='First Name' />
                 <RHFTextField name='lastName' label='Last Name' />
                 <RHFTextField name='phone' label='Phone' />
-                <RHFTextField
-                  name='bio'
-                  label='Bio'
-                  placeholder='Tell us a little bit about yourself'
-                  multiline
-                  minRows={3}
-                />
+                <RHFDateTextField name='birthDate' label='Date of birth' />
+                <RHFRadioGroup name='gender' id='gender-radios' label='Gender' items={genders} row />
                 <RHFTextField multiline minRows={3} name='address' label='Address' />
               </Stack>
               <Box sx={{ mt: 2 }}>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Container } from '@mui/material';
@@ -7,9 +7,6 @@ import { InstantSearch } from 'react-instantsearch-hooks-web';
 
 import Header from './header/Header';
 import Footer from './footer';
-import { useLocalStorage } from '../../hooks';
-import { useDispatch } from 'react-redux';
-import { getCurrentUserInfo } from '../../features/auth/authSlice';
 
 const searchClient = algoliaSearch(import.meta.env.VITE_ALGOLIA_APP_ID, import.meta.env.VITE_ALGOLIA_API_KEY);
 const indexName = import.meta.env.VITE_ALGOLIA_INDEX;
@@ -47,15 +44,6 @@ const searchRouting = {
 };
 
 export default function Layout() {
-  const [accessToken] = useLocalStorage('accessToken', null);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (accessToken) {
-      dispatch(getCurrentUserInfo());
-    }
-  }, []);
-
   return (
     <>
       <RootStyle>
