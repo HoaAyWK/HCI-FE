@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { unwrapResult } from '@reduxjs/toolkit';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import { LoginForm } from './components';
 import { AuthFooter } from '../components';
@@ -14,8 +14,7 @@ import { Page } from '../../../components';
 const Login = () => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const { loginStatus } = useSelector(state => state.auth);
-  const navigate = useNavigate();
+  const { loginStatus, user } = useSelector(state => state.auth);
 
   const submit = async (data) => {
     try {
@@ -24,7 +23,6 @@ const Login = () => {
 
       if (result.success) {
         enqueueSnackbar('Login successfully', { variant: 'success' });
-        navigate('/');
       }
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });

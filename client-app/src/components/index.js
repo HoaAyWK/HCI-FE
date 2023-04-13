@@ -8,3 +8,4 @@ export { default as AvatarUploader } from './avatar-uploader';
 export { default as MenuPopover } from './MenuPopover';
 export { default as Page } from './Page';
 export { default as FilterOnTableNotFound } from './FilterOnTableNotFound';
+export { default as Loading } from './Loading';

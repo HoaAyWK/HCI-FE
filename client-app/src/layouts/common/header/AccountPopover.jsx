@@ -15,6 +15,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 
 import { logout } from "../../../features/auth/authSlice";
+import ROLES from "../../../constants/userRoles";
 
 
 const AccountPopover = ({ user, menuOptions }) => {
@@ -89,6 +90,19 @@ const AccountPopover = ({ user, menuOptions }) => {
         <Divider sx={{ borderStyle: "dashed" }} />
 
         <Stack sx={{ p: 1 }}>
+          {user?.role === ROLES.ADMIN && (
+            <Link
+              component={RouterLink}
+              to='/admin/dashboard'
+              underline='none'
+              color='text.primary'
+              onClick={handleClose}
+            >
+              <MenuItem>
+                Dashboard
+              </MenuItem>
+            </Link>
+          )}
           {menuOptions.map((option) => (
             <Link
               key={option.label}

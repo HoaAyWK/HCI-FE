@@ -2,10 +2,15 @@ import React, { useEffect } from 'react';
 import { Navigate, useRoutes, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AccountSettings, AdminSettings, PasswordSettings } from './features/settings';
-import { Login, Register } from './features/auth';
+import { Loading } from './components';
+import ACTION_STATUS from './constants/actionStatus';
+import ROLES from './constants/userRoles';
+import { useLocalStorage } from './hooks';
 
+import { Login, Register } from './features/auth';
+import { AccountSettings, AdminSettings, PasswordSettings } from './features/settings';
 import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
+import { getCurrentUserInfo } from './features/auth/authSlice';
 
 import { HomePage, CheckoutPage, ProductsPage, ProductPage, ProfilePage, SearchPage, OrderDetailsPage } from './pages';
 import { DashboardPage } from './pages/admin';
@@ -17,10 +22,63 @@ import { BrandListPage } from './pages/admin/brand';
 import { InventoryListPage } from './pages/admin/inventory';
 import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
 
-const RejectedRoute = () => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
 
-  return isAuthenticated ? <Navigate to='/' /> : <Outlet />;
+const RejectedRoute = () => {
+  const dispatch = useDispatch();
+  const [accessToken] = useLocalStorage('accessToken', null);
+  const { getCurrentUserStatus, user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (accessToken && getCurrentUserStatus === ACTION_STATUS.IDLE) {
+      dispatch(getCurrentUserInfo());
+    }
+  }, []);
+
+  if (getCurrentUserStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  if (getCurrentUserStatus === ACTION_STATUS.SUCCEEDED) {
+    if (user?.role === ROLES.ADMIN) {
+      return <Navigate to='/admin/dashboard' />;
+    } else {
+      return <Navigate to='/' />;
+    }
+  }
+
+  return <Outlet />
+};
+
+const ProtectedRoute = () => {
+  const dispatch = useDispatch();
+  const [accessToken] = useLocalStorage('accessToken', null);
+  const { getCurrentUserStatus, user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (accessToken && getCurrentUserStatus === ACTION_STATUS.IDLE) {
+      dispatch(getCurrentUserInfo());
+    }
+  }, []);
+
+  return user ? <Outlet /> : <Navigate to='/' />;
+};
+
+const ProtectedAdminRoute = () => {
+  const dispatch = useDispatch();
+  const [accessToken] = useLocalStorage('accessToken', null);
+  const { getCurrentUserStatus, user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (accessToken && getCurrentUserStatus === ACTION_STATUS.IDLE) {
+      dispatch(getCurrentUserInfo());
+    }
+  }, []);
+
+  if (getCurrentUserStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  return (getCurrentUserStatus === ACTION_STATUS.SUCCEEDED && user?.role === ROLES.ADMIN) ? <Outlet /> : <Navigate to='/' />;
 };
 
 const Router = () => {
@@ -29,99 +87,105 @@ const Router = () => {
       path: '/',
       element: <MainLayout />,
       children: [
-        { path: '/', element: <AHome /> },
+        { path: '', element: <AHome /> },
         { path: 'search', element: <SearchPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'products/:id', element: <ProductPage />},
-        { path: 'profile', element: <ProfilePage /> },
         { path: 'checkout', element: <CheckoutPage /> },
-        { path: 'orders/:id', element: <OrderDetailsPage /> },
         {
-          path:'settings',
-          element: <SettingsLayout />,
+          path: '',
+          element: <ProtectedRoute />,
           children: [
-            { path: '', element: <Navigate to='profile' /> },
-            { path: 'profile', element: <AccountSettings /> },
-            { path: 'password', element: <PasswordSettings /> },
-            { path: 'admin', element: <AdminSettings /> },
+            { path: 'profile', element: <ProfilePage /> },
+            { path: 'orders/:id', element: <OrderDetailsPage /> },
+            {
+              path: 'settings',
+              element: <SettingsLayout />,
+              children: [
+                { path: '', element: <Navigate to='profile' /> },
+                { path: 'profile', element: <AccountSettings /> },
+                { path: 'password', element: <PasswordSettings /> },
+                { path: 'admin', element: <AdminSettings /> },
+              ]
+            },
           ]
         }
-      ],
+      ]
     },
     {
       path: 'admin',
-      element: <AdminLayout />,
+      element: <ProtectedAdminRoute />,
       children: [
         {
           path: '',
-          element: <Navigate to='dashboard' />
-        },
-        {
-          path: 'dashboard',
-          element: <DashboardPage />
-        },
-        {
-          path: 'users',
+          element: <AdminLayout />,
           children: [
+            { path: '', element: <Navigate to='dashboard' /> },
+            { path: 'dashboard', element: <DashboardPage /> },
             {
-              path: '',
-              element: <Navigate to='list' />
+              path: 'users',
+              children: [
+                {
+                  path: '',
+                  element: <Navigate to='list' />
+                },
+                {
+                  path: 'list',
+                  element: <UserListPage />
+                },
+                {
+                  path: 'create',
+                  element: <CreateUserPage />
+                },
+                {
+                  path: 'details',
+                  element: <UserDetailsPage />
+                }
+              ]
             },
             {
-              path: 'list',
-              element: <UserListPage />
+              path: 'products',
+              children: [
+                {
+                  path: '',
+                  element: <Navigate to='list' />
+                },
+                {
+                  path: 'list',
+                  element: <ProductListPage />
+                },
+                {
+                  path: 'create',
+                  element: <CreateProductPage />
+                },
+                {
+                  path: 'edit',
+                  element: <UpdateProductPage />
+                }
+              ]
             },
             {
-              path: 'create',
-              element: <CreateUserPage />
+              path: 'categories',
+              element: <CategoryListPage />
             },
             {
-              path: 'details',
-              element: <UserDetailsPage />
+              path: 'brands',
+              element: <BrandListPage />
+            },
+            {
+              path: 'inventory',
+              element: <InventoryListPage />
+            },
+            {
+              path: 'orders',
+              children: [
+                { path: '', element: <Navigate to='list' /> },
+                { path: 'list', element: <OrderListPage /> },
+                { path: 'details', element: <AdminOrderDetailsPage /> }
+              ]
             }
           ]
         },
-        {
-          path: 'products',
-          children: [
-            {
-              path: '',
-              element: <Navigate to='list' />
-            },
-            {
-              path: 'list',
-              element: <ProductListPage />
-            },
-            {
-              path: 'create',
-              element: <CreateProductPage />
-            },
-            {
-              path: 'edit',
-              element: <UpdateProductPage />
-            }
-          ]
-        },
-        {
-          path: 'categories',
-          element: <CategoryListPage />
-        },
-        {
-          path: 'brands',
-          element: <BrandListPage />
-        },
-        {
-          path: 'inventory',
-          element: <InventoryListPage />
-        },
-        {
-          path: 'orders',
-          children: [
-            { path: '', element: <Navigate to='list' /> },
-            { path: 'list', element: <OrderListPage /> },
-            { path: 'details', element: <AdminOrderDetailsPage /> }
-          ]
-        }
       ]
     },
     {

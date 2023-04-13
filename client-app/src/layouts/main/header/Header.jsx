@@ -65,11 +65,6 @@ const menuItems = [
 
 const MENU_OPTIONS = [
   {
-    label: 'Dashboard',
-    icon: 'material-symbols:space-dashboard-rounded',
-    path: '/admin/dashboard'
-  },
-  {
     label: "Home",
     icon: "eva:home-fill",
     path: '/'

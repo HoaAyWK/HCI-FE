@@ -65,11 +65,10 @@ const MENU_OPTIONS = [
   },
 ];
 
-export default function AdminHeader({ openDesktopNav, onOpenMobileNav }) {
+export default function AdminHeader({ user, openDesktopNav, onOpenMobileNav }) {
   const [, setModeValueStored] = useLocalStorage('darkMode', null);
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const isDesktop = useResponsive('up', 'lg');
-  const { user } = useSelector((state) => state.auth);
 
   const darkTheme = useAppTheme();
   const { setLightMode, setDarkMode } = useAppThemeUpdate();

@@ -1,11 +1,15 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { styled } from '@mui/material/styles';
 //
 import AdminHeader from './header';
 import AdminNavbar from './navbar';
 import { useResponsive } from '../../hooks';
+import { getCurrentUserInfo } from '../../features/auth/authSlice';
+import ACTION_STATUS from '../../constants/actionStatus';
+import { Loading } from '../../components';
 
 // ----------------------------------------------------------------------
 const NAV_WIDTH = 280;
@@ -45,6 +49,7 @@ export default function DashboardLayout() {
   const isDesktop = useResponsive('up', 'lg');
   const [openDesktopNav, setOpenDesktopNav] = useState(true);
   const [openMobileNav, setOpenMobileNav] = useState(false);
+  const { user } = useSelector((state) => state.auth);
 
   const handleToggleDesktopNav = () => {
     setOpenDesktopNav(prev => !prev);
@@ -65,6 +70,7 @@ export default function DashboardLayout() {
   return (
     <StyledRoot>
       <AdminHeader
+        user={user}
         openDesktopNav={openDesktopNav}
         onOpenMobileNav={handleOpenMoblileNav}
       />
