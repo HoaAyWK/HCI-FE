@@ -7,11 +7,13 @@ import adminInventoryReducer from '../features/admin/inventory/inventorySlice';
 import adminProductReducer from '../features/admin/product/productSlice';
 import adminUserReducer from '../features/admin/users/userSlice';
 import adminOrderReducer from '../features/admin/order/orderSlice';
+import accountReducer from '../features/settings/accountSlice';
 
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    account: accountReducer,
     adminBrands: adminBrandReducer,
     adminCategories: adminCategoryReducer,
     adminInventories: adminInventoryReducer,
