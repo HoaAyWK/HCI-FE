@@ -104,9 +104,11 @@ const DrawerContent = ({ isOpen, isMiniDrawer }) => {
             src={hciLogo}
             sx={{ mr: 1 }}
           />
-          <StyledTextLogo variant='h3' component='h1'>
-            HCI
-          </StyledTextLogo>
+          {!isMiniDrawer && (
+            <StyledTextLogo variant='h3' component='h1'>
+              HCI
+            </StyledTextLogo>
+          )}
         </Link>
       </Box>
 

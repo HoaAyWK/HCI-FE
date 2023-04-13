@@ -222,19 +222,20 @@ const NavSection = ({ data = [], miniDrawer, ...other }) => {
         {data.map((item) => item.path ? (
           <NavItem key={item.title} item={item} miniDrawer={miniDrawer} />
         ) : (
-          <Box
-            sx={{
-              ml: 3,
-              mb: 0.5,
-              mt: 1
-            }}
-            key={item.title}
-          >
-            <Typography variant='caption' color='text.secondary' fontWeight='bold'>
-              {item.title}
-            </Typography>
-        </Box>
-        ))}
+          !miniDrawer && (
+            <Box
+              sx={{
+                ml: 3,
+                mb: 0.5,
+                mt: 1
+              }}
+              key={item.title}
+            >
+              <Typography variant='caption' color='text.secondary' fontWeight='bold'>
+                {item.title}
+              </Typography>
+          </Box>
+        )))}
       </List>
     </Box>
   )
