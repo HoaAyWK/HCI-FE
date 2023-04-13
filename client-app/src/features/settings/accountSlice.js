@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { v4 as uuidv4 } from 'uuid';
 
 import ACTION_STATUS from '../../constants/actionStatus';
 import accountApi from '../../services/accountApi';
 import { getCurrentUserInfo } from "../auth/authSlice";
+import { uploadTaskPromise } from '../../utils/uploadTaskPromise';
 
 const initialState = {
   updateAccountStatus: ACTION_STATUS.IDLE,
@@ -12,7 +14,14 @@ const initialState = {
 export const updateAccount = createAsyncThunk(
   'account/update',
   async (data, thunkApi) => {
-    const res = await accountApi.updateAccount(data);
+    const { avatar, ...dataToUpdate } = data;
+
+    if (avatar) {
+      const filePath = `files/avatar/${uuidv4()}`;
+      dataToUpdate.avatar = await uploadTaskPromise(filePath, avatar);
+    }
+
+    const res = await accountApi.updateAccount(dataToUpdate);
 
     thunkApi.dispatch(getCurrentUserInfo());
 

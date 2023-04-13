@@ -15,6 +15,4 @@ class AccountApi {
 
 }
 
-const AccountApi = new AccountApi();
-
-export default AccountApi;
+export default new AccountApi();

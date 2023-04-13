@@ -1,13 +1,13 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { Avatar, Box, Button, Link, Stack, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { Avatar, Box, Link, Typography } from '@mui/material';
 
 import { NavSection } from '../../../components';
 import { StyledAccount } from './styles';
 import navConfig from './config';
 
 const Nav = () => {
-  const { pathname } = useLocation();
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <Box
@@ -22,15 +22,15 @@ const Nav = () => {
       >
         <Link underline='none'>
           <StyledAccount>
-            <Avatar />
+            <Avatar src={user?.avatar} />
 
             <Box sx={{ ml: 2 }}>
-              <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                Sioay Here
+              <Typography variant='subtitle2' sx={{ color: 'text.primary', mb: -0.5 }}>
+                {`${user?.firstName} ${user?.lastName}`}
               </Typography>
 
-              <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                Admin
+              <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                {user?.email}
               </Typography>
             </Box>
           </StyledAccount>
