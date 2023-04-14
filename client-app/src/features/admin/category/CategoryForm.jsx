@@ -13,22 +13,24 @@ import { refresh } from './categorySlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
 
 const status = [
-  { id: 1, name: 'Available' },
-  { id: 2, name: 'Unavailable' }
+  { id: true, name: 'Available' },
+  { id: false, name: 'Unavailable' }
 ];
 
 const CategoryForm = (props) => {
-  const { dialogTitle, dialogContent, open, handleClose, isEdit, action, actionStatus } = props;
+  const { dialogTitle, dialogContent, open, handleClose, isEdit, category, action, actionStatus } = props;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const CategorySchema = Yup.object().shape({
+    id: Yup.string(),
     name: Yup.string()
       .required('Name is required'),
-    status: Yup.string(),
+    status: Yup.boolean(),
   });
 
-  const defaultValues = {
+  const defaultValues = category ? category : {
+    id: null,
     name: '',
     status: status[0].id
   };
@@ -38,7 +40,7 @@ const CategoryForm = (props) => {
     defaultValues
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
 
   const onSubmit = async (data) => {
     try {
@@ -47,6 +49,8 @@ const CategoryForm = (props) => {
 
       if (result) {
         enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
+        reset();
+        handleClose();
         dispatch(refresh());
       }
     } catch (error) {
@@ -56,29 +60,30 @@ const CategoryForm = (props) => {
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth={true}>
-      <DialogTitle>{dialogTitle}</DialogTitle>
-      {dialogContent && (<DialogContent>{dialogContent}</DialogContent>)}
-      <Box sx={{ p: 2 }}>
-        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={2}>
-            <RHFTextField name='name' label='Name' />
-            <RHFSelect name='status' data={status} label='Status' id='status' />
+      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <DialogTitle>{dialogTitle}</DialogTitle>
+        {dialogContent && (<DialogContent>{dialogContent}</DialogContent>)}
+        <Box sx={{ p: 2 }}>
+            <Stack spacing={2}>
+              <RHFTextField autoFocus name='name' label='Name' />
+              <RHFSelect name='status' data={status} label='Status' id='status' />
+            </Stack>
+
+        </Box>
+        <DialogActions>
+          <Stack spacing={1} direction='row' sx={{ mb: 1 }}>
+            <Button variant='contained' color='inherit' onClick={handleClose}>Cancel</Button>
+            <LoadingButton
+              variant='contained'
+              color='primary'
+              type='submit'
+              loading={actionStatus === ACTION_STATUS.LOADING ? true : false}
+            >
+              {isEdit ? 'Update' : 'Create' }
+            </LoadingButton>
           </Stack>
-        </FormProvider>
-      </Box>
-      <DialogActions>
-        <Stack spacing={1} direction='row' sx={{ mb: 1 }}>
-          <Button variant='contained' color='inherit' onClick={handleClose}>Cancel</Button>
-          <LoadingButton
-            variant='contained'
-            color='primary'
-            type='submit'
-            loading={actionStatus === ACTION_STATUS.LOADING ? true : false}
-          >
-            {isEdit ? 'Update' : 'Create' }
-          </LoadingButton>
-        </Stack>
-      </DialogActions>
+        </DialogActions>
+      </FormProvider>
     </Dialog>
   );
 };

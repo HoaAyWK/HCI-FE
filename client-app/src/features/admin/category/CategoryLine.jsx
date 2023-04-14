@@ -1,33 +1,17 @@
 import React, { useState } from 'react';
-import { TableRow,TableCell } from '@mui/material';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { useDispatch, useSelector } from 'react-redux';
-import { useSnackbar } from 'notistack';
+import { TableRow,TableCell, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 import { Label } from '../../../components';
 import { MoreMenu, MoreMenuItem } from '../../../components/table';
-import { deleteCategory, updateCategory } from './categorySlice';
+import { updateCategory } from './categorySlice';
 import CategoryForm from './CategoryForm';
 
 const CategoryLine = ({ category }) => {
-  const { id, name, status, numberOfProducts } = category;
+  const { name, status } = category;
   const [openEdit, setOpenEdit] = useState(false);
-  const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
   const { updateCategoryStatus } = useSelector((state) => state.adminCategories);
 
-  const handleClickDelete = async (id) => {
-    try {
-      const actionResult = await dispatch(deleteCategory(id));
-      const result = unwrapResult(actionResult);
-
-      if (result) {
-        enqueueSnackbar('Deleted successfully', { variant: 'success' });
-      }
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
-    }
-  };
 
   const handleClickOpenEdit = () => {
     setOpenEdit(true);
@@ -48,15 +32,14 @@ const CategoryLine = ({ category }) => {
           <Typography variant='body1'>{name}</Typography>
         </TableCell>
         <TableCell>
-          <Label color={ status === 'Available' ? 'success' : 'error' }>{status}</Label>
+          <Label color={ status === true ? 'success' : 'error' }>{status ? 'Available' : 'Unavailable'}</Label>
         </TableCell>
-        <TableCell align='right'>
+        {/* <TableCell align='right'>
           {numberOfProducts}
-        </TableCell>
+        </TableCell> */}
         <TableCell align="right">
           <MoreMenu>
             <MoreMenuItem title='Edit' iconName='eva:edit-outline' handleClick={handleClickOpenEdit} />
-            <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" handleClick={handleClickDelete} id={id}/>
           </ MoreMenu>
         </TableCell>
       </TableRow>
@@ -67,6 +50,7 @@ const CategoryLine = ({ category }) => {
         handleClose={handleCloseEdit}
         action={updateCategory}
         actionStatus={updateCategoryStatus}
+        category={category}
       />
     </>
   );

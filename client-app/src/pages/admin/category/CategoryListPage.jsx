@@ -13,7 +13,7 @@ const breadcrumbs = [
 
 const CategoryListPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
-  const { createCategoryStatus } = useSelector((state) => adminCategories);
+  const { createCategoryStatus } = useSelector((state) => state.adminCategories);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);

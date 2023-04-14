@@ -10,7 +10,7 @@ import ACTION_STATUS from '../../../constants/actionStatus';
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
-  { id: 'numberOfProducts', label: 'Number of products', alignRight: true },
+  // { id: 'numberOfProducts', label: 'Number of products', alignRight: true },
   { id: '', label: '', alignRight: false },
 ];
 
@@ -35,7 +35,7 @@ const CategroyList = () => {
     if (getCategoriesStatus === ACTION_STATUS.IDLE) {
       dispatch(getCategories());
     }
-  }, [getCategoriesStatus]);
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -56,7 +56,7 @@ const CategroyList = () => {
     setPage(0);
   };
 
-  const filterdCategories = applySortFilter(CATEGORIES, getComparator(order, orderBy), filterName);
+  const filterdCategories = applySortFilter(categories, getComparator(order, orderBy), filterName);
 
   return (
     <DataTable

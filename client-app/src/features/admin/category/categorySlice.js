@@ -31,7 +31,11 @@ export const updateCategory = createAsyncThunk(
   async (category) => {
     const { id, ...data } = category;
 
-    return await categoryApi.update(id, data);
+    if (id) {
+      data.id = id;
+    }
+
+    return await categoryApi.update(data);
   }
 );
 
@@ -72,7 +76,7 @@ const categorySlice = createSlice({
       })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.createCategoryStatus = ACTION_STATUS.SUCCEEDED;
-        categoriesAdapter.addOne(state, action.payload);
+        categoriesAdapter.addOne(state, action.payload.category);
       })
       .addCase(createCategory.rejected, (state) => {
         state.createCategoryStatus = ACTION_STATUS.FAILED;
@@ -84,12 +88,9 @@ const categorySlice = createSlice({
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
         state.updateCategoryStatus = ACTION_STATUS.SUCCEEDED;
+        const { id, ...updatedData } = action.payload.category;
 
-        let existingCategory = state.entities[action.payload.id];
-
-        if (existingCategory) {
-          existingCategory = action.payload;
-        }
+        categoriesAdapter.updateOne(state, { id, changes: updatedData});
       })
       .addCase(updateCategory.rejected, (state) => {
         state.updateCategoryStatus = ACTION_STATUS.FAILED;
