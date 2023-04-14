@@ -98,7 +98,7 @@ const typography = {
     },
     iconLabel: {
       fontWeight: 600,
-      fontSize: pxToRem(10),
+      fontSize: pxToRem(9),
       textTransform: 'capitalize'
     }
 };

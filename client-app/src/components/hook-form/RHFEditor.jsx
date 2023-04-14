@@ -18,7 +18,19 @@ const StyledBox = styled(Box)(({ theme }) => ({
     border: 'none',
     borderBottom: `1px solid ${theme.palette.divider}`,
     borderTopLeftRadius: theme.shape.borderRadius,
-    borderTopRightRadius: theme.shape.borderRadius
+    borderTopRightRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.paper,
+  },
+  '& .rdw-option-wrapper': {
+    backgroundColor: theme.palette.background.paper,
+    border: `1px solid ${theme.palette.divider}`
+  },
+  '& .rdw-dropdown-wrapper': {
+    backgroundColor: theme.palette.background.paper,
+    border: `1px solid ${theme.palette.divider}`
+  },
+  '& .rdw-option-active': {
+    backgroundColor: theme.palette.background.neutral,
   },
   '& .rdw-editor-main': {
     minHeight: 150,

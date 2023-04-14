@@ -32,7 +32,7 @@ const closedMixin = (theme) => ({
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
   }),
-  width: `calc(${theme.spacing(10)} + 1px)`,
+  width: `calc(${theme.spacing(12)} + 1px)`,
 });
 
 const StyledAccount = styled('div')(({ theme }) => ({
@@ -64,7 +64,7 @@ const StyledIconButton = styled(IconButton, { shouldForwardProp: (prop) => prop 
   ({ theme, open }) => ({
     position: 'fixed',
     top: 22,
-    left: open ? `calc(${NAV_WIDTH}px - 14px)` : `calc(${theme.spacing(10)} - 13px)`,
+    left: open ? `calc(${NAV_WIDTH}px - 14px)` : `calc(${theme.spacing(12)} - 13px)`,
     zIndex: 1201,
     display: 'flex',
     alignItems: 'center',

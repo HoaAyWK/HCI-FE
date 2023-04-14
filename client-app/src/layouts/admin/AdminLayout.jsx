@@ -35,7 +35,7 @@ const Main = styled('div', { shouldForwardProp: prop => prop !== 'miniDrawer' })
     paddingRight: theme.spacing(2),
     width: `calc(100% - (${NAV_WIDTH}px + 1px))`,
     ...(miniDrawer && {
-      width: `calc(100% - (${theme.spacing(10)} + 1px))`,
+      width: `calc(100% - (${theme.spacing(12)} + 1px))`,
     })
   },
 }));

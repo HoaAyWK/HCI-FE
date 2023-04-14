@@ -41,7 +41,7 @@ const UserList = () => {
     if (getUsersStatus === ACTION_STATUS.IDLE) {
       dispatch(getUsers);
     }
-  }, [getUsersStatus]);
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -62,7 +62,7 @@ const UserList = () => {
     setPage(0);
   };
 
-  const filteredUsers = applySortFilter(USERS, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(users, getComparator(order, orderBy), filterName);
 
   return (
     <DataTable

@@ -46,8 +46,8 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 const StyledTextLogo = styled(Typography)(({ theme }) => ({
   background: 'linear-gradient(.25turn, #7F0E0E, #0F0D73)',
-  '-webkit-background-clip': 'text',
-  '-webkit-text-fill-color': 'transparent'
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent'
 }));
 
 // ----------------------------------------------------------------------

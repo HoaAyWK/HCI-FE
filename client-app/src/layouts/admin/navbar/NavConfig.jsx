@@ -34,21 +34,44 @@ const navConfig = [
         ]
     },
     {
-      title: 'product',
-      path: '/admin/products',
-      icon: getIcon('ant-design:shop-twotone'),
+      title: 'product origin',
+      path: '/admin/product-origins',
+      icon: getIcon('icon-park-outline:ad-product'),
       children: [
         {
           title: 'list',
-          path: '/admin/products/list'
+          path: '/admin/product-origins/list'
         },
         {
           title: 'create',
-          path: '/admin/products/create'
+          path: '/admin/product-origins/create'
+        },
+        {
+          title: 'details',
+          path: '/admin/product-origins/details',
         },
         {
           title: 'edit',
-          path: '/admin/products/edit'
+          path: '/admin/product-origins/edit'
+        }
+      ]
+    },
+    {
+      title: 'product variant',
+      path: '/admin/product-variants',
+      icon: getIcon('fluent-mdl2:product-variant'),
+      children: [
+        {
+          title: 'list',
+          path: '/admin/product-variants/list'
+        },
+        {
+          title: 'create',
+          path: '/admin/product-variants/create'
+        },
+        {
+          title: 'edit',
+          path: '/admin/product-variants/edit'
         }
       ]
     },
@@ -79,7 +102,7 @@ const navConfig = [
     {
       title: 'inventory',
       path: '/admin/inventory',
-      icon: getIcon('fluent-mdl2:product-variant')
+      icon: getIcon('material-symbols:inventory-2-outline-rounded')
     }
 ];
 

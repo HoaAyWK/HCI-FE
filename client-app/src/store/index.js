@@ -8,7 +8,7 @@ import adminProductReducer from '../features/admin/product/productSlice';
 import adminUserReducer from '../features/admin/users/userSlice';
 import adminOrderReducer from '../features/admin/order/orderSlice';
 import accountReducer from '../features/settings/accountSlice';
-
+import adminProductOriginReducer from '../features/admin/product-origin/productOriginSlice';
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +20,6 @@ export const store = configureStore({
     adminProducts: adminProductReducer,
     adminUsers: adminUserReducer,
     adminOrders: adminOrderReducer,
+    adminProductOrigins: adminProductOriginReducer,
   }
 });

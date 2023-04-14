@@ -30,7 +30,7 @@ const CategoryForm = (props) => {
   });
 
   const defaultValues = category ? category : {
-    id: null,
+    id: '',
     name: '',
     status: status[0].id
   };
@@ -64,6 +64,7 @@ const CategoryForm = (props) => {
         <DialogTitle>{dialogTitle}</DialogTitle>
         {dialogContent && (<DialogContent>{dialogContent}</DialogContent>)}
         <Box sx={{ p: 2 }}>
+            <RHFTextField type='hidden' name='id' sx={{ display: 'none' }}/>
             <Stack spacing={2}>
               <RHFTextField autoFocus name='name' label='Name' />
               <RHFSelect name='status' data={status} label='Status' id='status' />

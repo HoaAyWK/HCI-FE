@@ -14,13 +14,14 @@ import { getCurrentUserInfo } from './features/auth/authSlice';
 
 import { HomePage, CheckoutPage, ProductsPage, ProductPage, ProfilePage, SearchPage, OrderDetailsPage } from './pages';
 import { DashboardPage } from './pages/admin';
-import { CreateProductPage, ProductListPage, UpdateProductPage } from './pages/admin/product';
 import { CreateUserPage, UserListPage, UserDetailsPage } from './pages/admin/user';
 import AHome from './features/home/AHome';
 import { CategoryListPage } from './pages/admin/category';
 import { BrandListPage } from './pages/admin/brand';
 import { InventoryListPage } from './pages/admin/inventory';
 import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
+import { ProductOriginListPage, CreateProductOriginPage, ProductOriginDetailsPage } from './pages/admin/product-origin';
+import ProductVariantListPage from './pages/admin/product-variant/ProductVariantListPage';
 
 
 const RejectedRoute = () => {
@@ -172,23 +173,36 @@ const Router = () => {
               ]
             },
             {
-              path: 'products',
+              path: 'product-origins',
               children: [
                 {
                   path: '',
-                  element: <Navigate to='list' />
+                  element: <Navigate to='list' />,
                 },
                 {
                   path: 'list',
-                  element: <ProductListPage />
+                  element: <ProductOriginListPage />
                 },
                 {
                   path: 'create',
-                  element: <CreateProductPage />
+                  element: <CreateProductOriginPage />,
                 },
                 {
-                  path: 'edit',
-                  element: <UpdateProductPage />
+                  path: 'details',
+                  element: <ProductOriginDetailsPage />
+                }
+              ]
+            },
+            {
+              path: 'product-variants',
+              children: [
+                {
+                  path: '',
+                  element: <Navigate to='list' />,
+                },
+                {
+                  path: 'list',
+                  element: <ProductVariantListPage />
                 }
               ]
             },
