@@ -90,8 +90,20 @@ const ProtectedAdminRoute = () => {
     }
   }, []);
 
+  if (!accessToken && getCurrentUserStatus === ACTION_STATUS.IDLE) {
+    return <Navigate to='/' />;
+  }
+
+  if (accessToken && getCurrentUserStatus === ACTION_STATUS.IDLE) {
+    return <Outlet />;
+  }
+
   if (getCurrentUserStatus === ACTION_STATUS.LOADING) {
     return <Loading />;
+  }
+
+  if (getCurrentUserStatus === ACTION_STATUS.FAILED) {
+    return <Navigate to='/' />;
   }
 
   return (getCurrentUserStatus === ACTION_STATUS.SUCCEEDED && user?.role === ROLES.ADMIN) ? <Outlet /> : <Navigate to='/' />;

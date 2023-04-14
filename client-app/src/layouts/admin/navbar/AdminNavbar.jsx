@@ -79,8 +79,8 @@ const StyledIconButton = styled(IconButton, { shouldForwardProp: (prop) => prop 
 
 const StyledTextLogo = styled(Typography)(({ theme }) => ({
   background: 'linear-gradient(.25turn, #7F0E0E, #0F0D73)',
-  '-webkit-background-clip': 'text',
-  '-webkit-text-fill-color': 'transparent'
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
 }));
 
 // ----------------------------------------------------------------------
@@ -156,9 +156,8 @@ export default function AdminNavbar({ openDesktopNav, openMobileNav, onCloseMobi
     >
       {isDesktop ? (
         <>
-          <StyledIconButton size='small' open={openDesktopNav}>
+          <StyledIconButton size='small' open={openDesktopNav} onClick={onToggleDesktopNav}>
             <Iconify
-              onClick={onToggleDesktopNav}
               icon={openDesktopNav ? 'material-symbols:arrow-back-ios-rounded' : 'material-symbols:arrow-forward-ios-rounded'}
               width={16}
               height={16}
