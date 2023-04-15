@@ -65,6 +65,13 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) =>
   });
 
   useEffect(() => {
+    const defaultImages = getValues(name);
+    setImages(defaultImages);
+
+    return () => images.map((image) => URL.revokeObjectURL(image.url));
+  }, []);
+
+  useEffect(() => {
     if (files.length > 0) {
       const imagesArray = files.map((image) => {
         const { id, file } = image;
@@ -74,8 +81,6 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) =>
       });
 
       setImages(prev => prev.concat(imagesArray));
-
-      return () => imagesArray.map((image) => URL.revokeObjectURL(image.url));
     }
   }, [files]);
 
@@ -86,9 +91,25 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) =>
   const handleClickClose = (image) => () => {
     const currentValue = getValues(name);
 
-    setValue(name, currentValue.filter((value) => value.id !== image.id));
-    URL.revokeObjectURL(image.url);
-    setImages(prev => prev.filter((prevImage) => prevImage.id !== image.id));
+    if (image.url) {
+      setValue(name, currentValue.filter((value) => value.id !== image.id));
+      URL.revokeObjectURL(image.url);
+      setImages(prev => prev.filter((prevImage) => prevImage.id !== image.id));
+    }
+
+    setValue(name, currentValue.filter((value) => value !== image));
+    setImages(prev => prev.filter((prevImage) => prevImage !== image));
+  };
+
+  const handleClickRemoveAll = () => {
+    images.map((image) => {
+      if (image.url) {
+        URL.revokeObjectURL(image.url)
+      }
+    });
+    setFiles([]);
+    setImages([]);
+    setValue(name, []);
   };
 
   return (
@@ -183,7 +204,7 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) =>
               <Stack direction='row' sx={{ mt: 2, flexWrap: 'wrap', justifyContent: 'flex-start' }}>
                 {images.map((image) => (
                   <Box
-                    key={image.url}
+                    key={image.url ? image.url : image}
                     sx={{
                       position: 'relative',
                       m: 1
@@ -192,7 +213,7 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) =>
                     <StyledPreviewImage
                       component='img'
                       alt='image'
-                      src={image.url}
+                      src={image.url ? image.url : image}
                       loading='lazy'
                     />
                     <IconButton
@@ -217,7 +238,7 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) =>
                   mt: 2
                 }}
               >
-                <Button variant='outlined' color='inherit' onClick={() => { setImages([])}}>
+                <Button variant='outlined' color='inherit' onClick={handleClickRemoveAll}>
                   Remove all
                 </Button>
               </Box>

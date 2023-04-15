@@ -41,6 +41,10 @@ const PRODUCT_ORIGINS = [
   }
 ];
 
+const IMAGES = [
+  'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+  'https://images.unsplash.com/photo-1485988412941-77a35537dae4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1196&q=80',
+];
 
 const ProductVariantForm = ({ isEdit, product, action, status }) => {
   const dispatch = useDispatch();
