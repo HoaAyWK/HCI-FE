@@ -54,8 +54,11 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
     status: Yup.string(),
     color: Yup.string(),
     price: Yup.number()
-      .required('Price is required'),
-      images: Yup.array().required('Images is required')
+      .required('Price is required')
+      .moreThan(0, 'Price must be more than 0'),
+    images: Yup.array()
+      .required('Images is required')
+      .min(1, `Images is required`)
   });
 
   const defaultValues = product ? product : {
@@ -73,7 +76,7 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
     defaultValues
   });
 
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, getValues } = methods;
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -123,7 +126,7 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
           </Card>
           <Card sx={{ borderRadius: 1, mt: 4 }}>
             <CardContent>
-              <ImagesUploader name='images' />
+              <ImagesUploader name='images' getValues={getValues} setValue={setValue} />
             </CardContent>
           </Card>
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>

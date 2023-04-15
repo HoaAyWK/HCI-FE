@@ -1,6 +1,7 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Button, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useFormContext, Controller } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
 
 import uploadFile from '../../../../assets/images/upload-file.png';
 import { useEffect, useRef, useState } from 'react';
@@ -12,13 +13,16 @@ const StyledUploaderArea = styled(Box)(({ theme }) => ({
   cursor: 'pointer',
   overflow: 'hidden',
   border: `1px dashed ${alpha(theme.palette.grey[500], 0.32)}`,
-  background: theme.palette.background.neutral,
+  backgroundColor: theme.palette.background.neutral,
   borderRadius: theme.shape.borderRadius,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   '&:hover': {
     opacity: 0.72
+  },
+  '&, .error': {
+    backgroundColor: alpha(theme.palette.error.main, 0.16)
   }
 }));
 
@@ -30,7 +34,7 @@ const StyledPreviewImage = styled(Box)(({ theme }) => ({
   objectFit: 'cover',
 }));
 
-const ImagesUploader = ({ name, ...other }) => {
+const ImagesUploader = ({ name, getValues, setValue, ...other }) => {
   const { control } = useFormContext();
   const imageRef = useRef();
   const [files, setFiles]  = useState([]);
@@ -38,10 +42,16 @@ const ImagesUploader = ({ name, ...other }) => {
 
   useEffect(() => {
     if (files.length > 0) {
-      const imagesArray = files.map((file) => URL.createObjectURL(file));
+      const imagesArray = files.map((image) => {
+        const { id, file } = image;
+        const fileObjectURL = URL.createObjectURL(file);
+
+        return { id, url: fileObjectURL };
+      });
+
       setImages(prev => prev.concat(imagesArray));
 
-      return () => imagesArray.map((image) => URL.revokeObjectURL(image));
+      return () => imagesArray.map((image) => URL.revokeObjectURL(image.url));
     }
   }, [files]);
 
@@ -50,15 +60,11 @@ const ImagesUploader = ({ name, ...other }) => {
   };
 
   const handleClickClose = (image) => () => {
-    console.log(image);
-    URL.revokeObjectURL(image);
-    setImages(prev => prev.filter((prevImage) => prevImage !== image));
-  };
+    const currentValue = getValues(name);
 
-  const handleMultiFilesChange = (event) => {
-    if (event.target.files) {
-      setFiles(Array.from(event.target.files));
-    }
+    setValue(name, currentValue.filter((value) => value.id !== image.id));
+    URL.revokeObjectURL(image.url);
+    setImages(prev => prev.filter((prevImage) => prevImage.id !== image.id));
   };
 
   return (
@@ -67,7 +73,7 @@ const ImagesUploader = ({ name, ...other }) => {
       control={control}
       render={({ field, fieldState: { error } }) => (
         <>
-          <StyledUploaderArea role='presentation' tabIndex={-1} onClick={handleClick}>
+          <StyledUploaderArea role='presentation' tabIndex={-1} onClick={handleClick} className={error ? 'error' : ''}>
             <Box
               sx={{
                 display: 'flex',
@@ -89,7 +95,15 @@ const ImagesUploader = ({ name, ...other }) => {
                   field.ref(instance);
                   imageRef.current = instance;
                 }}
-                onChange={handleMultiFilesChange}
+                onChange={(event) => {
+                  if (event.target.files) {
+                    const files = Array.from(event.target.files);
+                    const idFiles = files.map((file) => ({ id: uuidv4(), file }));
+
+                    setFiles(idFiles);
+                    field.onChange([...field.value, ...idFiles]);
+                  }
+                }}
               />
               <Box
                 sx={{
@@ -123,12 +137,17 @@ const ImagesUploader = ({ name, ...other }) => {
               </Box>
             </Box>
           </StyledUploaderArea>
+          {error && (
+            <Typography variant='caption' color='error'>
+              {error?.message}
+            </Typography>
+          )}
           {images.length > 0 && (
             <>
               <Stack direction='row' sx={{ mt: 2, flexWrap: 'wrap', justifyContent: 'flex-start' }}>
                 {images.map((image) => (
                   <Box
-                    key={image}
+                    key={image.url}
                     sx={{
                       position: 'relative',
                       m: 1
@@ -137,7 +156,7 @@ const ImagesUploader = ({ name, ...other }) => {
                     <StyledPreviewImage
                       component='img'
                       alt='image'
-                      src={image}
+                      src={image.url}
                       loading='lazy'
                     />
                     <IconButton
