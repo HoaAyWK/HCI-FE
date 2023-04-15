@@ -1,11 +1,19 @@
+import React, { useCallback } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Button, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useFormContext, Controller } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
+import { useDropzone } from 'react-dropzone';
 
 import uploadFile from '../../../../assets/images/upload-file.png';
 import { useEffect, useRef, useState } from 'react';
 import { Iconify } from '../../../../components';
+
+const StyledErrorWrapper = styled(Box)(({ theme }) => ({
+  '& .error': {
+    backgroundColor: `${alpha(theme.palette.error.main, 0.16)} !important`
+  }
+}));
 
 const StyledUploaderArea = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -21,9 +29,6 @@ const StyledUploaderArea = styled(Box)(({ theme }) => ({
   '&:hover': {
     opacity: 0.72
   },
-  '&, .error': {
-    backgroundColor: alpha(theme.palette.error.main, 0.16)
-  }
 }));
 
 const StyledPreviewImage = styled(Box)(({ theme }) => ({
@@ -34,11 +39,26 @@ const StyledPreviewImage = styled(Box)(({ theme }) => ({
   objectFit: 'cover',
 }));
 
-const ImagesUploader = ({ name, getValues, setValue, ...other }) => {
+const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) => {
   const { control } = useFormContext();
   const imageRef = useRef();
   const [files, setFiles]  = useState([]);
   const [images, setImages] = useState([]);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    const currentValue = getValues(name);
+    const files = Array.from(acceptedFiles);
+    const idFiles = files.map((file) => ({ id: uuidv4(), file }));
+
+    setValue(name, [...currentValue, ...idFiles]);
+    setFiles(idFiles);
+    clearErrors(name);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragReject } = useDropzone({
+    accept: 'image/*',
+    onDrop
+  });
 
   useEffect(() => {
     if (files.length > 0) {
@@ -72,8 +92,14 @@ const ImagesUploader = ({ name, getValues, setValue, ...other }) => {
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <>
-          <StyledUploaderArea role='presentation' tabIndex={-1} onClick={handleClick} className={error ? 'error' : ''}>
+        <StyledErrorWrapper>
+          <StyledUploaderArea
+            role='presentation'
+            tabIndex={-1}
+            onClick={handleClick}
+            className={error  ? 'error' : ''}
+            {...getRootProps()}
+          >
             <Box
               sx={{
                 display: 'flex',
@@ -104,6 +130,7 @@ const ImagesUploader = ({ name, getValues, setValue, ...other }) => {
                     field.onChange([...field.value, ...idFiles]);
                   }
                 }}
+                {...getInputProps()}
               />
               <Box
                 sx={{
@@ -140,6 +167,11 @@ const ImagesUploader = ({ name, getValues, setValue, ...other }) => {
           {error && (
             <Typography variant='caption' color='error'>
               {error?.message}
+            </Typography>
+          )}
+          {isDragReject && (
+            <Typography variant='caption' color='error'>
+              Only allowed *.jpeg, *jpg, *.png
             </Typography>
           )}
           {images.length > 0 && (
@@ -187,7 +219,7 @@ const ImagesUploader = ({ name, getValues, setValue, ...other }) => {
               </Box>
             </>
           )}
-        </>
+        </StyledErrorWrapper>
       )}
     />
   );

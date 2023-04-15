@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -76,7 +76,7 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
     defaultValues
   });
 
-  const { handleSubmit, setValue, getValues } = methods;
+  const { handleSubmit, setValue, getValues, clearErrors } = methods;
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -126,7 +126,7 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
           </Card>
           <Card sx={{ borderRadius: 1, mt: 4 }}>
             <CardContent>
-              <ImagesUploader name='images' getValues={getValues} setValue={setValue} />
+              <ImagesUploader name='images' getValues={getValues} setValue={setValue} clearErrors={clearErrors} />
             </CardContent>
           </Card>
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
@@ -174,4 +174,3 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
 };
 
 export default ProductVariantForm;
-``
