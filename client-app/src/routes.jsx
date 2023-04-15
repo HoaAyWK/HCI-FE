@@ -21,7 +21,7 @@ import { BrandListPage } from './pages/admin/brand';
 import { InventoryListPage } from './pages/admin/inventory';
 import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
 import { ProductOriginListPage, CreateProductOriginPage, ProductOriginDetailsPage } from './pages/admin/product-origin';
-import ProductVariantListPage from './pages/admin/product-variant/ProductVariantListPage';
+import { CreateProductVariantPage, ProductVariantListPage } from './pages/admin/product-variant';
 
 
 const RejectedRoute = () => {
@@ -203,6 +203,10 @@ const Router = () => {
                 {
                   path: 'list',
                   element: <ProductVariantListPage />
+                },
+                {
+                  path: 'create',
+                  element: <CreateProductVariantPage />
                 }
               ]
             },
