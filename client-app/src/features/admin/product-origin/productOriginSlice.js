@@ -72,7 +72,7 @@ const productOriginSlice = createSlice({
       })
       .addCase(createProductOrigin.fulfilled, (state, action) => {
         state.createProductOriginStatus = ACTION_STATUS.SUCCEEDED;
-        productOriginsAdapter.addOne(state, action.payload);
+        productOriginsAdapter.addOne(state, action.payload.product);
       })
       .addCase(createProductOrigin.rejected, (state) => {
         state.createProductOriginStatus = ACTION_STATUS.FAILED;
@@ -84,7 +84,7 @@ const productOriginSlice = createSlice({
       })
       .addCase(updateProductOrigin.fulfilled, (state, action) => {
         state.updateProductOriginStatus = ACTION_STATUS.SUCCEEDED;
-        const { id, ...data } = action.payload;
+        const { id, ...data } = action.payload.product;
         productOriginsAdapter.updateOne(state, { id, changes: data });
       })
       .addCase(updateProductOrigin.rejected, (state) => {

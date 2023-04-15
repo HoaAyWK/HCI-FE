@@ -12,6 +12,7 @@ import ACTION_STATUS from '../../../constants/actionStatus';
 import { FormProvider, RHFEditor, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { refresh } from './productOriginSlice';
 import { getCategories, selectAllCategories } from '../category/categorySlice';
+import { Loading } from '../../../components';
 
 const brands = [
   {
@@ -79,15 +80,17 @@ const ProductOriginForm = ({ isEdit, product, action, status }) => {
     defaultValues
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
 
   const onSubmit = async (data) => {
+    console.log(data);
     try {
-      const actionResult = action(data);
+      const actionResult = await dispatch(action(data));
       const result = unwrapResult(actionResult);
 
       if (result) {
         enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
+        reset();
         dispatch(refresh());
       }
     } catch (error) {
@@ -95,6 +98,9 @@ const ProductOriginForm = ({ isEdit, product, action, status }) => {
     }
   };
 
+  if (getCategoriesStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)} >
@@ -104,8 +110,8 @@ const ProductOriginForm = ({ isEdit, product, action, status }) => {
             <CardContent>
               <Stack spacing={2}>
                 <RHFTextField name='name' label='Name' />
-                <RHFEditor name='description' label='Description' initialContent={'<p>hello world</p>\n'} />
-                <RHFEditor name='information' label='Specification' initialContent={'<p>A greate product</p>\n'} />
+                <RHFEditor name='description' label='Description' initialContent={''} />
+                <RHFEditor name='information' label='Information' initialContent={''} />
               </Stack>
             </CardContent>
           </Card>

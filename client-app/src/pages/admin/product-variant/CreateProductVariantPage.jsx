@@ -16,8 +16,8 @@ const CreateProductVariantPage = () => {
 
   return (
     <AdminPageLayout
-      pageTitle='Create a new product'
-      pageHeaderName='Create product'
+      pageTitle='Create a new product variant'
+      pageHeaderName='Create product variant'
       breadcrumbs={breadcrumbs}
       showCreateButton={false}
     >

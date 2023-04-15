@@ -39,6 +39,7 @@ const RHFSelect = ({ name, id, label, defaultValue, data }) => {
                                 onClose={() => {
                                     setOpen(false);
                                 }}
+                                onChange={(event) => field.onChange(event.target.value)}
                                 onOpen={() => setOpen(true)}
                                 open={open}
                                 displayEmpty={true}
