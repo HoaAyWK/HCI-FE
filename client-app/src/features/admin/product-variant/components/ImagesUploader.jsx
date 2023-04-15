@@ -56,7 +56,11 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) =>
   }, []);
 
   const { getRootProps, getInputProps, isDragReject } = useDropzone({
-    accept: 'image/*',
+    accept: {
+      'image/jpeg': [],
+      'image/png': [],
+      'image/jpg': []
+    },
     onDrop
   });
 
