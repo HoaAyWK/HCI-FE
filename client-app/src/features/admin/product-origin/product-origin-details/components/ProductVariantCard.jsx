@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
+import { Box, Card, Stack, Typography } from '@mui/material';
 import { Label } from '../../../../../components';
 
 const ProductVariantCard = ({ variant }) => {

@@ -5,7 +5,8 @@ import { useSelector } from 'react-redux';
 import { selectProductOriginyById } from '../productOriginSlice';
 import { useParams } from 'react-router-dom';
 
-import { ProductOriginInfo, ProductVariantCard } from './components';
+import { LabelAndContent } from '../../common/components';
+import { ProductVariantCard } from './components';
 import { Iconify } from '../../../../components';
 
 const PRODUCT = {
@@ -65,15 +66,15 @@ const ProductOriginDetails = () => {
         </Box>
         <Grid container spacing={2} sx={{ mb: 4 }}>
           <Grid item xs={6}>
-            <ProductOriginInfo label='CATEGORY' content={PRODUCT.category} />
+            <LabelAndContent label='CATEGORY' content={PRODUCT.category} />
           </Grid>
           <Grid item xs={6}>
-            <ProductOriginInfo label='BRAND' content={PRODUCT.brand} />
+            <LabelAndContent label='BRAND' content={PRODUCT.brand} />
           </Grid>
         </Grid>
         <Stack spacing={4}>
-          <ProductOriginInfo label='INFORMATION' content={PRODUCT.information} />
-          <ProductOriginInfo label='DESCRIPTION' content={PRODUCT.description} />
+          <LabelAndContent label='INFORMATION' content={PRODUCT.information} />
+          <LabelAndContent label='DESCRIPTION' content={PRODUCT.description} />
         </Stack>
         <Box
           sx={{

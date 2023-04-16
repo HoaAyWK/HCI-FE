@@ -72,6 +72,10 @@ const navConfig = [
         {
           title: 'edit',
           path: '/admin/product-variants/edit'
+        },
+        {
+          title: 'details',
+          path: '/admin/product-variants/details'
         }
       ]
     },
