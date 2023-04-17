@@ -4,17 +4,9 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Box, List } from '@mui/material';
 
-import { MainBannerSlide } from './components';
+import MainBannerSlide from './MainBannerSlide';
 
-const IMAGES = [
-  'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
-  'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-  'https://images.unsplash.com/photo-1485988412941-77a35537dae4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1196&q=80',
-]
-
-
-const MainBannerSlider = () => {
+const MainBannerSlider = ({ images }) => {
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -64,7 +56,7 @@ const MainBannerSlider = () => {
 
   return (
     <Slider {...sliderSettings}>
-      {IMAGES.map((image) => (
+      {images.map((image) => (
         <MainBannerSlide image={image} key={image} />
       ))}
     </Slider>

@@ -1,2 +1,2 @@
-export { default as MainBannerSlide } from './MainBannerSlide';
 export { default as SecondaryBanner } from './SecondaryBanner';
+export { default as MainBannerSlider } from './MainBannerSlider';
