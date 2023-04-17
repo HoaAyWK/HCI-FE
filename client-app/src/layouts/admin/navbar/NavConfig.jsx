@@ -104,8 +104,8 @@ const navConfig = [
         icon: getIcon('arcticons:zoho-invoice'),
     },
     {
-      title: 'inventory',
-      path: '/admin/inventory',
+      title: 'warehouse',
+      path: '/admin/warehouse',
       icon: getIcon('material-symbols:inventory-2-outline-rounded')
     }
 ];

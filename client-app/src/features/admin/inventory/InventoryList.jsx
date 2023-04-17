@@ -67,7 +67,7 @@ const InventoryList = () => {
       filterName={filterName}
       filteredData={filteredInventories}
       tableHead={TABLE_HEAD}
-      title='inventory'
+      title='warehouse'
       page={page}
       rowsPerPage={rowsPerPage}
       handleChangePage={handleChangePage}

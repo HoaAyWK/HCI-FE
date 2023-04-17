@@ -2,13 +2,13 @@ import axiosClient from './axios';
 
 class OrderApi {
   getAll = () => {
-    const url = '/orders';
+    const url = '/bill/api';
 
     return axiosClient.get(url);
   };
 
   create = (data) => {
-    const url = '/orders';
+    const url = '/bill';
 
     return axiosClient.post(url, data);
   };

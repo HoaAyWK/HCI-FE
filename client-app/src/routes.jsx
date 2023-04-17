@@ -116,7 +116,7 @@ const Router = () => {
       path: '/',
       element: <MainLayout />,
       children: [
-        { path: '', element: <AHome /> },
+        { path: '', element: <HomePage /> },
         { path: 'search', element: <SearchPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'products/:id', element: <ProductPage />},
@@ -223,7 +223,7 @@ const Router = () => {
               element: <BrandListPage />
             },
             {
-              path: 'inventory',
+              path: 'warehouse',
               element: <InventoryListPage />
             },
             {

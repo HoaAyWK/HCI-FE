@@ -6,7 +6,7 @@ import { InventoryList, InventoryHistory } from '../../../features/admin/invento
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
-  { label: 'Inventory', path: '/admin/inventory' },
+  { label: 'Warehouse', path: '/admin/warehouse' },
   { label: 'List' },
 ];
 
@@ -14,8 +14,8 @@ const InventoryListPage = () => {
 
   return (
     <AdminPageLayout
-      pageTitle='Inventory List'
-      pageHeaderName='Inventory'
+      pageTitle='Warehouse List'
+      pageHeaderName='Warehouse'
       showCreateButton={false}
       breadcrumbs={breadcrumbs}
     >

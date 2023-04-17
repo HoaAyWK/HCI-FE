@@ -2,7 +2,7 @@ import axiosClient from './axios';
 
 class InventoryApi {
   getAll = () => {
-    const url = '/inventories';
+    const url = '/warehouse/api';
 
     return axiosClient.get(url);
   };

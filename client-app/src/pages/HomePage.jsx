@@ -3,6 +3,7 @@ import { Container, Typography, Box, Grid, Avatar } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 
 import { Page } from "../components";
+import { Banners } from '../features/home';
 
 const AvatarStyle = styled(Avatar)(({ theme }) => ({
   borderRadius: "0%",
@@ -36,7 +37,7 @@ const SectionStyle = styled(Box)(({ theme }) => ({
 const HomePage = () => {
   return (
     <Page title="Home">
-      <Container maxWidth="lg"></Container>
+      <Banners />
     </Page>
   );
 };
