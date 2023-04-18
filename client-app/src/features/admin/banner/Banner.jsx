@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import { Box, IconButton, Tooltip } from '@mui/material';
 
-import { Iconify } from '../../../../components';
+import { Iconify } from '../../../components';
+import ConfirmDeleteBannerDialog from './ConfirmDeleteBannerDialog';
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.grey[900], 0.32),
@@ -13,6 +14,16 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const Banner = ({ image, height }) => {
+  const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
+
+  const handleOpenConfirmDelete = () => {
+    setOpenConfirmDelete(true);
+  };
+
+  const handleCloseConfirmDelete = () => {
+    setOpenConfirmDelete(false);
+  };
+
   return (
     <Box
       sx={{
@@ -32,10 +43,17 @@ const Banner = ({ image, height }) => {
 
       />
       <Tooltip title='Delete' sx={{ position: 'absolute', top: 6, right: 6 }}>
-        <StyledIconButton size='small'>
+        <StyledIconButton size='small' onClick={handleOpenConfirmDelete}>
           <Iconify icon='material-symbols:close-rounded' width={20} height={20} />
         </StyledIconButton>
       </Tooltip>
+      <ConfirmDeleteBannerDialog
+        dialogTitle='Delete banner'
+        dialogContent='Are you sure to delete this banner'
+        open={openConfirmDelete}
+        onDialogClose={handleCloseConfirmDelete}
+        banner={image}
+      />
     </Box>
   );
 };
