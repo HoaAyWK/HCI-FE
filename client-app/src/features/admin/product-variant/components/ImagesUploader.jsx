@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Button, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
 import { useFormContext, Controller } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import { useDropzone } from 'react-dropzone';

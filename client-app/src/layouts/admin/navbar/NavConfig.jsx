@@ -107,6 +107,11 @@ const navConfig = [
       title: 'warehouse',
       path: '/admin/warehouse',
       icon: getIcon('material-symbols:inventory-2-outline-rounded')
+    },
+    {
+      title: 'banners',
+      path: '/admin/banners',
+      icon: getIcon('ri:advertisement-fill')
     }
 ];
 

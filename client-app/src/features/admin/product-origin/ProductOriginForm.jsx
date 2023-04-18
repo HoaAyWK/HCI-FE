@@ -110,7 +110,7 @@ const ProductOriginForm = ({ isEdit, product, action, status }) => {
             <CardContent>
               <Stack spacing={2}>
                 <RHFTextField name='name' label='Name' />
-                <RHFEditor name='description' label='Description' initialContent={''} />
+                <RHFEditor name='description' label='Description' initialContent={'<p>Hello world</p>\n'} />
                 <RHFEditor name='information' label='Information' initialContent={''} />
               </Stack>
             </CardContent>
