@@ -87,7 +87,7 @@ const ProductCard = ({ product }) => {
         sx={{
           width: '100%',
           px: 2,
-          py: 2,
+          pb: 2,
           position: 'absolute',
           top: '98%',
           left: 0,
