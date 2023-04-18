@@ -9,7 +9,7 @@ const SECONDARY_IMAGES = [
 ];
 
 
-const SecondaryBannerList = () => {
+const SecondaryBannerList = ({ onOpenAddDialog }) => {
   return (
     <Box>
       <Box
@@ -23,7 +23,7 @@ const SecondaryBannerList = () => {
         <Typography variant='h4' component='h1' color='text.primary'>
           Sub banners
         </Typography>
-        <Button variant='contained' color='primary'>Add</Button>
+        <Button variant='contained' color='primary' onClick={onOpenAddDialog}>Add</Button>
       </Box>
       <Grid container spacing={2}>
         {SECONDARY_IMAGES.map((image) => (

@@ -13,6 +13,7 @@ const breadcrumbs = [
 
 const BannersPage = () => {
   const [openMainBannerForm, setOpenMainBannerForm] = useState(false);
+  const [openSubBannerForm, setOpenSubBannerForm] = useState(false);
 
   const handleOpenMainBannerForm = () => {
     setOpenMainBannerForm(true);
@@ -20,6 +21,14 @@ const BannersPage = () => {
 
   const handleCloseMainBannerForm = () => {
     setOpenMainBannerForm(false);
+  };
+
+  const handleCloseSubBannerForm = () => {
+    setOpenSubBannerForm(false);
+  };
+
+  const handleOpenSubBannerForm = () => {
+    setOpenSubBannerForm(true);
   };
 
   return (
@@ -34,15 +43,22 @@ const BannersPage = () => {
           <MainBannerList onOpenAddDialog={handleOpenMainBannerForm} />
         </Grid>
         <Grid item xs={12} md={5}>
-          <SecondaryBannerList />
+          <SecondaryBannerList onOpenAddDialog={handleOpenSubBannerForm} />
         </Grid>
       </Grid>
       <BannerForm
         open={openMainBannerForm}
         handleClose={handleCloseMainBannerForm}
         imagePosition='main'
-        dialogTitle='Add banner'
-        dialogContent='Add a new banner'
+        dialogTitle='Add main banner'
+        dialogContent='Add a new main banner'
+      />
+      <BannerForm
+        open={openSubBannerForm}
+        handleClose={handleCloseSubBannerForm}
+        imagePosition='sub'
+        dialogTitle='Add sub banner'
+        dialogContent='Add a new sub banner'
       />
     </AdminPageLayout>
   );
