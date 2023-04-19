@@ -2,13 +2,13 @@ import axiosClient from './axios';
 
 class BrandApi {
   getAll = () => {
-    const url = '/brands';
+    const url = '/distributor/api';
 
     return axiosClient.get(url);
   };
 
   create = (data) => {
-    const url = '/brands';
+    const url = '/distributor/api';
 
     return axiosClient.post(url, data);
   };

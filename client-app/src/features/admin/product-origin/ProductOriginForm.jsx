@@ -29,20 +29,6 @@ const brands = [
   }
 ];
 
-const CATEGORIES = [
-  {
-    id: 1,
-    name: 'Laptop'
-  },
-  {
-    id: 2,
-    name: 'Smartphone'
-  },
-  {
-    id: 3,
-    name: 'Components'
-  }
-];
 
 const ProductOriginForm = ({ isEdit, product, action, status }) => {
   const dispatch = useDispatch();

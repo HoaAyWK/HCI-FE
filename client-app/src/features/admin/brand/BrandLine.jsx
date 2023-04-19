@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TableRow, TableCell } from '@mui/material';
+import { TableRow, TableCell, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
@@ -9,7 +9,7 @@ import { MoreMenu, MoreMenuItem } from '../../../components/table';
 import BrandForm from './BrandForm';
 
 const BrandLine = ({ brand }) => {
-  const { id, name } = brand;
+  const { id, name, phone } = brand;
   const [openEdit, setOpenEdit] = useState(false);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -45,6 +45,9 @@ const BrandLine = ({ brand }) => {
       >
         <TableCell component='th' scope='row'>
           <Typography variant='body1'>{name}</Typography>
+        </TableCell>
+        <TableCell>
+          {phone}
         </TableCell>
         <TableCell align="right">
           <MoreMenu>

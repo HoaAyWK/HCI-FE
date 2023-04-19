@@ -19,11 +19,14 @@ const BrandForm = (props) => {
 
   const CategorySchema = Yup.object().shape({
     name: Yup.string()
-      .required('Name is required')
+      .required('Name is required'),
+    phone: Yup.string()
+      .required('Phone is required')
   });
 
   const defaultValues = {
     name: '',
+    phone: '',
   };
 
   const methods = useForm({
@@ -39,8 +42,9 @@ const BrandForm = (props) => {
       const result = unwrapResult(actionResult);
 
       if (result) {
-        enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`);
+        enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
         dispatch(refresh());
+        handleClose();
       }
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -49,28 +53,29 @@ const BrandForm = (props) => {
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth={true}>
-      <DialogTitle>{dialogTitle}</DialogTitle>
-      {dialogContent && (<DialogContent>{dialogContent}</DialogContent>)}
-      <Box sx={{ p: 2 }}>
-        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={2}>
-            <RHFTextField name='name' label='Name' />
+      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <DialogTitle>{dialogTitle}</DialogTitle>
+        {dialogContent && (<DialogContent>{dialogContent}</DialogContent>)}
+        <Box sx={{ p: 2 }}>
+            <Stack spacing={2}>
+              <RHFTextField name='name' label='Name' />
+              <RHFTextField name='phone' label='Phone' />
+            </Stack>
+        </Box>
+        <DialogActions>
+          <Stack spacing={1} direction='row' sx={{ mb: 1 }}>
+            <Button variant='contained' color='inherit' onClick={handleClose}>Cancel</Button>
+            <LoadingButton
+              variant='contained'
+              color='primary'
+              type='submit'
+              loading={status === ACTION_STATUS.LOADING ? true : false}
+            >
+              {isEdit ? 'Update' : 'Create' }
+            </LoadingButton>
           </Stack>
-        </FormProvider>
-      </Box>
-      <DialogActions>
-        <Stack spacing={1} direction='row' sx={{ mb: 1 }}>
-          <Button variant='contained' color='inherit' onClick={handleClose}>Cancel</Button>
-          <LoadingButton
-            variant='contained'
-            color='primary'
-            type='submit'
-            loading={status === ACTION_STATUS.LOADING ? true : false}
-          >
-            {isEdit ? 'Update' : 'Create' }
-          </LoadingButton>
-        </Stack>
-      </DialogActions>
+        </DialogActions>
+      </FormProvider>
     </Dialog>
   );
 };

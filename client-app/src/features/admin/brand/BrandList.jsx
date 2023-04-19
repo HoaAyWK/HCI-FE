@@ -6,16 +6,12 @@ import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { getBrands, selectAllBrands } from './brandSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import BrandLine from './BrandLine';
+import { FetchDataErrorMessage, Loading } from '../common/components';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
+  { id: 'phone', label: 'Phone', alignRight: false },
   { id: '', label: '', alignRight: false },
-];
-
-const BRANDS = [
-  { id: 1, name: 'Samsung' },
-  { id: 2, name: 'Apple' },
-  { id: 3, name: 'Oppo' },
 ];
 
 const BrandList = () => {
@@ -54,9 +50,9 @@ const BrandList = () => {
     setPage(0);
   };
 
-  const filteredBrands = applySortFilter(BRANDS, getComparator(order, orderBy), filterName);
+  const filteredBrands = applySortFilter(brands, getComparator(order, orderBy), filterName);
 
-  return (
+  const renderCotent = (
     <DataTable
       order={order}
       orderBy={orderBy}
@@ -75,6 +71,11 @@ const BrandList = () => {
         <BrandLine key={row.id} brand={row} />
       ))}
     </DataTable>
+  );
+
+  return (getBrandsStatus === ACTION_STATUS.SUCCEEDED ? renderCotent
+    : (getBrandsStatus === ACTION_STATUS.FAILED) ? (<FetchDataErrorMessage />)
+    : (<Loading />)
   );
 };
 

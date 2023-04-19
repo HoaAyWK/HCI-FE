@@ -72,7 +72,7 @@ const brandSlice = createSlice({
       })
       .addCase(createBrand.fulfilled, (state, action) => {
         state.createBrandStatus = ACTION_STATUS.SUCCEEDED;
-        brandsAdapter.addOne(state, action.payload);
+        brandsAdapter.addOne(state, action.payload.distributor);
       })
       .addCase(createBrand.rejected, (state) => {
         state.createBrandStatus = ACTION_STATUS.FAILED;

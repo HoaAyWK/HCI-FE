@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 
 import { AdminPageLayout } from '../common';
 import { BrandList, BrandForm } from '../../../features/admin/brand';
+import { createBrand } from '../../../features/admin/brand/brandSlice';
+import { useSelector } from 'react-redux';
+import ACTION_STATUS from '../../../constants/actionStatus';
+import Loading from '../../../features/admin/common/components/Loading';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
@@ -11,6 +15,7 @@ const breadcrumbs = [
 
 const BrandListPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
+  const { createBrandStatus } = useSelector((state) => state.adminBrands);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -19,6 +24,7 @@ const BrandListPage = () => {
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
+
 
   return (
     <AdminPageLayout
@@ -37,6 +43,8 @@ const BrandListPage = () => {
         isEdit={false}
         open={openDialog}
         handleClose={handleCloseDialog}
+        action={createBrand}
+        status={createBrandStatus}
       />
     </AdminPageLayout>
   );
