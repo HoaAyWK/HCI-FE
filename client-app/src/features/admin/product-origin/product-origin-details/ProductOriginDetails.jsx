@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectProductOriginyById } from '../productOriginSlice';
 import { useParams } from 'react-router-dom';
 
-import { LabelAndContent } from '../../common/components';
+import { LabelAndContent } from '../../components';
 import { ProductVariantCard } from './components';
 import { Iconify } from '../../../../components';
 

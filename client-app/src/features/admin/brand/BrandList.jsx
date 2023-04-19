@@ -6,7 +6,7 @@ import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { getBrands, selectAllBrands } from './brandSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import BrandLine from './BrandLine';
-import { FetchDataErrorMessage, Loading } from '../common/components';
+import { FetchDataErrorMessage, Loading } from '../components';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },

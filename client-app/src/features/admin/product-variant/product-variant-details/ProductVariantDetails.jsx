@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material';
 
 import { Iconify } from '../../../../components';
-import { LabelAndContent } from '../../common/components';
+import { LabelAndContent } from '../../components';
 import { ProductVariantImage } from './components';
 
 const PRODUCT_ORIGIN = {
