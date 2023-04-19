@@ -12,6 +12,12 @@ class BannerApi {
 
     return axiosClient.post(url, data);
   };
+
+  delete = (id) => {
+    const url = `/banner/${id}`;
+
+    return axiosClient.delete(url);
+  };
 }
 
 export default new BannerApi();

@@ -10,6 +10,7 @@ const bannersAdapter = createEntityAdapter();
 const initialState = bannersAdapter.getInitialState({
   getBannersStatus: ACTION_STATUS.IDLE,
   createBannerStatus: ACTION_STATUS.IDLE,
+  deleteBannerStatus: ACTION_STATUS.IDLE,
 });
 
 export const getBanners = createAsyncThunk(
@@ -33,12 +34,20 @@ export const createBanner = createAsyncThunk(
   }
 );
 
+export const deleteBanner = createAsyncThunk(
+  'adminBanner/delete',
+  async (id) => {
+    return await bannerApi.delete(id);
+  }
+);
+
 const bannerSlice = createSlice({
   name: 'adminBanners',
   initialState,
   reducers: {
     refresh: (state) => {
       state.createBannerStatus = ACTION_STATUS.IDLE;
+      state.deleteBannerStatus = ACTION_STATUS.IDLE;
     }
   },
   extraReducers: (builder) => {
@@ -66,6 +75,18 @@ const bannerSlice = createSlice({
       })
       .addCase(createBanner.rejected, (state) => {
         state.createBannerStatus = ACTION_STATUS.FAILED;
+      })
+
+
+      .addCase(deleteBanner.pending, (state) => {
+        state.deleteBannerStatus = ACTION_STATUS.IDLE;
+      })
+      .addCase(deleteBanner.fulfilled, (state, action) => {
+        state.deleteBannerStatus = ACTION_STATUS.SUCCEEDED;
+        bannersAdapter.removeOne(state, action.payload);
+      })
+      .addCase(deleteBanner.rejected, (state) => {
+        state.deleteBannerStatus = ACTION_STATUS.FAILED;
       })
   }
 });
