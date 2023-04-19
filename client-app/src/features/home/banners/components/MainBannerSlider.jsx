@@ -6,7 +6,7 @@ import { Box, List } from '@mui/material';
 
 import MainBannerSlide from './MainBannerSlide';
 
-const MainBannerSlider = ({ images }) => {
+const MainBannerSlider = ({ banners }) => {
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -56,8 +56,8 @@ const MainBannerSlider = ({ images }) => {
 
   return (
     <Slider {...sliderSettings}>
-      {images.map((image) => (
-        <MainBannerSlide image={image} key={image} />
+      {banners.map((banner) => (
+        <MainBannerSlide image={banner?.image} key={banner?.id} />
       ))}
     </Slider>
   );
