@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Grid } from '@mui/material';
 
 import { AdminPageLayout } from '../common';
-import { SecondaryBannerList, MainBannerList } from '../../../features/admin/banner';
+import { BANNER_POSITION } from '../../../constants/banner';
 import BannerForm from '../../../features/admin/banner/BannerForm';
+import { SecondaryBannerList, MainBannerList } from '../../../features/admin/banner';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
@@ -49,14 +50,14 @@ const BannersPage = () => {
       <BannerForm
         open={openMainBannerForm}
         handleClose={handleCloseMainBannerForm}
-        imagePosition='main'
+        imagePosition={BANNER_POSITION.MAIN}
         dialogTitle='Add main banner'
         dialogContent='Add a new main banner'
       />
       <BannerForm
         open={openSubBannerForm}
         handleClose={handleCloseSubBannerForm}
-        imagePosition='sub'
+        imagePosition={BANNER_POSITION.SUB}
         dialogTitle='Add sub banner'
         dialogContent='Add a new sub banner'
       />

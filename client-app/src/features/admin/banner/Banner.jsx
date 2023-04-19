@@ -3,7 +3,7 @@ import { styled, alpha } from '@mui/material/styles';
 import { Box, IconButton, Tooltip } from '@mui/material';
 
 import { Iconify } from '../../../components';
-import ConfirmDeleteBannerDialog from './ConfirmDeleteBannerDialog';
+import { ConfirmDeleteBannerDialog } from './components';
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.grey[900], 0.32),
@@ -40,7 +40,7 @@ const Banner = ({ image, height }) => {
           objectFit: 'cover',
           borderRadius: 1,
         }}
-
+        loading='lazy'
       />
       <Tooltip title='Delete' sx={{ position: 'absolute', top: 6, right: 6 }}>
         <StyledIconButton size='small' onClick={handleOpenConfirmDelete}>

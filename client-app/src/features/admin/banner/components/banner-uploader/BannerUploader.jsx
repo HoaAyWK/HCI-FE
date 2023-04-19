@@ -6,15 +6,17 @@ import { useDropzone } from 'react-dropzone';
 import imagesIllustration from '../../../../../assets/images/image_illustration.png';
 import { StyledErrorWrapper, StyledDisplayUploader, StyledUploaderArea } from './styles';
 
-const BannerUploader = ({ name, label }) => {
+const BannerUploader = ({ name, label, setValue, clearErrors }) => {
   const imageRef = useRef();
   const [image, setImage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const { control } = useFormContext();
 
   const onDrop = useCallback((acceptedFile) => {
-    console.log(acceptedFile);
-    // setSelectedFile(acceptedFile);
+    const file = acceptedFile[0];
+    setSelectedFile(file);
+    setValue(name, file)
+    clearErrors(name);
   }, []);
 
   const { getRootProps, getInputProps, fileRejections } = useDropzone({
@@ -73,7 +75,6 @@ const BannerUploader = ({ name, label }) => {
                     const file = event.target.files[0];
                     field.onChange(file);
                     handleSelectFile(file);
-                    console.log(file);
                   }
                 }}
                 {...getInputProps()}

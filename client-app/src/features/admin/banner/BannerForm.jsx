@@ -4,15 +4,23 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Stack } from '@mui/material';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { BannerUploader } from './components';
+import { createBanner, refresh } from './bannerSlice';
+import ACTION_STATUS from '../../../constants/actionStatus';
 
 const BannerForm = (props) => {
   const { dialogTitle, dialogContent, open, handleClose, imagePosition } = props;
+  const dispatch= useDispatch();
+  const { createBannerStatus } = useSelector((state) => state.adminBanners);
+  const { enqueueSnackbar } = useSnackbar();
 
   const BannerSchema = Yup.object().shape({
-    position: Yup.string(),
+    field: Yup.string(),
     link: Yup.string()
       .required('Link is required'),
     image: Yup.mixed().required('Image is required')
@@ -20,7 +28,7 @@ const BannerForm = (props) => {
 
   const defaultValues = {
     link: '',
-    position: imagePosition ? imagePosition : 'main',
+    field: imagePosition ? imagePosition : 'main',
     image: undefined
   };
 
@@ -29,10 +37,22 @@ const BannerForm = (props) => {
     defaultValues
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, clearErrors, setValue } = methods;
 
   const onSubmit = async (data) => {
-    console.log(data);
+    try {
+      const actionResult = await dispatch(createBanner(data));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar('Created successfully', { variant: 'success' });
+        handleClose();
+        reset();
+        dispatch(refresh());
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   const onDialogClose = () => {
@@ -46,11 +66,10 @@ const BannerForm = (props) => {
         <DialogTitle>{dialogTitle}</DialogTitle>
         {dialogContent && (<DialogContent>{dialogContent}</DialogContent>)}
         <Box sx={{ p: 2 }}>
-            <RHFTextField type='hidden' name='id' sx={{ display: 'none' }}/>
             <Stack spacing={2}>
               <RHFTextField autoFocus name='link' label='Link' />
-              <RHFTextField  name='position' label='Position' disabled />
-              <BannerUploader name='image' label='Image' />
+              <RHFTextField  name='field' label='Position' disabled />
+              <BannerUploader name='image' label='Image' setValue={setValue} clearErrors={clearErrors} />
             </Stack>
         </Box>
         <DialogActions>
@@ -60,6 +79,7 @@ const BannerForm = (props) => {
               variant='contained'
               color='primary'
               type='submit'
+              loading={createBannerStatus === ACTION_STATUS.LOADING ? true : false}
             >
               Create
             </LoadingButton>
