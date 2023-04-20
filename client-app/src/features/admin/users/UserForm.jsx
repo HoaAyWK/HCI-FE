@@ -11,7 +11,7 @@ import { useSnackbar } from 'notistack';
 import { AvatarUploader } from '../../../components';
 import { FormProvider, RHFDateTextField, RHFRadioGroup, RHFTextField } from '../../../components/hook-form';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { refresh } from '../product/productSlice';
+import { refresh } from './userSlice';
 
 const genders = ['Male', 'Female'];
 
