@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
 import ACTION_STATUS from '../../../constants/actionStatus';
 import productDetailsApi from '../../../services/productDetailsApi';
+import { uploadTaskPromise } from '../../../utils/uploadTaskPromise';
 
 const productVariantsAdapter = createEntityAdapter();
 
@@ -10,16 +12,30 @@ const initialState = productVariantsAdapter.getInitialState({
   createProductVariantStatus: ACTION_STATUS.IDLE,
 });
 
-const getProductVariants = createAsyncThunk(
+export const getProductVariants = createAsyncThunk(
   'adminProductVariants/all',
   async () => {
     return await productDetailsApi.getAll();
   }
 );
 
-const createProductVariant = createAsyncThunk(
+export const createProductVariant = createAsyncThunk(
   'adminProductVariant/create',
-  async (data) => {
+  async (productVariant) => {
+    const { id, images, ...data } = productVariant;
+
+    if (images.length > 0) {
+      const imagesUrl = [];
+
+      for (let image of images) {
+        const filePath = `files/product-variants/images/${uuidv4()}`;
+        const url = await uploadTaskPromise(filePath, image.file);
+        imagesUrl.push(url);
+      }
+
+      data.images = imagesUrl;
+    }
+
     return await productDetailsApi.create(data);
   }
 );
@@ -54,7 +70,7 @@ const productVariantSlice = createSlice({
       })
       .addCase(createProductVariant.fulfilled, (state, action) => {
         state.createProductVariantStatus = ACTION_STATUS.SUCCEEDED;
-        productVariantsAdapter.setMany(state, action.payload);
+        productVariantsAdapter.addMany(state, action.payload);
       })
       .addCase(createProductVariant.rejected, (state) => {
         state.createProductVariantStatus = ACTION_STATUS.FAILED;

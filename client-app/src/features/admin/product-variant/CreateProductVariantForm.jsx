@@ -5,11 +5,12 @@ import ProductVariantForm from './ProductVariantForm';
 import { Loading, FetchDataErrorMessage } from '../components';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import { getProductOrigins, selectAllProductOrigins } from '../product-origin/productOriginSlice';
+import { createProductVariant } from './productVariantSlice';
 
 const CreateProductVariantForm = () => {
   const dispatch = useDispatch();
   const products = useSelector(selectAllProductOrigins);
-  const { getProductOriginsStatus } = useSelector((state) => state.adminProductOrigins);
+  const { getProductOriginsStatus, createProductVariantStatus } = useSelector((state) => state.adminProductOrigins);
 
   useEffect(() => {
     if (getProductOriginsStatus === ACTION_STATUS.IDLE) {
@@ -27,7 +28,12 @@ const CreateProductVariantForm = () => {
   }
 
   return (
-    <ProductVariantForm productOrigins={products} isEdit={false} />
+    <ProductVariantForm
+      productOrigins={products}
+      isEdit={false}
+      action={createProductVariant}
+      status={createProductVariantStatus}
+    />
   );
 };
 

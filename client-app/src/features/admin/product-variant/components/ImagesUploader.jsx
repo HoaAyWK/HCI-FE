@@ -8,6 +8,7 @@ import { useDropzone } from 'react-dropzone';
 import uploadFile from '../../../../assets/images/upload-file.png';
 import { useEffect, useRef, useState } from 'react';
 import { Iconify } from '../../../../components';
+import ACTION_STATUS from '../../../../constants/actionStatus';
 
 const StyledErrorWrapper = styled(Box)(({ theme }) => ({
   '& .error': {
@@ -39,7 +40,7 @@ const StyledPreviewImage = styled(Box)(({ theme }) => ({
   objectFit: 'cover',
 }));
 
-const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) => {
+const ImagesUploader = ({ name, getValues, setValue, clearErrors, actionStatus, ...other }) => {
   const { control } = useFormContext();
   const imageRef = useRef();
   const [files, setFiles]  = useState([]);
@@ -83,6 +84,14 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, ...other }) =>
       setImages(prev => prev.concat(imagesArray));
     }
   }, [files]);
+
+  useEffect(() => {
+    if (actionStatus === ACTION_STATUS.SUCCEEDED) {
+      setFiles([]);
+      setImages([]);
+      setValue(name, []);
+    }
+  }, [actionStatus])
 
   const handleClick = () => {
     imageRef?.current?.click();

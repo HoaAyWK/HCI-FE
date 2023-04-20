@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -6,12 +6,13 @@ import { Box, Card, CardContent, Grid, InputAdornment, MenuItem, Stack, TextFiel
 import { LoadingButton } from '@mui/lab';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { ImagesUploader } from './components';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { FormProvider, RHFEditor, RHFMultiSelect, RHFSelect, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFMultiSelect, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { COLOR } from '../../../constants/colors';
+import { refresh } from './productVariantSlice';
 
 const colors = [
   { id: COLOR.NONE, name: 'None' },
@@ -28,8 +29,8 @@ const colors = [
 ];
 
 const statuses = [
-  { id: 1, name: 'Available'},
-  { id: 2, name: 'Out of stock' }
+  { id: true, name: 'Available'},
+  { id: false, name: 'Unavailable' }
 ];
 
 const ProductVariantForm = ({ productOrigins, isEdit, product, action, status }) => {
@@ -41,10 +42,10 @@ const ProductVariantForm = ({ productOrigins, isEdit, product, action, status })
   const ProductSchema = Yup.object().shape({
     id: Yup.string(),
     productId: Yup.string(),
-    specification: Yup.string()
+    specifications: Yup.string()
       .required('Specification is required'),
-    status: Yup.string(),
-    color: Yup.array()
+    status: Yup.boolean(),
+    colors: Yup.array()
       .min(1, 'Color is required'),
     price: Yup.number()
       .required('Price is required')
@@ -61,8 +62,8 @@ const ProductVariantForm = ({ productOrigins, isEdit, product, action, status })
   const defaultValues = product ? product : {
     id: '',
     productId: productOrigins[0].id,
-    color: [],
-    specification: '',
+    colors: [],
+    specifications: '',
     status: statuses[0].id,
     price: 0,
     discount: 0,
@@ -75,22 +76,23 @@ const ProductVariantForm = ({ productOrigins, isEdit, product, action, status })
     defaultValues
   });
 
-  const { handleSubmit, setValue, getValues, clearErrors } = methods;
+  const { handleSubmit, setValue, getValues, clearErrors, reset } = methods;
 
   const onSubmit = async (data) => {
     console.log(data);
+    try {
+      const actionResult = await dispatch(action(data));
+      const result = unwrapResult(actionResult);
 
-    // try {
-    //   const actionResult = action(data);
-    //   const result = unwrapResult(actionResult);
-
-    //   if (result) {
-    //     enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
-    //     dispatch(refresh());
-    //   }
-    // } catch (error) {
-    //   enqueueSnackbar(error.message, { variant: 'error' });
-    // }
+      if (result) {
+        enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
+        dispatch(refresh());
+        setColorItems([]);
+        reset();
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   const handleColorItemsChange = (items) => {
@@ -124,13 +126,19 @@ const ProductVariantForm = ({ productOrigins, isEdit, product, action, status })
                     </MenuItem>
                   ))}
                 </TextField>
-                <RHFTextField name='specification' multiline minRows={3} label='Specification' placeholder='Write specification...' />
+                <RHFTextField name='specifications' multiline minRows={3} label='Specification' placeholder='Write specification...' />
               </Stack>
             </CardContent>
           </Card>
           <Card sx={{ borderRadius: 1, mt: 2 }}>
             <CardContent>
-              <ImagesUploader name='images' getValues={getValues} setValue={setValue} clearErrors={clearErrors} />
+              <ImagesUploader
+                name='images'
+                getValues={getValues}
+                setValue={setValue}
+                clearErrors={clearErrors}
+                actionStatus={status}
+              />
             </CardContent>
           </Card>
         </Grid>
@@ -145,7 +153,7 @@ const ProductVariantForm = ({ productOrigins, isEdit, product, action, status })
                   label='Status'
                 />
                 <RHFMultiSelect
-                  name='color'
+                  name='colors'
                   data={colors}
                   id='color'
                   label='Color'
