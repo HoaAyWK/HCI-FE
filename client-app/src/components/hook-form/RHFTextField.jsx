@@ -14,7 +14,7 @@ const RHFTextField = ({ name, ...other }) => {
                 <TextField
                     {...field}
                     fullWidth
-                    value={typeof field.value === 'number' && field.value === 0 ? '' : field.value}
+                    value={typeof field.value === 'number' && field.value === 0 ? 0 : field.value}
                     error={!!error}
                     helperText={error?.message}
                     {...other}

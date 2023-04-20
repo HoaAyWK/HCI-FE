@@ -12,8 +12,6 @@ import { ImagesUploader } from './components';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import { FormProvider, RHFEditor, RHFMultiSelect, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { COLOR } from '../../../constants/colors';
-import { getProductOrigins, selectAllProductOrigins } from '../product-origin/productOriginSlice';
-import { FetchDataErrorMessage, Loading } from '../components';
 
 const colors = [
   { id: COLOR.NONE, name: 'None' },
@@ -34,39 +32,11 @@ const statuses = [
   { id: 2, name: 'Out of stock' }
 ];
 
-
-const PRODUCT_ORIGINS = [
-  {
-    id: '1',
-    name: 'MacBook Air M1 2020'
-  },
-  {
-    id: '2',
-    name: 'ThinkPad X1 Carbon',
-  },
-  {
-    id: '3',
-    name: 'MacBook Pro M2 2022'
-  }
-];
-
-const IMAGES = [
-  'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-  'https://images.unsplash.com/photo-1485988412941-77a35537dae4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1196&q=80',
-];
-
-const ProductVariantForm = ({ isEdit, product, action, status }) => {
+const ProductVariantForm = ({ productOrigins, isEdit, product, action, status }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [colorItems, setColorItems] = useState([]);
-  const products = useSelector(selectAllProductOrigins);
-  const { getProductOriginsStatus } = useSelector((state) => state.adminProductOrigins);
 
-  useEffect(() => {
-    if (getProductOriginsStatus === ACTION_STATUS.IDLE) {
-      dispatch(getProductOrigins());
-    }
-  }, []);
 
   const ProductSchema = Yup.object().shape({
     id: Yup.string(),
@@ -79,6 +49,10 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
     price: Yup.number()
       .required('Price is required')
       .moreThan(0, 'Price must be more than 0'),
+    discount: Yup.number()
+      .min(0, 'Discount must be a positive number'),
+    quantity: Yup.number()
+      .min(0, 'Quantity must be a positive number'),
     images: Yup.array()
       .required('Images is required')
       .min(1, `Images is required`)
@@ -86,11 +60,13 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
 
   const defaultValues = product ? product : {
     id: '',
-    productId: PRODUCT_ORIGINS[0].id,
+    productId: productOrigins[0].id,
     color: [],
     specification: '',
     status: statuses[0].id,
     price: 0,
+    discount: 0,
+    quantity: 0,
     images: []
   };
 
@@ -125,14 +101,6 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
     setValue('productId', event.target.value);
   };
 
-  if (getProductOriginsStatus === ACTION_STATUS.IDLE ||
-      getProductOriginsStatus === ACTION_STATUS.LOADING) {
-    return <Loading />;
-  }
-
-  if (getProductOriginsStatus === ACTION_STATUS.FAILED) {
-    return <FetchDataErrorMessage />;
-  }
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)} >
@@ -147,12 +115,12 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
                   id='select-product-origin'
                   select
                   label='Product Origin'
-                  defaultValue={product?.[0]?.id}
+                  defaultValue={product ? product.id : productOrigins[0].id}
                   onChange={handleSelectProductOriginChange}
                 >
-                  {products?.map((product) => (
-                    <MenuItem key={product.id} value={product.id}>
-                      {product.name}
+                  {productOrigins?.map((product) => (
+                    <MenuItem key={product?.id} value={product?.id}>
+                      {product?.name}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -160,7 +128,7 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
               </Stack>
             </CardContent>
           </Card>
-          <Card sx={{ borderRadius: 1, mt: 4 }}>
+          <Card sx={{ borderRadius: 1, mt: 2 }}>
             <CardContent>
               <ImagesUploader name='images' getValues={getValues} setValue={setValue} clearErrors={clearErrors} />
             </CardContent>
@@ -186,9 +154,28 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
                   onItemsChange={handleColorItemsChange}
                 />
                 <RHFTextField
+                  name='quantity'
+                  label='Quantity'
+                  type='number'
+                />
+              </Stack>
+            </CardContent>
+          </Card>
+          <Card sx={{ borderRadius: 1, mt: 2 }}>
+            <CardContent>
+              <Stack spacing={2}>
+                <RHFTextField
                   name='price'
-                  placeholder='0'
                   label='Price'
+                  type='number'
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">$</InputAdornment>
+                  }}
+                />
+                <RHFTextField
+                  name='discount'
+                  label='Discount'
+                  type='number'
                   InputProps={{
                     startAdornment: <InputAdornment position="start">$</InputAdornment>
                   }}
