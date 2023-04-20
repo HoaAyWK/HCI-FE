@@ -10,7 +10,8 @@ import { createProductVariant } from './productVariantSlice';
 const CreateProductVariantForm = () => {
   const dispatch = useDispatch();
   const products = useSelector(selectAllProductOrigins);
-  const { getProductOriginsStatus, createProductVariantStatus } = useSelector((state) => state.adminProductOrigins);
+  const { createProductVariantStatus } = useSelector((state) => state.adminProductVariants);
+  const { getProductOriginsStatus } = useSelector((state) => state.adminProductOrigins);
 
   useEffect(() => {
     if (getProductOriginsStatus === ACTION_STATUS.IDLE) {

@@ -11,31 +11,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import { FormProvider, RHFEditor, RHFSelect, RHFMultiSelect, RHFTextField } from '../../../components/hook-form';
 import { refresh } from './productOriginSlice';
-import { getCategories, selectAllCategories } from '../category/categorySlice';
-import { FetchDataErrorMessage, Loading } from '../components';
-import { getBrands, selectAllBrands } from '../brand/brandSlice';
 
-
-const ProductOriginForm = ({ isEdit, product, action, status }) => {
+const ProductOriginForm = ({ isEdit, product, action, status, brands, categories }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const categories = useSelector(selectAllCategories);
-  const brands = useSelector(selectAllBrands);
-  const { getCategoriesStatus } = useSelector((state) => state.adminCategories);
-  const { getBrandsStatus } = useSelector((state) => state.adminBrands);
+
   const [categoryItems, setCategoryItems] = useState([]);
   const [initialDescription, setInitialDescription] = useState('<p>Hello world</p>\n');
   const [initialInformation, setInitialInformation] = useState('<p>Information</p>\n');
 
-  useEffect(() => {
-    if (getCategoriesStatus === ACTION_STATUS.IDLE) {
-      dispatch(getCategories());
-    }
+  console.log(status);
 
-    if (getBrandsStatus === ACTION_STATUS.IDLE) {
-      dispatch(getBrands());
-    }
-  }, []);
 
   const ProductSchema = Yup.object().shape({
     name: Yup.string()
@@ -87,17 +73,6 @@ const ProductOriginForm = ({ isEdit, product, action, status }) => {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
   };
-
-  if (getCategoriesStatus === ACTION_STATUS.LOADING ||
-      getCategoriesStatus === ACTION_STATUS.IDLE ||
-      getBrandsStatus === ACTION_STATUS.LOADING ||
-      getBrandsStatus === ACTION_STATUS.IDLE) {
-    return <Loading />;
-  }
-
-  if (getCategories === ACTION_STATUS.FAILED || getBrandsStatus === ACTION_STATUS.FAILED) {
-    return <FetchDataErrorMessage />;
-  }
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)} >

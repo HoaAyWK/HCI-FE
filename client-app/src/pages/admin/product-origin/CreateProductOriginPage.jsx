@@ -1,9 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import { AdminPageLayout } from '../common';
-import { ProductOriginForm } from '../../../features/admin/product-origin';
-import { createProductOrigin } from '../../../features/admin/product-origin/productOriginSlice';
+import { CreateProductOriginForm } from '../../../features/admin/product-origin';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
@@ -12,8 +10,6 @@ const breadcrumbs = [
 ];
 
 const CreateProductPage = () => {
-  const { createProductOriginStatus } = useSelector((state) => state.adminProductOrigins);
-
   return (
     <AdminPageLayout
       pageTitle='Create a new product origin'
@@ -21,7 +17,7 @@ const CreateProductPage = () => {
       breadcrumbs={breadcrumbs}
       showCreateButton={false}
     >
-      <ProductOriginForm isEdit={false} action={createProductOrigin} status={createProductOriginStatus} />
+      <CreateProductOriginForm />
     </AdminPageLayout>
   );
 };

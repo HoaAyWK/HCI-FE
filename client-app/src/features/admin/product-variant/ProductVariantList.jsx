@@ -98,7 +98,7 @@ const ProductList = () => {
       handleRequestSort={handleRequestSort}
     >
       {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-        const { id, name, price, specification, color, status, media } = row;
+        const { id, name, price, specifications, color, status, media } = row;
 
         return (
           <TableRow
@@ -123,7 +123,7 @@ const ProductList = () => {
               </Stack>
             </TableCell>
             <TableCell>
-              {specification}
+              {specifications}
             </TableCell>
             <TableCell>
               {color}

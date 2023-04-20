@@ -38,7 +38,6 @@ const ProductVariantForm = ({ productOrigins, isEdit, product, action, status })
   const { enqueueSnackbar } = useSnackbar();
   const [colorItems, setColorItems] = useState([]);
 
-
   const ProductSchema = Yup.object().shape({
     id: Yup.string(),
     productId: Yup.string(),
