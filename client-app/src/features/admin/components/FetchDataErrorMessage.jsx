@@ -13,7 +13,7 @@ const FetchDataErrorMessage = () => {
         mt: 4
       }}
     >
-      <Alert security='error'>Error when fetching data.</Alert>
+      <Alert severity='error'>Error when fetching data.</Alert>
     </Box>
   );
 };

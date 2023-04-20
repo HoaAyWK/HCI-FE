@@ -6,7 +6,7 @@ import ACTION_STATUS from '../../../constants/actionStatus';
 const productOriginsAdapter = createEntityAdapter();
 
 const initialState = productOriginsAdapter.getInitialState({
-  getProductOriginStatus: ACTION_STATUS.IDLE,
+  getProductOriginsStatus: ACTION_STATUS.IDLE,
   createProductOriginStatus: ACTION_STATUS.IDLE,
   updateProductOriginStatus: ACTION_STATUS.IDLE,
   deleteProductOriginStatus: ACTION_STATUS.IDLE
@@ -55,14 +55,14 @@ const productOriginSlice = createSlice({
 
 
       .addCase(getProductOrigins.pending, (state) => {
-        state.getProductOriginStatus = ACTION_STATUS.LOADING;
+        state.getProductOriginsStatus = ACTION_STATUS.LOADING;
       })
       .addCase(getProductOrigins.fulfilled, (state, action) => {
-        state.getProductOriginStatus = ACTION_STATUS.SUCCEEDED;
-        productOriginsAdapter.setAll(state, action.payload);
+        state.getProductOriginsStatus = ACTION_STATUS.SUCCEEDED;
+        productOriginsAdapter.setAll(state, action.payload.items);
       })
       .addCase(getProductOrigins.rejected, (state) => {
-        state.getProductOriginStatus = ACTION_STATUS.FAILED;
+        state.getProductOriginsStatus = ACTION_STATUS.FAILED;
       })
 
 

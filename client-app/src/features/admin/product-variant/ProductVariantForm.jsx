@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -6,18 +6,27 @@ import { Box, Card, CardContent, Grid, InputAdornment, MenuItem, Stack, TextFiel
 import { LoadingButton } from '@mui/lab';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ImagesUploader } from './components';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { FormProvider, RHFEditor, RHFSelect, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFEditor, RHFMultiSelect, RHFSelect, RHFTextField } from '../../../components/hook-form';
+import { COLOR } from '../../../constants/colors';
+import { getProductOrigins, selectAllProductOrigins } from '../product-origin/productOriginSlice';
+import { FetchDataErrorMessage, Loading } from '../components';
 
 const colors = [
-  { id: 1, name: 'Grey' },
-  { id: 2, name: 'Blue' },
-  { id: 3, name: 'Green' },
-  {id: 4, name: 'Red'},
-  { id: 5, name: 'Black'}
+  { id: COLOR.NONE, name: 'None' },
+  { id: COLOR.WHITE, name: 'White' },
+  { id: COLOR.BLACK, name: 'Black' },
+  { id: COLOR.GOLD, name: 'Gold '},
+  { id: COLOR.RED, name: 'Red' },
+  { id: COLOR.BLUE, name: 'Blue' },
+  { id: COLOR.GREEN, name: 'Green' },
+  { id: COLOR.SILVER, name: 'Silver' },
+  { id: COLOR.YELLOW, name: 'Yellow' },
+  { id: COLOR.VOILET, name: 'Violet' },
+  { id: COLOR.PINK, name: 'Pink' }
 ];
 
 const statuses = [
@@ -49,6 +58,15 @@ const IMAGES = [
 const ProductVariantForm = ({ isEdit, product, action, status }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
+  const [colorItems, setColorItems] = useState([]);
+  const products = useSelector(selectAllProductOrigins);
+  const { getProductOriginsStatus } = useSelector((state) => state.adminProductOrigins);
+
+  useEffect(() => {
+    if (getProductOriginsStatus === ACTION_STATUS.IDLE) {
+      dispatch(getProductOrigins());
+    }
+  }, []);
 
   const ProductSchema = Yup.object().shape({
     id: Yup.string(),
@@ -56,7 +74,8 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
     specification: Yup.string()
       .required('Specification is required'),
     status: Yup.string(),
-    color: Yup.string(),
+    color: Yup.array()
+      .min(1, 'Color is required'),
     price: Yup.number()
       .required('Price is required')
       .moreThan(0, 'Price must be more than 0'),
@@ -68,7 +87,7 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
   const defaultValues = product ? product : {
     id: '',
     productId: PRODUCT_ORIGINS[0].id,
-    color: '1',
+    color: [],
     specification: '',
     status: statuses[0].id,
     price: 0,
@@ -98,9 +117,22 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
     // }
   };
 
+  const handleColorItemsChange = (items) => {
+    setColorItems(items);
+  };
+
   const handleSelectProductOriginChange = (event) => {
     setValue('productId', event.target.value);
   };
+
+  if (getProductOriginsStatus === ACTION_STATUS.IDLE ||
+      getProductOriginsStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  if (getProductOriginsStatus === ACTION_STATUS.FAILED) {
+    return <FetchDataErrorMessage />;
+  }
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)} >
@@ -115,10 +147,10 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
                   id='select-product-origin'
                   select
                   label='Product Origin'
-                  defaultValue={PRODUCT_ORIGINS[0].id}
+                  defaultValue={product?.[0]?.id}
                   onChange={handleSelectProductOriginChange}
                 >
-                  {PRODUCT_ORIGINS.map((product) => (
+                  {products?.map((product) => (
                     <MenuItem key={product.id} value={product.id}>
                       {product.name}
                     </MenuItem>
@@ -133,16 +165,6 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
               <ImagesUploader name='images' getValues={getValues} setValue={setValue} clearErrors={clearErrors} />
             </CardContent>
           </Card>
-          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-            <LoadingButton
-              type='submit'
-              variant='contained'
-              color='primary'
-              loading={status === ACTION_STATUS.LOADING ? true : false}
-            >
-              {`${isEdit ? 'Update' : 'Create'} Product Variant`}
-            </LoadingButton>
-          </Box>
         </Grid>
         <Grid item xs={12} md={4}>
           <Card sx={{ borderRadius: 1 }}>
@@ -154,11 +176,14 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
                   id='status'
                   label='Status'
                 />
-                <RHFSelect
+                <RHFMultiSelect
                   name='color'
                   data={colors}
                   id='color'
                   label='Color'
+                  defaultValue={[]}
+                  items={colorItems}
+                  onItemsChange={handleColorItemsChange}
                 />
                 <RHFTextField
                   name='price'
@@ -171,6 +196,20 @@ const ProductVariantForm = ({ isEdit, product, action, status }) => {
               </Stack>
             </CardContent>
           </Card>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={8}>
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+            <LoadingButton
+              type='submit'
+              variant='contained'
+              color='primary'
+              loading={status === ACTION_STATUS.LOADING ? true : false}
+            >
+              {`${isEdit ? 'Update' : 'Create'} Product Variant`}
+            </LoadingButton>
+          </Box>
         </Grid>
       </Grid>
     </FormProvider>

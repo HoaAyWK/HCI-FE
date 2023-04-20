@@ -5,11 +5,12 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
 
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
-import { DataTable } from '../components';
+import { DataTable, FetchDataErrorMessage, Loading } from '../components';
 import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
 
 import { getProductOrigins, selectAllProductOrigins, deleteProductOrigin } from './productOriginSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
+import { createMarkup } from '../../../utils/sanitizeHtml';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -60,14 +61,14 @@ const ProductOriginList = () => {
 
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const { getProductsStatus } = useSelector((state) => state.adminProducts);
+  const { getProductOriginsStatus } = useSelector((state) => state.adminProductOrigins);
   const products = useSelector(selectAllProductOrigins);
 
   useEffect(() => {
-    if (getProductsStatus === ACTION_STATUS.IDLE) {
+    if (getProductOriginsStatus === ACTION_STATUS.IDLE) {
       dispatch(getProductOrigins());
     }
-  }, [getProductsStatus]);
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -101,7 +102,16 @@ const ProductOriginList = () => {
     }
   };
 
-  const filteredProducts = applySortFilter(PRODUCTS, getComparator(order, orderBy), filterName);
+  const filteredProducts = applySortFilter(products, getComparator(order, orderBy), filterName);
+
+  if (getProductOriginsStatus === ACTION_STATUS.IDLE ||
+      getProductOriginsStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  if (getProductOriginsStatus === ACTION_STATUS.FAILED) {
+    return <FetchDataErrorMessage />;
+  }
 
   return (
     <DataTable
@@ -131,13 +141,19 @@ const ProductOriginList = () => {
               <Typography variant='body1'>{name}</Typography>
             </TableCell>
             <TableCell sx={{ maxWidth: 400 }}>
-              <Typography variant='body1' sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
-                {description}
+              <Typography
+                variant='body1'
+                sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}
+                dangerouslySetInnerHTML={createMarkup(description)}
+              >
               </Typography>
             </TableCell>
             <TableCell>
-            <Typography variant='body1' sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
-                {information}
+              <Typography
+                variant='body1'
+                sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}
+                dangerouslySetInnerHTML={createMarkup(information)}
+              >
               </Typography>
             </TableCell>
             <TableCell align="right">
