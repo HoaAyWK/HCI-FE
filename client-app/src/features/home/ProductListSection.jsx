@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 
 import { ProductCard } from '../common/components';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProductDetails, selectAllProductDetails } from './productDetailsSlice';
+import ACTION_STATUS from '../../constants/actionStatus';
+import ProductListSectionSkeleton from './components/ProductListSectionSkeleton';
 
 const PRODUCTS = [
   {
@@ -63,6 +67,20 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 const ProductListSection = ({ title }) => {
+  const dispatch = useDispatch();
+  const products = useSelector(selectAllProductDetails);
+  const { getProductDetailsStatus } = useSelector((state) => state.productDetails);
+
+  useEffect(() => {
+    if (getProductDetailsStatus === ACTION_STATUS.IDLE) {
+      dispatch(getProductDetails());
+    }
+  }, []);
+
+  if (getProductDetailsStatus !== ACTION_STATUS.SUCCEEDED) {
+    return <ProductListSectionSkeleton />;
+  }
+
 
   return (
     <Box
@@ -91,7 +109,7 @@ const ProductListSection = ({ title }) => {
         </Grid>
       </Grid>
       <Grid container spacing={2}>
-        {PRODUCTS.map((product) => (
+        {products.map((product) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
             <ProductCard product={product} />
           </Grid>

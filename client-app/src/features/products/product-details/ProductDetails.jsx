@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Box, Grid, Stack, Typography, Rating, Divider, Button, Tab, Pagination, LinearProgress } from '@mui/material';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
 
-import { ProductReview, SyncSlider } from './components';
-import { StyledPaper } from './components/styles';
-import { Iconify, QuantityControl } from '../../components';
-import ProductReviewDialog from './ProductReviewDialog';
+import { ProductReview, SyncSlider } from '../components';
+import { StyledPaper } from '../components/styles';
+import { Iconify, QuantityControl } from '../../../components';
+import ProductReviewDialog from '../ProductReviewDialog';
+import { ColorButton, SpecificationsButton, Divider as DashedDivider } from './components';
 
 const RATINGS  = [
   { name: '5 Star', percentage: 70, numOfRatings: 16 },
@@ -21,29 +21,50 @@ const VARIANTS = [
     specifications: '8GB RAM 256GB SSD',
     price: 1999,
     discount: 99,
-    colors: [ 'Black', 'Sliver', 'White' ]
+    colors: [ 'Black', 'Sliver', 'White' ],
+    selected: true,
   },
   {
     specifications: '8GB RAM 512GB SSD',
     price: 2999,
     discount: 499,
-    colors: [ 'Black', 'Sliver' ]
+    colors: [ 'Black', 'Sliver' ],
+    selected: false,
   },
   {
     specifications: '16GB RAM 256GB SSD',
     price: 3499,
     discount: 299,
-    colors: [ 'Blue' ]
+    colors: [ 'Blue' ],
+    selected: false,
   },
   {
     specifications: '16GB RAM 512GB SSD',
     price: 5000,
     discount: 1000,
-    colors: [ 'Sliver', 'White' ]
+    colors: [ 'Sliver', 'White' ],
+    selected: false,
   },
 ];
 
-const ProductDetail = (props) => {
+const COLORS = [
+  {
+    id: 1,
+    color: 'White',
+    image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
+    price: 5000,
+    select: true
+  },
+  {
+    id: 2,
+    color: 'Silver',
+    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
+    price: 5000,
+    select: false
+  },
+]
+
+const ProductDetails = (props) => {
   const [openReview, setOpenReview] = useState(false);
 
   const handleCloseReview = () => {
@@ -120,34 +141,28 @@ const ProductDetail = (props) => {
                 </Typography>
               </Stack>
             </Stack>
-            <Box
-              sx={{
-                width: '100%',
-                borderBottom: 1,
-                borderColor: (theme) => theme.palette.divider,
-                borderBottomStyle: 'dashed',
-                my: 2
-              }}
-            />
+            <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
+              {VARIANTS.map((variant) => (
+                <Grid item xs={12} md={6} key={variant.specifications}>
+                  <SpecificationsButton variant={variant} select={variant.selected} />
+                </Grid>
+              ))}
+            </Grid>
+            <DashedDivider />
+            <Box sx={{ my: 2, width: '100%' }}>
+              <Typography variant='body1'>
+                Colors
+              </Typography>
+              <Grid container spacing={2} sx={{ mt: 0.5 }}>
+                {COLORS.map((color) => (
+                  <Grid item key={color.id} xs={12} md={4}>
+                    <ColorButton colorItem={color} select={color.select} />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+            <DashedDivider />
             <Stack spacing={3} sx={{ mt: 4 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Typography variant='body1'>
-                  Colors
-                </Typography>
-                <Stack direction='row' spacing={1}>
-                  {product.colors.map((color) => (
-                    <Box
-                      key={color}
-                      sx={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: '50%',
-                        backgroundColor: `${color}`
-                      }}
-                    />
-                  ))}
-                </Stack>
-              </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                 <Typography variant='body1'>
                   Quantity
@@ -269,8 +284,8 @@ const ProductDetail = (props) => {
             handleClose={handleCloseReview}
             isEdit={false}
           />
-          <Box sx={{ p: 2 }}>
-            <Stack spacing={3}>
+          <Box sx={{ px: 2 }}>
+            <Stack spacing={0}>
               <ProductReview />
               <ProductReview />
               <ProductReview />
@@ -294,4 +309,4 @@ const ProductDetail = (props) => {
   );
 };
 
-export default ProductDetail;
+export default ProductDetails;

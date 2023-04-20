@@ -47,8 +47,17 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 const StyledTextLogo = styled(Typography)(({ theme }) => ({
   background: 'linear-gradient(.25turn, #7F0E0E, #0F0D73)',
   WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent'
+  WebkitTextFillColor: 'transparent',
 }));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  [theme.breakpoints.up('xs')]: {
+    display: 'none',
+  },
+  [theme.breakpoints.up('md')]: {
+    display: 'block'
+  }
+}))
 
 // ----------------------------------------------------------------------
 
@@ -140,7 +149,7 @@ export default function Header({ user, onOpenNav }) {
             <Iconify icon="eva:menu-2-fill" />
           </IconButton>
 
-          <Box sx={{ mr: 2 }}>
+          <StyledBox sx={{ mr: 2 }}>
             <Link component={RouterLink} to='/' underline='none' sx={{ display: 'inline-flex', alginItems: 'center' }}>
               <Box
                 component='img'
@@ -152,11 +161,11 @@ export default function Header({ user, onOpenNav }) {
                 HCI
               </StyledTextLogo>
             </Link>
-          </Box>
+          </StyledBox>
 
           <AlgoliaSearch />
 
-          <Stack direction='row' spacing={2} sx={{ ml: 2 }}>
+          <Stack direction='row' spacing={2} sx={{ ml: 2, display: 'none' }}>
             {menuItems.map((item) => (
               <Link key={item.name} component={RouterLink} to={item.path} underline='none' color='text.primary'>
                 <Button>

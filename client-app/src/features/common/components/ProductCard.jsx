@@ -6,7 +6,7 @@ import { Iconify, Label } from '../../../components'
 import { fCurrency } from '../../../utils/formatNumber';
 
 const ProductCard = ({ product }) => {
-  const { name, image, price, discount, rating } = product;
+  const { name, media, price, discount } = product;
 
   return (
     <Box
@@ -42,7 +42,7 @@ const ProductCard = ({ product }) => {
         <Link component={RouterLink} to='/products/thinkpad'>
           <Box
             component='img'
-            src={image}
+            src={media[0]}
             alt={name}
             sx={{
               width: '100%',
@@ -62,7 +62,7 @@ const ProductCard = ({ product }) => {
             {name}
           </Typography>
         </Link>
-        <Rating readOnly value={rating} size='small' precision={0.5} />
+        <Rating readOnly value={4} size='small' precision={0.5} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h6" component='p' color='error'>
@@ -76,7 +76,7 @@ const ProductCard = ({ product }) => {
                   textDecoration: 'line-through',
                 }}
               >
-                {discount && fCurrency(discount)}
+                {discount && fCurrency(discount + price)}
               </Typography>
             </Typography>
           </Stack>

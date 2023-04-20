@@ -6,7 +6,7 @@ import { Iconify } from '../../../components';
 
 const ProductReview = () => {
   return (
-    <Grid container>
+    <Grid container spacing={2} sx={{ my: 1 }}>
       <Grid item xs={3} lg={2}>
         <Box
           sx={{
