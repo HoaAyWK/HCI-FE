@@ -57,6 +57,7 @@ const RHFEditor = ({ name, label, initialContent, ...other }) => {
     }
   }, [initialContent, setEditorState]);
 
+
   return (
     <StyledBox>
       <Box sx={{ mb: 1 }}>

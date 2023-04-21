@@ -117,7 +117,7 @@ const ProductDetails = (props) => {
 
   return (
     <>
-      <Grid container spacing={4}>
+      <Grid container spacing={4} sx={{ pt: 2 }}>
         <Grid item xs={12} md={6}>
           <SyncSlider images={images} />
         </Grid>
@@ -141,15 +141,15 @@ const ProductDetails = (props) => {
                 </Typography>
               </Stack>
             </Stack>
-            <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
+            <DashedDivider />
+            <Grid container spacing={2} sx={{ mb: 2 }}>
               {VARIANTS.map((variant) => (
                 <Grid item xs={12} md={6} key={variant.specifications}>
                   <SpecificationsButton variant={variant} select={variant.selected} />
                 </Grid>
               ))}
             </Grid>
-            <DashedDivider />
-            <Box sx={{ my: 2, width: '100%' }}>
+            <Box sx={{ mt: 2, mb: 3, width: '100%' }}>
               <Typography variant='body1'>
                 Colors
               </Typography>
@@ -284,7 +284,7 @@ const ProductDetails = (props) => {
             handleClose={handleCloseReview}
             isEdit={false}
           />
-          <Box sx={{ px: 2 }}>
+          <Box sx={{ px: 2, pb: 2 }}>
             <Stack spacing={0}>
               <ProductReview />
               <ProductReview />

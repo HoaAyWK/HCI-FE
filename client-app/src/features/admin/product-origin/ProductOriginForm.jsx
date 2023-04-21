@@ -66,8 +66,8 @@ const ProductOriginForm = ({ isEdit, product, action, status, brands, categories
         reset();
         dispatch(refresh());
         setCategoryItems([]);
-        setInitialDescription('<p>Hello world</p>\n');
-        setInitialInformation('<p>Information</p>\n');
+        setInitialDescription('<p></p>\n');
+        setInitialInformation('<p></p>\n');
       }
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
