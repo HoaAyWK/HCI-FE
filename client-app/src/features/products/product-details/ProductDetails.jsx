@@ -3,7 +3,7 @@ import { Box, Grid, Stack, Typography, Rating, Divider, Button, Tab, Pagination,
 
 import { ProductReview, SyncSlider } from '../components';
 import { StyledPaper } from '../components/styles';
-import { Iconify, QuantityControl } from '../../../components';
+import { Iconify, QuantityControl, ShowMoreParagraph } from '../../../components';
 import ProductReviewDialog from '../ProductReviewDialog';
 import { ColorButton, SpecificationsButton, Divider as DashedDivider } from './components';
 
@@ -183,6 +183,43 @@ const ProductDetails = (props) => {
                 </Button>
               </Grid>
             </Grid>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid item xs={12} md={7}>
+          <StyledPaper sx={{ px: 2, pt: 2 }}>
+            <Typography variant='h6' component='h1' color='text.primary' sx={{ mb: 2 }}>
+              Description
+            </Typography>
+            <ShowMoreParagraph height={190}>
+              Sunt do enim qui excepteur aute. Ullamco non ad culpa culpa fugiat dolore minim non. Laboris eu deserunt ex laboris quis proident enim cupidatat non duis sint incididunt ut tempor. Veniam eu Lorem sit amet do nisi reprehenderit ea do exercitation fugiat. Proident cupidatat nostrud nostrud eu voluptate anim fugiat quis eu adipisicing culpa enim. Voluptate aute tempor nostrud pariatur sint ea do non proident proident laboris. Enim magna et excepteur dolor cupidatat pariatur esse cupidatat qui deserunt officia.
+
+Reprehenderit Lorem proident incididunt deserunt officia ipsum occaecat eiusmod pariatur. Eiusmod et dolore ipsum est do et consectetur duis sunt culpa dolor qui. Proident aliqua laborum magna et tempor culpa amet proident. Proident eiusmod veniam ipsum do nulla eiusmod.
+
+Cupidatat culpa culpa reprehenderit pariatur dolore dolore do magna duis magna exercitation tempor ut. Reprehenderit eiusmod fugiat nulla veniam est velit. Aliquip esse consequat deserunt aute.
+Sunt do enim qui excepteur aute. Ullamco non ad culpa culpa fugiat dolore minim non. Laboris eu deserunt ex laboris quis proident enim cupidatat non duis sint incididunt ut tempor. Veniam eu Lorem sit amet do nisi reprehenderit ea do exercitation fugiat. Proident cupidatat nostrud nostrud eu voluptate anim fugiat quis eu adipisicing culpa enim. Voluptate aute tempor nostrud pariatur sint ea do non proident proident laboris. Enim magna et excepteur dolor cupidatat pariatur esse cupidatat qui deserunt officia.
+
+Reprehenderit Lorem proident incididunt deserunt officia ipsum occaecat eiusmod pariatur. Eiusmod et dolore ipsum est do et consectetur duis sunt culpa dolor qui. Proident aliqua laborum magna et tempor culpa amet proident. Proident eiusmod veniam ipsum do nulla eiusmod.
+
+Cupidatat culpa culpa reprehenderit pariatur dolore dolore do magna duis magna exercitation tempor ut. Reprehenderit eiusmod fugiat nulla veniam est velit. Aliquip esse consequat deserunt aute.
+Sunt do enim qui excepteur aute. Ullamco non ad culpa culpa fugiat dolore minim non. Laboris eu deserunt ex laboris quis proident enim cupidatat non duis sint incididunt ut tempor. Veniam eu Lorem sit amet do nisi reprehenderit ea do exercitation fugiat. Proident cupidatat nostrud nostrud eu voluptate anim fugiat quis eu adipisicing culpa enim. Voluptate aute tempor nostrud pariatur sint ea do non proident proident laboris. Enim magna et excepteur dolor cupidatat pariatur esse cupidatat qui deserunt officia.
+
+Reprehenderit Lorem proident incididunt deserunt officia ipsum occaecat eiusmod pariatur. Eiusmod et dolore ipsum est do et consectetur duis sunt culpa dolor qui. Proident aliqua laborum magna et tempor culpa amet proident. Proident eiusmod veniam ipsum do nulla eiusmod.
+
+Cupidatat culpa culpa reprehenderit pariatur dolore dolore do magna duis magna exercitation tempor ut. Reprehenderit eiusmod fugiat nulla veniam est velit. Aliquip esse consequat deserunt aute.
+            </ShowMoreParagraph>
+            <Box sx={{ pb: 6 }} />
+          </StyledPaper>
+        </Grid>
+        <Grid item xs={12} md={5}>
+          <StyledPaper sx={{ p: 2 }}>
+            <Typography variant='h6' component='h1' color='text.primary' sx={{ mb: 2 }}>
+              Information
+            </Typography>
+            <Typography varaint='body1'>
+              Laboris est Lorem laborum ut voluptate ut aute ad mollit adipisicing sit nulla deserunt. Consectetur cupidatat non reprehenderit ipsum enim quis esse dolor excepteur commodo deserunt consectetur pariatur laboris. Quis in minim occaecat consectetur est velit ullamco ad mollit laboris et officia laboris aliqua. Esse id ea consequat minim dolore. Adipisicing commodo ea fugiat tempor ullamco nostrud nisi proident culpa. Cillum labore labore ullamco amet nulla tempor minim dolore laboris nulla ex esse.
+            </Typography>
+          </StyledPaper>
         </Grid>
       </Grid>
       <Box

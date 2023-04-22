@@ -85,6 +85,11 @@ const RHFEditor = ({ name, label, initialContent, ...other }) => {
                 onChange={onInternalChange}
                 editorState={editorState}
                 onEditorStateChange={setEditorState}
+                toolbar={{
+                  fontFamily: {
+                    options: ['Arial', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
+                  },
+                }}
               />
               {error && (
                 <Typography variant='caption' color='error' sx={{ mt: 1, ml: 2 }}>{error.message}</Typography>

@@ -9,3 +9,4 @@ export { default as MenuPopover } from './MenuPopover';
 export { default as Page } from './Page';
 export { default as FilterOnTableNotFound } from './FilterOnTableNotFound';
 export { default as Loading } from './Loading';
+export { default as ShowMoreParagraph } from './ShowMoreParagraph';

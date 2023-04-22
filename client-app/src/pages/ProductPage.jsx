@@ -1,10 +1,13 @@
 import React from 'react';
 
+import { Page } from '../components';
 import { ProductDetails } from '../features/products';
 
 const ProductPage = () => {
   return (
-    <ProductDetails />
+    <Page title='Product details'>
+      <ProductDetails />
+    </Page>
   );
 };
 
