@@ -96,7 +96,7 @@ const cartSlice = createSlice({
       .addCase(decreaseQuantity.fulfilled, (state) => {
         state.decreaseQuantity = ACTION_STATUS.SUCCEEDED;
       })
-      .addCase(decreaseQuantity.fulfilled, (state) => {
+      .addCase(decreaseQuantity.rejected, (state) => {
         state.decreaseQuantity = ACTION_STATUS.FAILED;
       })
   }

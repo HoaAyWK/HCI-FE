@@ -46,14 +46,6 @@ const navConfig = [
           title: 'create',
           path: '/admin/product-origins/create'
         },
-        {
-          title: 'details',
-          path: '/admin/product-origins/details',
-        },
-        {
-          title: 'edit',
-          path: '/admin/product-origins/edit'
-        }
       ]
     },
     {

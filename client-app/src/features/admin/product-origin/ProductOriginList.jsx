@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Stack, TableRow, TableCell, Typography } from '@mui/material';
+import { TableRow, TableCell, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
@@ -18,39 +18,6 @@ const TABLE_HEAD = [
   { id: 'information', label: 'Information', alignRight: false },
   { id: '', label: '', alignRight: false },
 ];
-
-const PRODUCTS = [
-  {
-    id: '1',
-    name: 'MacBook Pro M1 2020',
-    information: 'Some informations',
-    description: 'Excepteur commodo sit nisi sit exercitation duis in. Tempor commodo deserunt cupidatat Lorem duis deserunt cupidatat fugiat commodo aliquip minim deserunt. Irure minim labore anim nulla consectetur sit esse.',
-  },
-  {
-    id: '2',
-    name: 'ThinkPad T14',
-    information: 'Some informations',
-    description: 'Excepteur commodo sit nisi sit exercitation duis in. Tempor commodo deserunt cupidatat Lorem duis deserunt cupidatat fugiat commodo aliquip minim deserunt. Irure minim labore anim nulla consectetur sit esse.',
-  },
-  {
-    id: '3',
-    name: 'ThinkPad E490',
-    information: 'Some informations',
-    description: 'Excepteur commodo sit nisi sit exercitation duis in. Tempor commodo deserunt cupidatat Lorem duis deserunt cupidatat fugiat commodo aliquip minim deserunt. Irure minim labore anim nulla consectetur sit esse.',
-  },
-  {
-    id: '4',
-    name: 'ThinkPad X1 Carbon',
-    information: 'Some informations',
-    description: 'Excepteur commodo sit nisi sit exercitation duis in. Tempor commodo deserunt cupidatat Lorem duis deserunt cupidatat fugiat commodo aliquip minim deserunt. Irure minim labore anim nulla consectetur sit esse.',
-  },
-  {
-    id: '5',
-    name: 'MacBook Air M2 2022',
-    information: 'Some informations',
-    description: 'Excepteur commodo sit nisi sit exercitation duis in. Tempor commodo deserunt cupidatat Lorem duis deserunt cupidatat fugiat commodo aliquip minim deserunt. Irure minim labore anim nulla consectetur sit esse.',
-  }
-]
 
 const ProductOriginList = () => {
   const [order, setOrder] = useState('asc');
@@ -158,8 +125,12 @@ const ProductOriginList = () => {
             </TableCell>
             <TableCell align="right">
               <MoreMenu>
-                <MoreMenuItemLink title='Details' to='/admin/products/details' iconName='eva:eye-outline' />
-                <MoreMenuItemLink title='Edit' to='/admin/products/edit' iconName='eva:edit-outline' />
+                <MoreMenuItemLink title='Details' to='/admin/product-origins/details' iconName='eva:eye-outline' />
+                <MoreMenuItemLink
+                  title='Edit'
+                  to={`/admin/product-origins/edit/${id}`}
+                  iconName='eva:edit-outline'
+                />
                 <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" id={id} handleClick={handleClickDelete}/>
 
               </ MoreMenu>

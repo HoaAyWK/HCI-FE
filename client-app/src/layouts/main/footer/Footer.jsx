@@ -10,8 +10,8 @@ import visa from '../../../assets/icons/payments/ic_visa.svg';
 
 const StyledTextLogo = styled(Typography)(({ theme }) => ({
   background: 'linear-gradient(.25turn, #7F0E0E, #0F0D73)',
-  '-webkit-background-clip': 'text',
-  '-webkit-text-fill-color': 'transparent'
+  WebkitBackgroundClip: 'text',
+  WebkitBackdropFilter: 'transparent'
 }));
 
 const LINKS = [

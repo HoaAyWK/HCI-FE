@@ -17,32 +17,41 @@ const ProductOriginForm = ({ isEdit, product, action, status, brands, categories
   const { enqueueSnackbar } = useSnackbar();
 
   const [categoryItems, setCategoryItems] = useState([]);
-  const [initialDescription, setInitialDescription] = useState('<p>Hello world</p>\n');
-  const [initialInformation, setInitialInformation] = useState('<p>Information</p>\n');
+  const [initialDescription, setInitialDescription] = useState('<p></p>\n');
+  const [initialInformation, setInitialInformation] = useState('<p></p>\n');
 
-  console.log(status);
-
+  useEffect(() => {
+    if (product) {
+      setInitialDescription(product.description);
+      setInitialInformation(product.information);
+      setCategoryItems(product.categories);
+    }
+  }, []);
 
   const ProductSchema = Yup.object().shape({
+    id: Yup.string(),
     name: Yup.string()
       .required('Name is required'),
     description: Yup.string()
       .required('Description is required'),
     information: Yup.string()
       .required('Specification is required'),
-    category: Yup.array()
+    categories: Yup.array()
       .required('Category is required')
       .min(1, 'Category is required'),
-    brand: Yup.string()
+    distributorId: Yup.string()
       .required('Brand is required'),
   });
 
-  const defaultValues = product ? product : {
-    name: '',
-    description: '',
-    information: '',
-    category: [],
-    brand: brands?.[0]?.id,
+  const defaultValues = {
+    id: product?.id ? product.id : '',
+    name: product?.name ? product.name : '',
+    description: product?.description ? product.description : '',
+    information: product?.information ? product.information : '',
+    categories: product?.categories ? product.categories : [],
+
+    // brand and distributor are the same entity
+    distributorId: product?.distributorId ? product.distributorId : brands?.[0]?.id,
   };
 
   const methods = useForm({
@@ -63,11 +72,12 @@ const ProductOriginForm = ({ isEdit, product, action, status, brands, categories
 
       if (result) {
         enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
-        reset();
         dispatch(refresh());
-        setCategoryItems([]);
-        setInitialDescription('<p></p>\n');
-        setInitialInformation('<p></p>\n');
+
+        if (!isEdit) {
+          reset();
+          setCategoryItems([]);
+        }
       }
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -80,10 +90,21 @@ const ProductOriginForm = ({ isEdit, product, action, status, brands, categories
         <Grid item xs={12} md={8}>
           <Card sx={{ borderRadius: 1 }}>
             <CardContent>
+              <RHFTextField name='id' label='Id' type='hidden' sx={{ display: 'none' }}/>
               <Stack spacing={2}>
                 <RHFTextField name='name' label='Name' />
-                <RHFEditor name='description' label='Description' initialContent={initialDescription} />
-                <RHFEditor name='information' label='Information' initialContent={initialInformation} />
+                <RHFEditor
+                  name='description'
+                  label='Description'
+                  initialContent={initialDescription}
+                  actionStatus={isEdit ? undefined : status}
+                />
+                <RHFEditor
+                  name='information'
+                  label='Information'
+                  initialContent={initialInformation}
+                  actionStatus={isEdit ? undefined: status}
+                />
               </Stack>
             </CardContent>
           </Card>
@@ -93,7 +114,7 @@ const ProductOriginForm = ({ isEdit, product, action, status, brands, categories
             <CardContent>
               <Stack spacing={2}>
                 <RHFMultiSelect
-                  name='category'
+                  name='categories'
                   data={categories}
                   id='category'
                   label='Category'
@@ -102,7 +123,7 @@ const ProductOriginForm = ({ isEdit, product, action, status, brands, categories
                   defaultValue={[]}
                 />
                 <RHFSelect
-                  name='brand'
+                  name='distributorId'
                   data={brands}
                   id='brand'
                   label='Brand'

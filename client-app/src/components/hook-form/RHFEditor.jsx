@@ -7,6 +7,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
 import { stateFromHTML } from 'draft-js-import-html';
+import ACTION_STATUS from '../../constants/actionStatus';
 
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -44,7 +45,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 
-const RHFEditor = ({ name, label, initialContent, ...other }) => {
+const RHFEditor = ({ name, label, initialContent, actionStatus, ...other }) => {
   const { control } = useFormContext();
   const [editorState, setEditorState] = useState(
     () => EditorState.createEmpty()
@@ -56,6 +57,12 @@ const RHFEditor = ({ name, label, initialContent, ...other }) => {
       setEditorState(EditorState.createWithContent(contentState));
     }
   }, [initialContent, setEditorState]);
+
+  useEffect(() => {
+    if (actionStatus && actionStatus === ACTION_STATUS.SUCCEEDED) {
+      setEditorState(EditorState.createEmpty());
+    }
+  }, [actionStatus]);
 
 
   return (

@@ -9,7 +9,9 @@ const initialState = productOriginsAdapter.getInitialState({
   getProductOriginsStatus: ACTION_STATUS.IDLE,
   createProductOriginStatus: ACTION_STATUS.IDLE,
   updateProductOriginStatus: ACTION_STATUS.IDLE,
-  deleteProductOriginStatus: ACTION_STATUS.IDLE
+  deleteProductOriginStatus: ACTION_STATUS.IDLE,
+  recentDetail: null,
+  recentEdit: null,
 });
 
 export const getProductOrigins = createAsyncThunk(
@@ -21,7 +23,8 @@ export const getProductOrigins = createAsyncThunk(
 
 export const createProductOrigin = createAsyncThunk(
   'productOrigins/create',
-  async (data) => {
+  async (productOrigin) => {
+    const { id, ...data } = productOrigin;
     return await productOriginApi.create(data);
   }
 );
@@ -45,9 +48,15 @@ const productOriginSlice = createSlice({
   initialState,
   reducers: {
     refresh: (state) => {
-    state.createProductOriginStatus = ACTION_STATUS.IDLE,
-    state.updateProductOriginStatus = ACTION_STATUS.IDLE,
-    state.deleteProductOriginStatus = ACTION_STATUS.IDLE
+      state.createProductOriginStatus = ACTION_STATUS.IDLE,
+      state.updateProductOriginStatus = ACTION_STATUS.IDLE,
+      state.deleteProductOriginStatus = ACTION_STATUS.IDLE
+    },
+    setRecentDetail: (state, action) => {
+      state.recentDetail = action.payload;
+    },
+    setRecentEdit: (state, action) => {
+      state.recentEdit = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -112,6 +121,6 @@ export const {
 } = productOriginsAdapter.getSelectors((state) => state.adminProductOrigins);
 
 const { reducer, actions } = productOriginSlice;
-export const { refresh } = actions;
+export const { refresh, setRecentDetail, setRecentEdit } = actions;
 
 export default reducer;

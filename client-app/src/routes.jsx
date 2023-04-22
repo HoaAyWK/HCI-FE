@@ -20,7 +20,7 @@ import { CategoryListPage } from './pages/admin/category';
 import { BrandListPage } from './pages/admin/brand';
 import { InventoryListPage } from './pages/admin/inventory';
 import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
-import { ProductOriginListPage, CreateProductOriginPage, ProductOriginDetailsPage } from './pages/admin/product-origin';
+import { ProductOriginListPage, CreateProductOriginPage, ProductOriginDetailsPage, UpdateProductOriginPage } from './pages/admin/product-origin';
 import { CreateProductVariantPage, ProductVariantDetailsPage, ProductVariantListPage } from './pages/admin/product-variant';
 import { BannersPage } from './pages/admin/banner';
 
@@ -191,6 +191,10 @@ const Router = () => {
                 {
                   path: 'details',
                   element: <ProductOriginDetailsPage />
+                },
+                {
+                  path: 'edit/:id',
+                  element: <UpdateProductOriginPage />
                 }
               ]
             },

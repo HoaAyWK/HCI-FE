@@ -24,7 +24,6 @@ import { useAppThemeUpdate, useAppTheme } from "../../../context/AppThemeContext
 import { useLocalStorage } from "../../../hooks";
 import AlgoliaSearch from './search-bar/AlgoliaSearch';
 import hciLogo from '/new_hci_logo.svg';
-import { useSelector } from "react-redux";
 
 // ----------------------------------------------------------------------
 
