@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Grid, Stack, Typography, Rating, Divider, Button, Tab, Pagination, LinearProgress } from '@mui/material';
 
-import { ProductReview, SyncSlider } from '../components';
+import { SyncSlider } from '../components';
 import { StyledPaper } from '../components/styles';
 import { Iconify, QuantityControl, ShowMoreParagraph } from '../../../components';
-import ProductReviewDialog from '../ProductReviewDialog';
+import ProductReviewDialog from './ProductReviewDialog';
 import { ColorButton, SpecificationsButton, Divider as DashedDivider } from './components';
+import ProductReviews from './product-reviews';
 
 const RATINGS  = [
   { name: '5 Star', percentage: 70, numOfRatings: 16 },
@@ -322,13 +323,7 @@ Cupidatat culpa culpa reprehenderit pariatur dolore dolore do magna duis magna e
             isEdit={false}
           />
           <Box sx={{ px: 2, pb: 2 }}>
-            <Stack spacing={0}>
-              <ProductReview />
-              <ProductReview />
-              <ProductReview />
-              <ProductReview />
-              <ProductReview />
-            </Stack>
+            <ProductReviews />
             <Box
               sx={{
                 mt: 2,
