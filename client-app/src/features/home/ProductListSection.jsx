@@ -4,7 +4,7 @@ import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 
 import { ProductCard } from '../common/components';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductDetails, selectAllProductDetails } from './productDetailsSlice';
+import { getProductDetails, selectAllProductDetails, selectProductDetailWithImage } from './productDetailsSlice';
 import ACTION_STATUS from '../../constants/actionStatus';
 import ProductListSectionSkeleton from './components/ProductListSectionSkeleton';
 
@@ -68,7 +68,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 const ProductListSection = ({ title }) => {
   const dispatch = useDispatch();
-  const products = useSelector(selectAllProductDetails);
+  const products = useSelector(selectProductDetailWithImage);
   const { getProductDetailsStatus } = useSelector((state) => state.productDetails);
 
   useEffect(() => {

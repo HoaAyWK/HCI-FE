@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, createEntityAdapter, createSelector } from '@reduxjs/toolkit';
 
 import productDetailsApi from '../../services/productDetailsApi';
 import ACTION_STATUS from '../../constants/actionStatus';
@@ -40,6 +40,11 @@ export const {
   selectAll: selectAllProductDetails,
   selectById: selectProductDetailById
 } = productDetailsAdapter.getSelectors((state) => state.productDetails);
+
+export const selectProductDetailWithImage = createSelector(
+  [selectAllProductDetails],
+  (productDetails) => productDetails.filter(productDetail => productDetail.media.length > 0)
+);
 
 const { reducer } = productDetailsSlice;
 

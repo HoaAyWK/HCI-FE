@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link as RouterLink} from 'react-router-dom';
 import { Box, Button, Grid, IconButton, Link, Rating, Stack, Typography  } from '@mui/material';
 
@@ -7,6 +7,15 @@ import { fCurrency } from '../../../utils/formatNumber';
 
 const ProductCard = ({ product }) => {
   const { name, media, price, discount } = product;
+
+
+  const priceReal = useMemo(() => {
+    if (discount > 0) {
+      return price - (price * (discount / 100));
+    }
+
+    return price;
+  }, [price, discount]);
 
   return (
     <Box
@@ -66,21 +75,25 @@ const ProductCard = ({ product }) => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h6" component='p' color='error'>
-              {fCurrency(price)}
+              {fCurrency(priceReal)}
               &nbsp;
-              <Typography
-                component="span"
-                variant="body1"
-                sx={{
-                  color: 'text.disabled',
-                  textDecoration: 'line-through',
-                }}
-              >
-                {discount && fCurrency(discount + price)}
-              </Typography>
+              {discount > 0 && (
+                <Typography
+                  component="span"
+                  variant="body1"
+                  sx={{
+                    color: 'text.disabled',
+                    textDecoration: 'line-through',
+                  }}
+                >
+                  {discount && fCurrency(price)}
+                </Typography>
+              )}
             </Typography>
           </Stack>
-          <Label variant='outlined' color='error'>-10%</Label>
+          {discount > 0 && (
+            <Label variant='outlined' color='error'>-{discount}%</Label>
+          )}
         </Box>
       </Stack>
       <Box
