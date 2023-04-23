@@ -63,6 +63,7 @@ const BrandLine = ({ brand }) => {
         isEdit={true}
         action={updateBrand}
         status={updateBrandStatus}
+        brand={brand}
       />
     </>
   );

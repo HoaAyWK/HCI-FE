@@ -21,7 +21,7 @@ import { BrandListPage } from './pages/admin/brand';
 import { InventoryListPage } from './pages/admin/inventory';
 import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
 import { ProductOriginListPage, CreateProductOriginPage, ProductOriginDetailsPage, UpdateProductOriginPage } from './pages/admin/product-origin';
-import { CreateProductVariantPage, ProductVariantDetailsPage, ProductVariantListPage } from './pages/admin/product-variant';
+import { CreateProductVariantPage, ProductVariantDetailsPage, ProductVariantListPage, UpdateProductVariantPage } from './pages/admin/product-variant';
 import { BannersPage } from './pages/admin/banner';
 
 
@@ -214,8 +214,12 @@ const Router = () => {
                   element: <CreateProductVariantPage />
                 },
                 {
-                  path: 'details',
+                  path: 'details/:id',
                   element: <ProductVariantDetailsPage />
+                },
+                {
+                  path: 'edit/:id',
+                  element: <UpdateProductVariantPage />
                 }
               ]
             },

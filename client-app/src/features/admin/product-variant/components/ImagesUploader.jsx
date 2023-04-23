@@ -88,7 +88,6 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, actionStatus, 
   useEffect(() => {
     if (actionStatus === ACTION_STATUS.SUCCEEDED) {
       setFiles([]);
-      setImages([]);
       setValue(name, []);
     }
   }, [actionStatus])

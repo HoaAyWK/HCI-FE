@@ -10,6 +10,7 @@ const productVariantsAdapter = createEntityAdapter();
 const initialState = productVariantsAdapter.getInitialState({
   getProductVariantsStatus: ACTION_STATUS.IDLE,
   createProductVariantStatus: ACTION_STATUS.IDLE,
+  updateProductVariantStatus: ACTION_STATUS.IDLE,
 });
 
 export const getProductVariants = createAsyncThunk(
@@ -22,23 +23,36 @@ export const getProductVariants = createAsyncThunk(
 export const createProductVariant = createAsyncThunk(
   'adminProductVariant/create',
   async (productVariant) => {
-    const { id, images, ...data } = productVariant;
-
-    if (images.length > 0) {
-      const imagesUrl = [];
-
-      for (let image of images) {
-        const filePath = `files/product-variants/images/${uuidv4()}`;
-        const url = await uploadTaskPromise(filePath, image.file);
-        imagesUrl.push(url);
-      }
-
-      data.images = imagesUrl;
-    }
+    const { id, ...data } = productVariant;
 
     return await productDetailsApi.create(data);
   }
 );
+
+export const updateProductVariant = createAsyncThunk(
+  'adminProductVariant/update',
+  async (productVariant) => {
+    const { images, ...data } = productVariant;
+
+    if (images.length > 0) {
+      const imageUrls = [];
+
+      for (let image of images) {
+        if (image.file) {
+          const filePath = `file/product-variants/${uuidv4()}`;
+          const url = await uploadTaskPromise(filePath, image.file);
+          imageUrls.push(url);
+        } else {
+          imageUrls.push(image);
+        }
+      }
+
+      data.images = imageUrls;
+    }
+
+    return await productDetailsApi.update(data);
+  }
+)
 
 const productVariantSlice = createSlice({
   name: 'adminProductVariants',
@@ -46,6 +60,7 @@ const productVariantSlice = createSlice({
   reducers: {
     refresh: (state) => {
       state.createProductVariantStatus = ACTION_STATUS.IDLE;
+      state.updateProductVariantStatus = ACTION_STATUS.IDLE;
     }
   },
   extraReducers: (builder) => {
@@ -74,6 +89,20 @@ const productVariantSlice = createSlice({
       })
       .addCase(createProductVariant.rejected, (state) => {
         state.createProductVariantStatus = ACTION_STATUS.FAILED;
+      })
+
+
+      .addCase(updateProductVariant.pending, (state) => {
+        state.updateProductVariantStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(updateProductVariant.fulfilled, (state, action) => {
+        const { id, ...data } = action.payload;
+
+        state.updateProductVariantStatus = ACTION_STATUS.SUCCEEDED;
+        productVariantsAdapter.updateOne(state, { id, changes: data });
+      })
+      .addCase(updateProductVariant.rejected, (state) => {
+        state.updateProductVariantStatus = ACTION_STATUS.FAILED;
       })
   }
 });

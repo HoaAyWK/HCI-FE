@@ -11,6 +11,7 @@ import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/ta
 
 import { selectAllProductVariants, getProductVariants } from './productVariantSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
+import { COLOR_LIST } from '../../../constants/colors';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Product Origin', alignRight: false },
@@ -108,17 +109,19 @@ const ProductList = () => {
           >
             <TableCell component='th' scope='row'>
               <Stack spacing={1} direction='row' alignItems='center'>
-                <Box
-                  component='img'
-                  src={media?.[0]}
-                  alt={name}
-                  sx={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: 1,
-                    objectFit: 'cover'
-                  }}
-                />
+                {media?.length > 0 && (
+                  <Box
+                    component='img'
+                    src={media?.[0]}
+                    alt={name}
+                    sx={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: 1,
+                      objectFit: 'cover'
+                    }}
+                  />
+                )}
                 <Typography variant='body1'>{name}</Typography>
               </Stack>
             </TableCell>
@@ -126,7 +129,7 @@ const ProductList = () => {
               {specifications}
             </TableCell>
             <TableCell>
-              {color}
+              {COLOR_LIST[color]}
             </TableCell>
             <TableCell>
               <Label color={status ? 'success' : 'error'}>{status ? 'Available' : 'Unavailable'}</Label>
@@ -136,8 +139,8 @@ const ProductList = () => {
             </TableCell>
             <TableCell align="right">
               <MoreMenu>
-                <MoreMenuItemLink title='Details' to='/admin/products/details' iconName='eva:eye-outline' />
-                <MoreMenuItemLink title='Edit' to='/admin/products/edit' iconName='eva:edit-outline' />
+                <MoreMenuItemLink title='Details' to={`/admin/product-variants/details/${id}`} iconName='eva:eye-outline' />
+                <MoreMenuItemLink title='Edit' to={`/admin/product-variants/edit/${id}`} iconName='eva:edit-outline' />
                 <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" id={id}/>
 
               </ MoreMenu>

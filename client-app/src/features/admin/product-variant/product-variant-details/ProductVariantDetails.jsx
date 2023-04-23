@@ -1,10 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Iconify } from '../../../../components';
-import { LabelAndContent } from '../../components';
+import { FetchDataErrorMessage, LabelAndContent, Loading } from '../../components';
 import { ProductVariantImage } from './components';
+import { getProductVariants, selectProductVariantById } from '../productVariantSlice';
+import ACTION_STATUS from '../../../../constants/actionStatus';
+import emptyImage from '../../../../assets/images/image_illustration.png';
+import { COLOR_LIST } from '../../../../constants/colors';
 
 const PRODUCT_ORIGIN = {
   id: 1,
@@ -26,17 +31,29 @@ const PRODUCT_VARIANT = {
   ]
 };
 
-const ProductVariantDetails = () => {
-  const imagesExceptFirst = useMemo(() => {
-    return PRODUCT_VARIANT.images.slice(1);
-  }, [PRODUCT_VARIANT]);
+const ProductVariantDetails = ({ productVariantId }) => {
+  const dispatch = useDispatch();
+  const productVariant = useSelector((state) => selectProductVariantById(state, productVariantId));
+  const { getProductVariantsStatus } = useSelector((state) => state.adminProductVariants);
 
-  const sliderSettings = {
-    dots: false,
-    infinite: false,
-    slidesToShow: 4,
-    siliesToScroll: 1
-  };
+  const imagesExceptFirst = useMemo(() => {
+    return productVariant?.media.slice(1);
+  }, [productVariant]);
+
+  useEffect(() => {
+    if (getProductVariantsStatus === ACTION_STATUS.IDLE) {
+      dispatch(getProductVariants());
+    }
+  }, []);
+
+  if (getProductVariantsStatus === ACTION_STATUS.IDLE ||
+      getProductVariantsStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  if (getProductVariantsStatus === ACTION_STATUS.FAILED) {
+    return <FetchDataErrorMessage />;
+  }
 
   return (
     <>
@@ -53,7 +70,7 @@ const ProductVariantDetails = () => {
           }}
         >
           <Typography variant='h5' component='h1' color='text.primary' sx={{ xs: { mb: 2 }, md: { mb: 0 } }}>
-            {PRODUCT_ORIGIN.name}
+            {productVariant?.name}
           </Typography>
           <Stack
             direction='row'
@@ -75,40 +92,62 @@ const ProductVariantDetails = () => {
         <Grid container spacing={4}>
           <Grid item container spacing={2} xs={12} md={6}>
             <Grid item xs={12}>
-              <Box
-                component='img'
-                src={PRODUCT_VARIANT.images[0]}
-                alt='image'
-                sx={{
-                  objectFit: 'cover',
-                  width: '100%',
-                  borderRadius: 1,
-                }}
-                loading='lazy'
-              />
+              {productVariant?.media?.length > 0 ? (
+                  <Box
+                    component='img'
+                    src={PRODUCT_VARIANT.images[0]}
+                    alt='image'
+                    sx={{
+                      objectFit: 'cover',
+                      width: '100%',
+                      borderRadius: 1,
+                    }}
+                    loading='lazy'
+                  />
+              ) : (
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', py: 2 }}>
+                  <Box
+                    component='img'
+                    alt='image'
+                    loading='lazy'
+                    src={emptyImage}
+                    sx={{
+                      width: 200,
+                      height: 160,
+                      objectFit: 'cover',
+                      mb: 2
+                    }}
+                  />
+                  <Typography variant='body1' color='text.secondary' textAlign='center'>
+                    This product does not have any image
+                  </Typography>
+                </Box>
+              )}
             </Grid>
-            {imagesExceptFirst.map((image) => (
-              <Grid key={image} item xs={12} sm={6} md={4}>
-                <ProductVariantImage image={image} />
-              </Grid>
-            ))}
+            {imagesExceptFirst.length > 0 && (
+              imagesExceptFirst.map((image) => (
+                <Grid key={image} item xs={12} sm={6} md={4}>
+                  <ProductVariantImage image={image} />
+                </Grid>
+              ))
+            )}
           </Grid>
           <Grid item xs={12} md={6}>
             <Grid container spacing={2} sx={{ mb: 2 }}>
               <Grid item xs={12} sm={6}>
-                <LabelAndContent label='specification' content={PRODUCT_VARIANT.specifiation} />
+                <LabelAndContent label='specification' content={productVariant?.specifications} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <LabelAndContent label='color' content={PRODUCT_VARIANT.color} />
+                <LabelAndContent label='color' content={COLOR_LIST[productVariant?.color]} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <LabelAndContent label='quantity' content={PRODUCT_VARIANT.quantity} />
+                <LabelAndContent label='quantity' content={productVariant.quantity ? productVariant.quantity : 0} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <LabelAndContent label='price' content={`$${PRODUCT_VARIANT.price}`} />
+                <LabelAndContent label='price' content={`$${productVariant.price}`} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <LabelAndContent label='discount' content={`$${PRODUCT_VARIANT.discount}`} />
+                <LabelAndContent label='discount' content={`$${productVariant?.discount ? productVariant.discount : 0}`} />
               </Grid>
             </Grid>
           </Grid>

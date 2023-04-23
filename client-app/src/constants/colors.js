@@ -12,3 +12,18 @@ export const COLOR = Object.freeze({
   WHITE: 10,
   SILVER: 11
 });
+
+export const COLOR_LIST = [
+  'None',
+  'Red',
+  'Blue',
+  'Yellow',
+  'Green',
+  'Gold',
+  'Pink',
+  'Orange',
+  'Violet',
+  'Black',
+  'White',
+  'Silver'
+];

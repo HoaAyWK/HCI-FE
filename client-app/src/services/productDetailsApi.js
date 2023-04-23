@@ -12,6 +12,12 @@ class ProductDetailsApi {
 
     return axiosClient.post(url, data);
   };
-}
+
+  update = (data) => {
+    const url = '/detail/edit';
+
+    return axiosClient.put(url, data);
+  };
+};
 
 export default new ProductDetailsApi();

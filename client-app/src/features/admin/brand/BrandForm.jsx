@@ -13,7 +13,7 @@ import { refresh } from './brandSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
 
 const BrandForm = (props) => {
-  const { dialogTitle, dialogContent, open, handleClose, isEdit, action, status } = props;
+  const { dialogTitle, dialogContent, open, handleClose, brand, isEdit, action, status } = props;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -25,8 +25,8 @@ const BrandForm = (props) => {
   });
 
   const defaultValues = {
-    name: '',
-    phone: '',
+    name: brand ? brand.name : '',
+    phone: brand ? brand.phone : '',
   };
 
   const methods = useForm({
@@ -34,7 +34,7 @@ const BrandForm = (props) => {
     defaultValues
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
 
   const onSubmit = async (data) => {
     try {
@@ -45,6 +45,10 @@ const BrandForm = (props) => {
         enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
         dispatch(refresh());
         handleClose();
+
+        if (!isEdit) {
+          reset();
+        }
       }
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });

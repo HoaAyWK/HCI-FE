@@ -2,6 +2,7 @@ import React from 'react';
 
 import { AdminPageLayout } from '../common';
 import { ProductVariantDetails } from '../../../features/admin/product-variant';
+import { useParams } from 'react-router-dom';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
@@ -10,6 +11,8 @@ const breadcrumbs = [
 ];
 
 const ProductVariantDetailsPage = () => {
+  const { id } = useParams();
+
   return (
     <AdminPageLayout
       pageTitle='Product variant details'
@@ -19,7 +22,7 @@ const ProductVariantDetailsPage = () => {
       createName='Product Variant'
       createPath='/admin/product-variants/create'
     >
-      <ProductVariantDetails />
+      <ProductVariantDetails productVariantId={id} />
     </AdminPageLayout>
   );
 };

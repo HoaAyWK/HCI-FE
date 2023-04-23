@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,6 +8,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
 import { useDispatch } from 'react-redux';
 
+import { ImagesUploader } from './components';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import { FormProvider, RHFMultiSelect, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { COLOR } from '../../../constants/colors';
@@ -32,7 +33,8 @@ const statuses = [
   { id: false, name: 'Unavailable' }
 ];
 
-const ProductVariantForm = ({ productOrigins, product, action, status }) => {
+
+const FullProductVariantForm = ({ productOrigins, productVariant, action, status }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [colorItems, setColorItems] = useState([]);
@@ -43,20 +45,31 @@ const ProductVariantForm = ({ productOrigins, product, action, status }) => {
     specifications: Yup.string()
       .required('Specification is required'),
     status: Yup.boolean(),
-    colors: Yup.array()
-      .min(1, 'Color is required'),
+    color: Yup.string()
+      .required('Color is required'),
     price: Yup.number()
       .required('Price is required')
       .moreThan(0, 'Price must be more than 0'),
+    discount: Yup.number()
+      .min(0, 'Discount must be a positive number')
+      .max(99, 'Discount must between 0 and 99%'),
+    quantity: Yup.number()
+      .min(0, 'Quantity must be a positive number'),
+    images: Yup.array()
+      .required('Images is required')
+      .min(1, `Images is required`)
   });
 
   const defaultValues = {
-    id: '',
-    productId: productOrigins[0].id,
-    colors: [],
-    specifications: '',
-    status: statuses[0].id,
-    price: 0,
+    id: productVariant.id,
+    productId: productVariant.productId,
+    color: productVariant.color,
+    specifications: productVariant.specifications,
+    status: productVariant.status,
+    price: productVariant.price,
+    discount: productVariant.discount ? productVariant.discount : 0,
+    quantity: productVariant.warehouse,
+    images: productVariant.media
   };
 
   const methods = useForm({
@@ -64,7 +77,13 @@ const ProductVariantForm = ({ productOrigins, product, action, status }) => {
     defaultValues
   });
 
-  const { handleSubmit, setValue, reset } = methods;
+  const { handleSubmit, setValue, getValues, clearErrors } = methods;
+
+  useEffect(() => {
+    if (status === ACTION_STATUS.SUCCEEDED) {
+      setValue('images', productVariant.media);
+    }
+  }, [status]);
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -73,18 +92,12 @@ const ProductVariantForm = ({ productOrigins, product, action, status }) => {
       const result = unwrapResult(actionResult);
 
       if (result) {
-        enqueueSnackbar(`Created successfully`, { variant: 'success' });
+        enqueueSnackbar(`Updated successfully`, { variant: 'success' });
         dispatch(refresh());
-        setColorItems([]);
-        reset();
       }
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
-  };
-
-  const handleColorItemsChange = (items) => {
-    setColorItems(items);
   };
 
   const handleSelectProductOriginChange = (event) => {
@@ -105,7 +118,7 @@ const ProductVariantForm = ({ productOrigins, product, action, status }) => {
                   id='select-product-origin'
                   select
                   label='Product Origin'
-                  defaultValue={product ? product.id : productOrigins[0].id}
+                  defaultValue={productVariant.productId ? productVariant.productId : productOrigins[0].id}
                   onChange={handleSelectProductOriginChange}
                 >
                   {productOrigins?.map((product) => (
@@ -116,6 +129,17 @@ const ProductVariantForm = ({ productOrigins, product, action, status }) => {
                 </TextField>
                 <RHFTextField name='specifications' multiline minRows={3} label='Specification' placeholder='Write specification...' />
               </Stack>
+            </CardContent>
+          </Card>
+          <Card sx={{ borderRadius: 1, mt: 2 }}>
+            <CardContent>
+              <ImagesUploader
+                name='images'
+                getValues={getValues}
+                setValue={setValue}
+                clearErrors={clearErrors}
+                actionStatus={status}
+              />
             </CardContent>
           </Card>
         </Grid>
@@ -129,21 +153,37 @@ const ProductVariantForm = ({ productOrigins, product, action, status }) => {
                   id='status'
                   label='Status'
                 />
-                <RHFMultiSelect
-                  name='colors'
+                <RHFSelect
+                  name='color'
                   data={colors}
                   id='color'
                   label='Color'
-                  defaultValue={[]}
-                  items={colorItems}
-                  onItemsChange={handleColorItemsChange}
                 />
+                <RHFTextField
+                  name='quantity'
+                  label='Quantity'
+                  type='number'
+                />
+              </Stack>
+            </CardContent>
+          </Card>
+          <Card sx={{ borderRadius: 1, mt: 2 }}>
+            <CardContent>
+              <Stack spacing={2}>
                 <RHFTextField
                   name='price'
                   label='Price'
                   type='number'
                   InputProps={{
                     startAdornment: <InputAdornment position="start">$</InputAdornment>
+                  }}
+                />
+                <RHFTextField
+                  name='discount'
+                  label='Discount'
+                  type='number'
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">%</InputAdornment>
                   }}
                 />
               </Stack>
@@ -160,7 +200,7 @@ const ProductVariantForm = ({ productOrigins, product, action, status }) => {
               color='primary'
               loading={status === ACTION_STATUS.LOADING ? true : false}
             >
-              Create Product Variant
+              Update Product Variant
             </LoadingButton>
           </Box>
         </Grid>
@@ -169,4 +209,4 @@ const ProductVariantForm = ({ productOrigins, product, action, status }) => {
   );
 };
 
-export default ProductVariantForm;
+export default FullProductVariantForm;
