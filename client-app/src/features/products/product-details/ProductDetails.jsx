@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Grid, Stack, Typography, Rating, Divider, Button, Tab, Pagination, LinearProgress } from '@mui/material';
 
 import { SyncSlider } from '../components';
 import { StyledPaper } from '../components/styles';
-import { Iconify, QuantityControl, ShowMoreParagraph } from '../../../components';
+import { Iconify, Loading, QuantityControl, ShowMoreParagraph } from '../../../components';
 import ProductReviewDialog from './ProductReviewDialog';
 import { ColorButton, SpecificationsButton, Divider as DashedDivider } from './components';
 import ProductReviews from './product-reviews';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProductDetails, selectProductDetailById } from '../../common/productDetailsSlice';
+import ACTION_STATUS from '../../../constants/actionStatus';
+import { fCurrency } from '../../../utils/formatNumber';
 
 const RATINGS  = [
   { name: '5 Star', percentage: 70, numOfRatings: 16 },
@@ -66,6 +70,10 @@ const COLORS = [
 ]
 
 const ProductDetails = (props) => {
+  const { id } = props;
+  const dispatch = useDispatch();
+  const productDetail = useSelector((state) => selectProductDetailById(state, id));
+  const { getProductDetailsStatus } = useSelector((state) => state.productDetails);
   const [openReview, setOpenReview] = useState(false);
 
   const handleCloseReview = () => {
@@ -116,16 +124,31 @@ const ProductDetails = (props) => {
     },
   ];
 
+  useEffect(() => {
+    if (getProductDetailsStatus === ACTION_STATUS.IDLE) {
+      dispatch(getProductDetails());
+    }
+  }, []);
+
+  if (getProductDetailsStatus === ACTION_STATUS.IDLE ||
+      getProductDetailsStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  if (getProductDetailsStatus === ACTION_STATUS.FAILED) {
+    return <Navigate to='/' />;
+  }
+
   return (
     <>
       <Grid container spacing={4} sx={{ pt: 2 }}>
         <Grid item xs={12} md={6}>
-          <SyncSlider images={images} />
+          <SyncSlider images={productDetail.media} />
         </Grid>
         <Grid item xs={12} md={6}>
             <Stack spacing={1}>
-              <Typography variant='h6' component='h1'>
-                {product.name}
+              <Typography variant='h5' component='h1'>
+                {productDetail.name}
               </Typography>
               <Stack spacing={1} direction='row'>
                 <Rating readOnly value={product.rating} precision={0.5} />
@@ -135,10 +158,10 @@ const ProductDetails = (props) => {
               </Stack>
               <Stack spacing={1} direction='row' alignItems='center'>
                 <Typography variant='h3' component='span' color='error'>
-                  ${product.price}
+                  {fCurrency(productDetail.price - (productDetail.price * (productDetail.discount / 100)))}
                 </Typography>
                 <Typography variant='h4' component='span' color='text.secondary'>
-                  <s>${2999}</s>
+                  <s>{fCurrency(productDetail.price)}</s>
                 </Typography>
               </Stack>
             </Stack>

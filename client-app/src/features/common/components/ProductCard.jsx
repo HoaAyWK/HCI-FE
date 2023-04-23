@@ -6,7 +6,7 @@ import { Iconify, Label } from '../../../components'
 import { fCurrency } from '../../../utils/formatNumber';
 
 const ProductCard = ({ product }) => {
-  const { name, media, price, discount } = product;
+  const { id, name, media, price, discount } = product;
 
 
   const priceReal = useMemo(() => {
@@ -48,7 +48,7 @@ const ProductCard = ({ product }) => {
         >
           <Iconify icon='mdi:cards-heart' width={24} height={24} />
         </IconButton>
-        <Link component={RouterLink} to='/products/thinkpad'>
+        <Link component={RouterLink} to={`/products/${id}`}>
           <Box
             component='img'
             src={media[0]}
@@ -66,7 +66,7 @@ const ProductCard = ({ product }) => {
         </Link>
       </Box>
       <Stack spacing={0.5} sx={{ px: 2, py: 2 }}>
-        <Link color="inherit" underline="hover" component={RouterLink} to='/products/thinkpad'>
+        <Link color="inherit" underline="hover" component={RouterLink} to={`/products/${id}`}>
           <Typography variant="subtitle2" noWrap>
             {name}
           </Typography>

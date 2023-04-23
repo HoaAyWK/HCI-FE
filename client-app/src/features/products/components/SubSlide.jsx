@@ -17,8 +17,8 @@ const SubSlide = ({ image }) => {
           display: 'block',
           overflow: 'hidden',
           position: 'relative',
-          width: 64,
-          height: 64,
+          width: 84,
+          height: 84,
           borderRadius: '12px',
           cursor: 'pointer',
         }}

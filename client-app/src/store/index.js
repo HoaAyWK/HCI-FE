@@ -11,7 +11,7 @@ import adminProductOriginReducer from '../features/admin/product-origin/productO
 import adminBannerReducer from '../features/admin/banner/bannerSlice';
 import bannerReducer from '../features/home/banners/bannerSlice';
 import adminProductVariantReducer from '../features/admin/product-variant/productVariantSlice';
-import productDetailsReducer from '../features/home/productDetailsSlice';
+import productDetailsReducer from '../features/common/productDetailsSlice';
 import productReviewsReducer from '../features/products/product-details/product-reviews/productReviewSlice';
 import cartReducer from '../features/common/cartSlice';
 
