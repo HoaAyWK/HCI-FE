@@ -125,7 +125,11 @@ const ProductOriginList = () => {
             </TableCell>
             <TableCell align="right">
               <MoreMenu>
-                <MoreMenuItemLink title='Details' to='/admin/product-origins/details' iconName='eva:eye-outline' />
+                <MoreMenuItemLink
+                  title='Details'
+                  to={`/admin/product-origins/details/${id}`}
+                  iconName='eva:eye-outline'
+                />
                 <MoreMenuItemLink
                   title='Edit'
                   to={`/admin/product-origins/edit/${id}`}

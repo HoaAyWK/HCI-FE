@@ -189,7 +189,7 @@ const Router = () => {
                   element: <CreateProductOriginPage />,
                 },
                 {
-                  path: 'details',
+                  path: 'details/:id',
                   element: <ProductOriginDetailsPage />
                 },
                 {

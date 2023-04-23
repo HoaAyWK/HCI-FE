@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
-import { selectProductOriginyById } from '../productOriginSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProductOrigins, selectProductOriginyById } from '../productOriginSlice';
 import { useParams } from 'react-router-dom';
 
-import { LabelAndContent } from '../../components';
+import { FetchDataErrorMessage, LabelAndContent, Loading } from '../../components';
 import { ProductVariantCard } from './components';
 import { Iconify } from '../../../../components';
+import ACTION_STATUS from '../../../../constants/actionStatus';
+import { getBrands, selectBrandById } from '../../brand/brandSlice';
+import { createMarkup } from '../../../../utils/sanitizeHtml';
+import { getCategories } from '../../category/categorySlice';
 
 const PRODUCT = {
   name: 'Macbook Air M1 2020',
@@ -28,7 +32,41 @@ const PRODUCT_VARIANTS = [
 
 const ProductOriginDetails = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const product = useSelector((state) => selectProductOriginyById(state, id));
+  const { getProductOriginsStatus } = useSelector((state) => state.adminProductOrigins);
+  const brand = useSelector((state) => selectBrandById(state, product?.distributorId));
+  const { getBrandsStatus } = useSelector((state) => state.adminBrands);
+  const { entities: categoryEntities, getCategoriesStatus } = useSelector((state) => state.adminCategories);
+
+  useEffect(() => {
+    if (getProductOriginsStatus === ACTION_STATUS.IDLE) {
+      dispatch(getProductOrigins());
+    }
+
+    if (getBrandsStatus === ACTION_STATUS.IDLE) {
+      dispatch(getBrands());
+    }
+
+    if (getCategoriesStatus === ACTION_STATUS.IDLE) {
+      dispatch(getCategories());
+    }
+  }, []);
+
+  if (getProductOriginsStatus === ACTION_STATUS.IDLE ||
+      getProductOriginsStatus === ACTION_STATUS.LOADING ||
+      getBrandsStatus === ACTION_STATUS.ILDE ||
+      getBrandsStatus === ACTION_STATUS.LOADING ||
+      getCategoriesStatus === ACTION_STATUS.ILDE ||
+      getCategoriesStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  if (getProductOriginsStatus === ACTION_STATUS.FAILED ||
+      getBrandsStatus === ACTION_STATUS.FAILED ||
+      getCategoriesStatus === ACTION_STATUS.FAILED) {
+    return <FetchDataErrorMessage />;
+  }
 
   return (
     <>
@@ -45,14 +83,14 @@ const ProductOriginDetails = () => {
           }}
         >
           <Typography variant='h5' component='h1' color='text.primary' sx={{ xs: { mb: 2 }, md: { mb: 0 } }}>
-            {PRODUCT.name}
+            {product.name}
           </Typography>
           <Stack
             direction='row'
             alignItems='center'
             spacing={1}
           >
-            <Button LinkComponent={RouterLink} to='/admin/product-origins/edit' color='primary'>
+            <Button LinkComponent={RouterLink} to={`/admin/product-origins/edit/${product.id}`} color='primary'>
               <Iconify icon='eva:edit-outline' width={20} height={20} />
               &nbsp;
               Edit
@@ -66,15 +104,45 @@ const ProductOriginDetails = () => {
         </Box>
         <Grid container spacing={2} sx={{ mb: 4 }}>
           <Grid item xs={6}>
-            <LabelAndContent label='CATEGORY' content={PRODUCT.category} />
+            <Stack spacing={0.5}>
+              <Typography variant='body2' color='text.secondary' textTransform='uppercase'>
+                categories
+              </Typography>
+              <Typography
+                variant='body1'
+                color='text.primary'
+              >
+                {product.categories.map((categoryId) => (
+                  categoryEntities[categoryId]?.name
+                ))}
+              </Typography>
+            </Stack>
           </Grid>
           <Grid item xs={6}>
-            <LabelAndContent label='BRAND' content={PRODUCT.brand} />
+            <LabelAndContent label='BRAND' content={brand?.name} />
           </Grid>
         </Grid>
         <Stack spacing={4}>
-          <LabelAndContent label='INFORMATION' content={PRODUCT.information} />
-          <LabelAndContent label='DESCRIPTION' content={PRODUCT.description} />
+          <Stack spacing={0.5}>
+            <Typography variant='body2' color='text.secondary' textTransform='uppercase'>
+              description
+            </Typography>
+            <Typography
+              variant='body1'
+              color='text.primary'
+              dangerouslySetInnerHTML={createMarkup(product.description)}
+            />
+          </Stack>
+          <Stack spacing={0.5}>
+            <Typography variant='body2' color='text.secondary' textTransform='uppercase'>
+              information
+            </Typography>
+            <Typography
+              variant='body1'
+              color='text.primary'
+              dangerouslySetInnerHTML={createMarkup(product.information)}
+            />
+          </Stack>
         </Stack>
         <Box
           sx={{
