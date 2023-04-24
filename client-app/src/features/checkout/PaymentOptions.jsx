@@ -60,8 +60,8 @@ const Option = ({ value, name, description, logos }) => {
             <Box sx={{ flex: 1 }} />
             {logos && (
               <Box sx={{ display: 'flex', alignItems: 'center', pr: 2, 'justifyContent': 'flex-end' }}>
-                {logos.map((logo) => (
-                  <Box component='img' src={logo} alt='logo' sx={{ width: 36, height: 36, mr: 0.5 }} />
+                {logos.map((logo, index) => (
+                  <Box component='img' key={index} src={logo} alt='logo' sx={{ width: 36, height: 36, mr: 0.5 }} />
                 ))}
               </Box>
             )}

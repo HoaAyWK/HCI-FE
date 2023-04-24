@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import ACTION_STATUS from '../../constants/actionStatus';
 import authApi from '../../services/authApi';
+import { getCart } from '../common/cartSlice';
 
 const initialState = {
   user: null,
@@ -18,6 +19,7 @@ export const login = createAsyncThunk(
     localStorage.setItem('accessToken', JSON.stringify(res.accessToken));
 
     thunkApi.dispatch(getCurrentUserInfo());
+    thunkApi.dispatch(getCart());
 
     return res;
   }

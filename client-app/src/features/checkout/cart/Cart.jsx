@@ -67,12 +67,12 @@ const Cart = ({ step, cart, numSelected }) => {
             <Table>
               <AppTableHead
                 headLabels={TABLE_HEAD}
-                rowCount={cart.cartItems.length}
+                rowCount={cart?.cartItems?.length}
                 numSelected={numSelected}
                 onSelectAllClick={handleSelectAllClick}
               />
               <TableBody>
-                {cart.cartItems.map((item) => (
+                {cart?.cartItems?.map((item) => (
                   <LineItem
                     key={item.productId}
                     item={item}
