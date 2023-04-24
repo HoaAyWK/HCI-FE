@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from "prop-types";
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
@@ -24,6 +25,9 @@ import { useAppThemeUpdate, useAppTheme } from "../../../context/AppThemeContext
 import { useLocalStorage } from "../../../hooks";
 import AlgoliaSearch from './search-bar/AlgoliaSearch';
 import hciLogo from '/new_hci_logo.svg';
+import { useDispatch, useSelector } from "react-redux";
+import ACTION_STATUS from "../../../constants/actionStatus";
+import { getCart } from "../../../features/common/cartSlice";
 
 // ----------------------------------------------------------------------
 
@@ -90,8 +94,20 @@ const MENU_OPTIONS = [
 ];
 
 export default function Header({ user, onOpenNav }) {
+  const dispatch = useDispatch();
   const [, setModeValueStored] = useLocalStorage('darkMode', null);
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const { cart, getCartStatus } = useSelector((state) => state.cart);
+  const totalItems = useMemo(() => {
+    if (!cart || !cart?.cartItems) {
+      return 0;
+    }
+
+    if (cart?.cartItems?.length) {
+      const initialValue = 0;
+      return cart.cartItems.reduce((sum, item) => sum + item.quantity, initialValue);
+    }
+  }, [cart]);
 
   const darkTheme = useAppTheme();
   const { setLightMode, setDarkMode } = useAppThemeUpdate();
@@ -131,7 +147,13 @@ export default function Header({ user, onOpenNav }) {
     } else {
       return 'ic:twotone-light-mode';
     }
-  }
+  };
+
+  useEffect(() => {
+    if (getCartStatus === ACTION_STATUS.IDLE) {
+      dispatch(getCart());
+    }
+  }, []);
 
   return (
     <StyledRoot>
@@ -190,7 +212,7 @@ export default function Header({ user, onOpenNav }) {
 
             <Link component={RouterLink} to='/checkout' underline='none'>
               <IconButton size='medium' color='default'>
-                <Badge badgeContent={4} color='error'>
+                <Badge badgeContent={totalItems} color='error'>
                   <Iconify icon='ic:outline-shopping-cart' width={28} height={28} />
                 </Badge>
               </IconButton>

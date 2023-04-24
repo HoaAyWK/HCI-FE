@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { Box, Grid, Stack, Step, StepLabel, Stepper } from '@mui/material';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Box, CircularProgress, Grid, Stack, Step, StepLabel, Stepper } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 
 import BillingAndAddress from './BillingAndAddress';
 import Cart from './cart';
 import OrderSummary from './OrderSummary';
 import { BillingAddress } from './components';
 import PaymentOptions from './PaymentOptions';
+import ACTION_STATUS from '../../constants/actionStatus';
+import { getCart } from '../common/cartSlice';
 
 const steps = [
   'Cart',
@@ -35,7 +38,26 @@ const ADDRESSES = [
 ];
 
 const Checkout = () => {
+  const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
+  const { getCartStatus, cart } = useSelector((state) => state.cart);
+
+  const numSelected = useMemo(() => {
+    if (!cart || !cart?.cartItems) {
+      return 0;
+    }
+
+    if (cart.cartItems) {
+      const initialValue = 0;
+      return cart.cartItems.reduce((sum, item) => item.status ? sum + 1 : sum, initialValue);
+    }
+  }, [cart]);
+
+  useEffect(() => {
+    if (getCartStatus === ACTION_STATUS.IDLE) {
+      dispatch(getCart());
+    }
+  }, []);
 
   const handleNext = () => {
     setActiveStep(prevStep => prevStep + 1);
@@ -44,6 +66,27 @@ const Checkout = () => {
   const handleBack = () => {
     setActiveStep(prevStep => prevStep - 1);
   };
+
+  if (getCartStatus === ACTION_STATUS.IDLE ||
+    getCartStatus === ACTION_STATUS.LOADING) {
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          py: 5,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (getCartStatus === ACTION_STATUS.FAILED) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <>
@@ -62,7 +105,7 @@ const Checkout = () => {
       </Grid>
       <Grid container spacing={2} sx={{ mt: 4 }}>
         <Grid item xs={12} md={8}>
-          <Cart step={activeStep} />
+          <Cart step={activeStep} cart={cart} numSelected={numSelected} />
           <BillingAndAddress addresses={ADDRESSES} step={activeStep} onNext={handleNext} onBack={handleBack} />
           <PaymentOptions step={activeStep} onBack={handleBack} />
         </Grid>
@@ -75,7 +118,15 @@ const Checkout = () => {
                 onClickEdit={handleBack}
               />
             )}
-            <OrderSummary step={activeStep} onNext={handleNext} onClickEdit={() => setActiveStep(0)} />
+            {numSelected > 0 && (
+              <OrderSummary
+                cart={cart}
+                step={activeStep}
+                onNext={handleNext}
+                onClickEdit={() => setActiveStep(0)}
+                numSelected={numSelected}
+              />
+            )}
           </Stack>
         </Grid>
       </Grid>

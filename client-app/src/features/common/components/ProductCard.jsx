@@ -1,13 +1,19 @@
 import React, { useMemo } from 'react';
-import { Link as RouterLink} from 'react-router-dom';
+import { Link as RouterLink, useNavigate} from 'react-router-dom';
 import { Box, Button, Grid, IconButton, Link, Rating, Stack, Typography  } from '@mui/material';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useSnackbar } from 'notistack';
+import { useDispatch } from 'react-redux';
 
 import { Iconify, Label } from '../../../components'
 import { fCurrency } from '../../../utils/formatNumber';
+import { addToCart } from '../cartSlice';
 
 const ProductCard = ({ product }) => {
   const { id, name, media, price, discount } = product;
-
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   const priceReal = useMemo(() => {
     if (discount > 0) {
@@ -16,6 +22,32 @@ const ProductCard = ({ product }) => {
 
     return price;
   }, [price, discount]);
+
+  const handleClickAddToCart = async () => {
+    try {
+      const actionResult = await dispatch(addToCart({ productId: id, quantity: 1 }));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar('Added 1 item to your cart', { variant: 'success' });
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  };
+
+  const handleClickBuyNow = async () => {
+    try {
+      const actionResult = await dispatch(addToCart({ productId: id, quantity: 1 }));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        navigate('/checkout');
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  };
 
   return (
     <Box
@@ -116,14 +148,24 @@ const ProductCard = ({ product }) => {
       >
         <Grid container spacing={1}>
           <Grid item xs={7}>
-            <Button variant='contained' color='primary' fullWidth>
+            <Button
+              variant='contained'
+              color='primary'
+              fullWidth
+              onClick={handleClickAddToCart}
+            >
               {/* <Iconify icon='mdi:add-shopping-cart' width={24} height={24} />
               &nbsp; */}
               Add To Cart
             </Button>
           </Grid>
           <Grid item xs={5}>
-            <Button variant='contained' color='warning' fullWidth>
+            <Button
+              variant='contained'
+              color='warning'
+              fullWidth
+              onClick={handleClickBuyNow}
+            >
               Buy Now
             </Button>
           </Grid>

@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Box,
   Button,
   Card,
   Link,
+  Stack,
   Table,
   TableBody,
   TableContainer,
+  Typography,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { LineItem } from './components';
 import { Iconify } from '../../../components';
 import Scrollbar from '../../../components/scrollbar';
 import { AppTableHead, AppTableToolbar } from '../../../components/table';
+import { checkAll, checkItem, removeMultiItems } from '../../common/cartSlice';
+import emptyCart from '../../../assets/images/empty_cart.png';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Product', alignRight: false },
@@ -23,81 +28,90 @@ const TABLE_HEAD = [
   { id: 'action', label: '', alignRight: false },
 ];
 
-const lineItems = [
-  {
-    id: 1,
-    name: 'Arizona Soft Footbed Sandal',
-    price: 29.99,
-    quantity: 1,
-    image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80'
-  },
-  {
-    id: 3,
-    name: 'Bitis Hunter',
-    price: 35.99,
-    quantity: 1,
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80'
-  },
-  {
-    id: 2,
-    name: 'Zoom Freak 2',
-    price: 12.99,
-    quantity: 1,
-    image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1168&q=80'
-  },
-];
+const Cart = ({ step, cart, numSelected }) => {
+  const dispatch = useDispatch();
+  const selectedItems = useMemo(() => {
+    if (!cart || !cart.cartItems || cart.cartItems.length === 0) {
+      return 0;
+    }
 
-const Cart = ({ step }) => {
-  const [selected, setSelected] = useState([]);
+    return cart.cartItems.filter((item) => item.status);
+  }, [cart]);
 
   const handleSelectAllClick = (e) => {
+
     if (e.target.checked) {
-      const newSelecteds = lineItems.map((item) => item.name);
-      setSelected(newSelecteds);
+      dispatch(checkAll({ cartId: cart.id, checked: e.target.checked }));
       return;
     }
-    setSelected([]);
+
+    dispatch(checkAll({ cartId: cart.id, checked: false }));
   };
 
-  const handleClick = (e, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (e, productId, data) => {
+    dispatch(checkItem(data));
+  };
 
-    let newSelected = [];
+  const handleClickDeleteAll = () => {
+    const productIds = selectedItems.map((item) => item.productId);
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-
-    setSelected(newSelected);
+    dispatch(removeMultiItems({ cartId: cart.id, productIds }));
   };
 
   return (
     <Box sx={{ display: step === 0 ? 'block' : 'none' }}>
       <Card>
-        <AppTableToolbar numSelected={selected.length} />
+        <AppTableToolbar numSelected={numSelected} handleClickDelete={handleClickDeleteAll} />
         <Scrollbar>
           <TableContainer sx={{ minWidth: 500 }}>
             <Table>
               <AppTableHead
                 headLabels={TABLE_HEAD}
-                rowCount={lineItems.length}
-                numSelected={selected.length}
+                rowCount={cart.cartItems.length}
+                numSelected={numSelected}
                 onSelectAllClick={handleSelectAllClick}
               />
               <TableBody>
-                {lineItems.map((item) => (
-                  <LineItem key={item.id} item={item} selected={selected} handleClick={handleClick} />
+                {cart.cartItems.map((item) => (
+                  <LineItem
+                    key={item.productId}
+                    item={item}
+                    handleClick={handleClick}
+                    cartId={cart.id}
+                  />
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
         </Scrollbar>
+        {!cart.cartItems?.length > 0 && (
+          <Box
+            sx={{
+              width: '100%',
+              height: 240,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              py: 2
+            }}
+          >
+            <Stack spacing={1}>
+              <Box
+                component='img'
+                alt='empty cart'
+                src={emptyCart}
+                sx={{
+                  width: 144,
+                  height: 144,
+                  objectFit: 'cover',
+                }}
+              />
+              <Typography variant='subtitle1' color='text.secondary' textAlign='center'>
+                Your cart is empty.
+              </Typography>
+            </Stack>
+          </Box>
+        )}
       </Card>
       <Box sx={{ mt: 4 }}>
         <Link component={RouterLink} to='/' underline='none' color='inherit'>

@@ -4,7 +4,7 @@ import { Box, IconButton } from '@mui/material';
 import { StyledBox } from './styles';
 import Iconify from '../iconify';
 
-const QuantityControl = ({ quantity, increaseQuantity, decreaseQuantity }) => {
+const QuantityControl = ({ quantity, increaseQuantity, decreaseQuantity, max }) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
       <StyledBox>
@@ -14,7 +14,7 @@ const QuantityControl = ({ quantity, increaseQuantity, decreaseQuantity }) => {
         <Box sx={{ mx: 1, minWidth: 20, display: 'flex', justifyContent: 'center' }}>
           {quantity}
         </Box>
-        <IconButton size='small' onClick={increaseQuantity}>
+        <IconButton size='small' onClick={increaseQuantity} disabled={quantity === max}>
           <Iconify icon='eva:plus-fill' width={20} height={20} />
         </IconButton>
       </StyledBox>

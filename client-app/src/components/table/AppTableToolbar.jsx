@@ -11,7 +11,7 @@ const StyledRoot = styled(Toolbar)(({ theme }) => ({
   padding: theme.spacing(0, 1, 0, 3),
 }));
 
-const AppTableToolbar = ({ numSelected }) => {
+const AppTableToolbar = ({ numSelected, handleClickDelete }) => {
   return (
     <StyledRoot
       sx={{
@@ -24,11 +24,13 @@ const AppTableToolbar = ({ numSelected }) => {
       <Typography variant='h6' component='span'>
         {`Cart (${numSelected} ${numSelected > 1 ? 'items selected' : 'item selected' })`}
       </Typography>
-      <Tooltip title='Delete'>
-        <IconButton>
-          <Iconify icon='eva:trash-2-fill' />
-        </IconButton>
-      </Tooltip>
+      {numSelected > 0 && (
+        <Tooltip title='Delete'>
+          <IconButton onClick={handleClickDelete}>
+            <Iconify icon='eva:trash-2-fill' />
+          </IconButton>
+        </Tooltip>
+      )}
     </StyledRoot>
   );
 };

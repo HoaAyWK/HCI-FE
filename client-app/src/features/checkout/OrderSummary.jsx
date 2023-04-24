@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Button, Card, CardContent, Divider, Stack, Typography } from '@mui/material';
+
 import { Iconify } from '../../components';
+import { fCurrency } from '../../utils/formatNumber';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -24,7 +26,20 @@ const OrderLine = ({ label, value, color, typoVariant }) => {
   );
 };
 
-const OrderSummary = ({ step, onNext, onClickEdit }) => {
+const OrderSummary = ({ step, onNext, onClickEdit, cart, numSelected }) => {
+  const subTotal = useMemo(() => {
+    if (!cart || !cart.cartItems) {
+      return 0;
+    }
+
+    if (cart.cartItems) {{
+      const initialValue = 0;
+      return cart.cartItems.reduce(
+        (sum, item) => item.status ?
+          sum + item.quantity * (item.price - item.price * (item.discount / 100)) : 0, initialValue);
+    }}
+  }, [cart]);
+
   return (
     <Box sx={{ width: '100%', m: 0 }}>
       <Card>
@@ -43,8 +58,7 @@ const OrderSummary = ({ step, onNext, onClickEdit }) => {
           </Box>
 
           <Stack spacing={1}>
-            <OrderLine label='Sub Total' value='$199.99' />
-            <OrderLine label='Discount' value='-' />
+            <OrderLine label='Sub Total' value={fCurrency(subTotal)} />
             <OrderLine label='Shipping' value='Free' />
           </Stack>
           <Divider sx={{ my: 2 }} />
@@ -53,7 +67,7 @@ const OrderSummary = ({ step, onNext, onClickEdit }) => {
               Total
             </Typography>
             <Typography variant='body1' fontWeight='bold' color='error'>
-              $199.99
+            {fCurrency(subTotal)}
             </Typography>
           </StyledBox>
           <Box sx={{ width: '100%', mt: 1 }}>
@@ -64,7 +78,7 @@ const OrderSummary = ({ step, onNext, onClickEdit }) => {
         </CardContent>
       </Card>
 
-      {step === 0 && (
+      {step === 0 &&  (
         <Box sx={{ width: '100%', mt: 4 }}>
           <Button
             color='primary'

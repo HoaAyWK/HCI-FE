@@ -2,21 +2,39 @@ import axiosClient from './axios/axiosClient';
 
 class CartApi {
   get = () => {
-    const url = '/cart';
+    const url = '/cart/user';
 
     return axiosClient.get(url);
   };
 
   addToCart = (item) => {
-    const url = '/cart';
+    const url = '/cart/update-cart-item';
 
     return axiosClient.put(url, item);
   };
 
-  removeFromCart = (itemId) => {
-    const url = '/cart';
+  checkItem = (data) => {
+    const url = '/cart/check-item';
 
-    return axiosClient.put(url, itemId);
+    return axiosClient.put(url, data);
+  };
+
+  checkAll = (data) => {
+    const url = '/cart/check-all';
+
+    return axiosClient.put(url, data);
+  };
+
+  removeFromCart = (data) => {
+    const url = '/cart/remove-item';
+
+    return axiosClient.put(url, data);
+  };
+
+  removeMultiFromCart = (data) => {
+    const url = '/cart/remove-multi-items';
+
+    return axiosClient.put(url, data);
   };
 
   decreaseByOne = (itemId) => {

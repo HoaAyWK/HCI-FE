@@ -7,8 +7,10 @@ const initialState = {
   cart: null,
   getCartStatus: ACTION_STATUS.IDLE,
   addToCartStatus: ACTION_STATUS.IDLE,
-  decreaseQuantity: ACTION_STATUS.IDLE,
-  removeFromCartStatus: ACTION_STATUS.IDLE,
+  checkItemStatus: ACTION_STATUS.IDLE,
+  checkAllStatus: ACTION_STATUS.IDLE,
+  removeItemStatus: ACTION_STATUS.IDLE,
+  removeMultiItemsStatus: ACTION_STATUS.IDLE,
 };
 
 export const getCart = createAsyncThunk(
@@ -32,10 +34,31 @@ export const removeFromCart = createAsyncThunk(
   }
 );
 
-export const decreaseQuantity = createAsyncThunk(
-  'cart/decrease',
-  async (itemId) => {
-    return await cartApi.decreaseByOne(itemId);
+export const checkItem = createAsyncThunk(
+  'cart/checkItem',
+  async (data) => {
+    return await cartApi.checkItem(data);
+  }
+);
+
+export const checkAll = createAsyncThunk(
+  'cart/checkAll',
+  async (data) => {
+    return await cartApi.checkAll(data);
+  }
+);
+
+export const removeItem = createAsyncThunk(
+  'cart/remove',
+  async (data) => {
+    return await cartApi.removeFromCart(data);
+  }
+);
+
+export const removeMultiItems = createAsyncThunk(
+  'cart/removeMulti',
+  async (data) => {
+    return await cartApi.removeMultiFromCart(data);
   }
 );
 
@@ -69,8 +92,9 @@ const cartSlice = createSlice({
       .addCase(addToCart.pending, (state) => {
         state.addToCartStatus = ACTION_STATUS.LOADING;
       })
-      .addCase(addToCart.fulfilled, (state) => {
+      .addCase(addToCart.fulfilled, (state, action) => {
         state.addToCartStatus = ACTION_STATUS.SUCCEEDED;
+        state.cart = action.payload;
       })
       .addCase(addToCart.rejected, (state) => {
         state.addToCartStatus = ACTION_STATUS.FAILED;
@@ -78,26 +102,53 @@ const cartSlice = createSlice({
 
 
 
-      .addCase(removeFromCart.pending, (state) => {
-        state.removeFromCartStatus = ACTION_STATUS.LOADING;
+      .addCase(checkItem.pending, (state) => {
+        state.checkItemStatus = ACTION_STATUS.LOADING;
       })
-      .addCase(removeFromCart.fulfilled, (state) => {
-        state.removeFromCartStatus = ACTION_STATUS.SUCCEEDED;
+      .addCase(checkItem.fulfilled, (state, action) => {
+        state.checkItemStatus = ACTION_STATUS.SUCCEEDED;
+        state.cart = action.payload;
       })
-      .addCase(removeFromCart.rejected, (state) => {
-        state.removeFromCartStatus = ACTION_STATUS.FAILED;
+      .addCase(checkItem.rejected, (state) => {
+        state.checkItemStatus = ACTION_STATUS.FAILED;
       })
 
 
 
-      .addCase(decreaseQuantity.pending, (state) => {
-        state.decreaseQuantity = ACTION_STATUS.LOADING;
+      .addCase(checkAll.pending, (state) => {
+        state.checkAllStatus = ACTION_STATUS.LOADING;
       })
-      .addCase(decreaseQuantity.fulfilled, (state) => {
-        state.decreaseQuantity = ACTION_STATUS.SUCCEEDED;
+      .addCase(checkAll.fulfilled, (state, action) => {
+        state.checkAllStatus = ACTION_STATUS.SUCCEEDED;
+        state.cart = action.payload;
       })
-      .addCase(decreaseQuantity.rejected, (state) => {
-        state.decreaseQuantity = ACTION_STATUS.FAILED;
+      .addCase(checkAll.rejected, (state) => {
+        state.checkAllStatus = ACTION_STATUS.FAILED;
+      })
+
+
+      .addCase(removeItem.pending, (state) => {
+        state.removeItemStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(removeItem.fulfilled, (state, action) => {
+        state.removeItemStatus = ACTION_STATUS.SUCCEEDED;
+        state.cart = action.payload;
+      })
+      .addCase(removeItem.rejected, (state) => {
+        state.removeItemStatus = ACTION_STATUS.FAILED;
+      })
+
+
+
+      .addCase(removeMultiItems.pending, (state) => {
+        state.removeMultiItemsStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(removeMultiItems.fulfilled, (state, action) => {
+        state.removeMultiItemsStatus = ACTION_STATUS.SUCCEEDED;
+        state.cart = action.payload;
+      })
+      .addCase(removeMultiItems.rejected, (state) => {
+        state.removeMultiItemsStatus = ACTION_STATUS.FAILED;
       })
   }
 });
