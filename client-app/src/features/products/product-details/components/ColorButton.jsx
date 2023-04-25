@@ -3,6 +3,8 @@ import { Stack, Box, Typography } from '@mui/material';
 
 import { StyledBox, StyledCard, StyledSelected } from './styles';
 import { Iconify } from '../../../../components';
+import { COLOR_LIST } from '../../../../constants/colors';
+import { fCurrency } from '../../../../utils/formatNumber';
 
 const ColorButton = ({ colorItem, select }) => {
   return (
@@ -32,10 +34,10 @@ const ColorButton = ({ colorItem, select }) => {
           />
           <Stack spacing={0.5}>
             <Typography variant='body2' color='text.primary' textAlign='center'>
-              {colorItem.color}
+              {COLOR_LIST[colorItem.color]}
             </Typography>
             <Typography variant='body2' color='text.secondary' textAlign='center'>
-              ${colorItem.price}
+              {fCurrency(colorItem.realPrice)}
             </Typography>
           </Stack>
         </Stack>

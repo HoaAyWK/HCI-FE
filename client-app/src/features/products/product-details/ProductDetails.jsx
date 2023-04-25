@@ -1,5 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Grid, Stack, Typography, Rating, Divider, Button, Tab, Pagination, LinearProgress } from '@mui/material';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import { Box, Grid, Stack, Typography, Rating, Button, Tab, Pagination, LinearProgress } from '@mui/material';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 import { SyncSlider } from '../components';
 import { StyledPaper } from '../components/styles';
@@ -7,10 +10,12 @@ import { Iconify, Loading, QuantityControl, ShowMoreParagraph } from '../../../c
 import ProductReviewDialog from './ProductReviewDialog';
 import { ColorButton, SpecificationsButton, Divider as DashedDivider } from './components';
 import ProductReviews from './product-reviews';
-import { useDispatch, useSelector } from 'react-redux';
 import { getProductDetailSingle } from '../../common/productDetailsSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import { fCurrency } from '../../../utils/formatNumber';
+import { createMarkup } from '../../../utils/sanitizeHtml';
+import { addToCart } from '../../common/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 const RATINGS  = [
   { name: '5 Star', percentage: 70, numOfRatings: 16 },
@@ -20,85 +25,6 @@ const RATINGS  = [
   { name: '1 Star', percentage: 3, numOfRatings: 1 },
 ];
 
-
-const VARIANTS = [
-  {
-    specifications: '8GB RAM 256GB SSD',
-    price: 1999,
-    discount: 99,
-    colors: [ 'Black', 'Sliver', 'White' ],
-    selected: true,
-  },
-  {
-    specifications: '8GB RAM 512GB SSD',
-    price: 2999,
-    discount: 499,
-    colors: [ 'Black', 'Sliver' ],
-    selected: false,
-  },
-  {
-    specifications: '16GB RAM 256GB SSD',
-    price: 3499,
-    discount: 299,
-    colors: [ 'Blue' ],
-    selected: false,
-  },
-  {
-    specifications: '16GB RAM 512GB SSD',
-    price: 5000,
-    discount: 1000,
-    colors: [ 'Sliver', 'White' ],
-    selected: false,
-  },
-];
-
-const COLORS = [
-  {
-    id: 1,
-    color: 'White',
-    image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
-    price: 5000,
-    select: true
-  },
-  {
-    id: 2,
-    color: 'Silver',
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
-    price: 5000,
-    select: false
-  },
-];
-
-const images = [
-  {
-    id: 1,
-    url: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
-  },
-  {
-    id: 2,
-    url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
-  },
-  {
-    id: 4,
-    url: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-  },
-  {
-    id: 3,
-    url: 'https://images.unsplash.com/photo-1485988412941-77a35537dae4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1196&q=80',
-  },
-  {
-    id: 5,
-    url: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-  },
-  {
-    id: 6,
-    url: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1332&q=80',
-  },
-  {
-    id: 7,
-    url: 'https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80'
-  },
-];
 
 const product = {
   name: 'Laptop Thinkpad E490',
@@ -114,17 +40,66 @@ const ProductDetails = (props) => {
   const dispatch = useDispatch();
   const { getSingleStatus, productSingle } = useSelector((state) => state.productDetails);
   const [openReview, setOpenReview] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+
+  const variantColors = useMemo(() => {
+    if (!productSingle && !productSingle?.sameOriginProducts) {
+      return [];
+    }
+
+    return productSingle.sameOriginProducts
+      .filter((product) => product.specifications === productSingle.specifications);
+  }, [productSingle]);
+
 
   useEffect(() => {
     dispatch(getProductDetailSingle(id));
   }, [id]);
 
   const handleCloseReview = () => {
-    setOpenReview(false);;
+    setOpenReview(false);
   };
 
   const handleOpenReview = () => {
     setOpenReview(true);
+  };
+
+  const handleIncreaseQuantity = () => {
+    setQuantity(prev => prev + 1);
+  };
+
+  const handleDecreaseQuantity = () => {
+    setQuantity(prev => prev - 1);
+  };
+
+  const handleClickAddToCart = async () => {
+    try {
+      const actionResult = await dispatch(addToCart({ productId: id, quantity: quantity }));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar(`Added ${quantity} item to your cart`, { variant: 'success' });
+        setQuantity(1);
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  };
+
+  const handleClickBuyNow = async () => {
+    try {
+      const actionResult = await dispatch(addToCart({ productId: id, quantity: quantity }));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        setQuantity(1);
+        navigate('/checkout');
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   if (getSingleStatus === ACTION_STATUS.IDLE ||
@@ -164,20 +139,34 @@ const ProductDetails = (props) => {
             </Stack>
             <DashedDivider />
             <Grid container spacing={2} sx={{ mb: 2 }}>
-              {VARIANTS.map((variant) => (
-                <Grid item xs={12} md={6} key={variant.specifications}>
-                  <SpecificationsButton variant={variant} select={variant.selected} />
-                </Grid>
-              ))}
+              {productSingle.sameOriginProducts.map((variant) => {
+                if (variant.id === id) {
+                  return (
+                    <Grid item xs={12} md={6} key={variant.id}>
+                      <SpecificationsButton variant={variant} select={variant.specifications === productSingle.specifications} />
+                    </Grid>
+                  )
+                }
+
+                if (variant.specifications !== productSingle.specifications) {
+                  return (
+                    <Grid item xs={12} md={6} key={variant.id}>
+                      <SpecificationsButton variant={variant} select={variant.specifications === productSingle.specifications} />
+                    </Grid>
+                  )
+                }
+
+                return (<Fragment key={variant.id} />);
+                })}
             </Grid>
             <Box sx={{ mt: 2, mb: 3, width: '100%' }}>
               <Typography variant='body1'>
                 Colors
               </Typography>
               <Grid container spacing={2} sx={{ mt: 0.5 }}>
-                {COLORS.map((color) => (
-                  <Grid item key={color.id} xs={12} md={4}>
-                    <ColorButton colorItem={color} select={color.select} />
+                {variantColors.map((variant) => (
+                  <Grid item key={variant.id} xs={12} md={4}>
+                    <ColorButton colorItem={variant} select={variant.id === id} />
                   </Grid>
                 ))}
               </Grid>
@@ -188,18 +177,35 @@ const ProductDetails = (props) => {
                 <Typography variant='body1'>
                   Quantity
                 </Typography>
-                <QuantityControl quantity={1} />
+                <QuantityControl
+                  quantity={quantity}
+                  increaseQuantity={handleIncreaseQuantity}
+                  decreaseQuantity={handleDecreaseQuantity}
+                  max={productSingle?.warehouse}
+                />
               </Box>
             </Stack>
             <Grid container spacing={2} sx={{ mt: 4 }}>
               <Grid item xs={6}>
-                <Button variant='contained' color='primary' fullWidth size='large'>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  fullWidth
+                  size='large'
+                  onClick={handleClickAddToCart}
+                >
                   <Iconify icon='material-symbols:add-shopping-cart-outline-rounded' width={24} height={24} />
                   Add To Cart
                 </Button>
               </Grid>
               <Grid item xs={6}>
-                <Button variant='contained' color='warning' fullWidth size='large'>
+                <Button
+                  variant='contained'
+                  color='warning'
+                  fullWidth
+                  size='large'
+                  onClick={handleClickBuyNow}
+                >
                   Buy Now
                 </Button>
               </Grid>
@@ -212,23 +218,11 @@ const ProductDetails = (props) => {
             <Typography variant='h6' component='h1' color='text.primary' sx={{ mb: 2 }}>
               Description
             </Typography>
-            <ShowMoreParagraph height={190}>
-              Sunt do enim qui excepteur aute. Ullamco non ad culpa culpa fugiat dolore minim non. Laboris eu deserunt ex laboris quis proident enim cupidatat non duis sint incididunt ut tempor. Veniam eu Lorem sit amet do nisi reprehenderit ea do exercitation fugiat. Proident cupidatat nostrud nostrud eu voluptate anim fugiat quis eu adipisicing culpa enim. Voluptate aute tempor nostrud pariatur sint ea do non proident proident laboris. Enim magna et excepteur dolor cupidatat pariatur esse cupidatat qui deserunt officia.
-
-Reprehenderit Lorem proident incididunt deserunt officia ipsum occaecat eiusmod pariatur. Eiusmod et dolore ipsum est do et consectetur duis sunt culpa dolor qui. Proident aliqua laborum magna et tempor culpa amet proident. Proident eiusmod veniam ipsum do nulla eiusmod.
-
-Cupidatat culpa culpa reprehenderit pariatur dolore dolore do magna duis magna exercitation tempor ut. Reprehenderit eiusmod fugiat nulla veniam est velit. Aliquip esse consequat deserunt aute.
-Sunt do enim qui excepteur aute. Ullamco non ad culpa culpa fugiat dolore minim non. Laboris eu deserunt ex laboris quis proident enim cupidatat non duis sint incididunt ut tempor. Veniam eu Lorem sit amet do nisi reprehenderit ea do exercitation fugiat. Proident cupidatat nostrud nostrud eu voluptate anim fugiat quis eu adipisicing culpa enim. Voluptate aute tempor nostrud pariatur sint ea do non proident proident laboris. Enim magna et excepteur dolor cupidatat pariatur esse cupidatat qui deserunt officia.
-
-Reprehenderit Lorem proident incididunt deserunt officia ipsum occaecat eiusmod pariatur. Eiusmod et dolore ipsum est do et consectetur duis sunt culpa dolor qui. Proident aliqua laborum magna et tempor culpa amet proident. Proident eiusmod veniam ipsum do nulla eiusmod.
-
-Cupidatat culpa culpa reprehenderit pariatur dolore dolore do magna duis magna exercitation tempor ut. Reprehenderit eiusmod fugiat nulla veniam est velit. Aliquip esse consequat deserunt aute.
-Sunt do enim qui excepteur aute. Ullamco non ad culpa culpa fugiat dolore minim non. Laboris eu deserunt ex laboris quis proident enim cupidatat non duis sint incididunt ut tempor. Veniam eu Lorem sit amet do nisi reprehenderit ea do exercitation fugiat. Proident cupidatat nostrud nostrud eu voluptate anim fugiat quis eu adipisicing culpa enim. Voluptate aute tempor nostrud pariatur sint ea do non proident proident laboris. Enim magna et excepteur dolor cupidatat pariatur esse cupidatat qui deserunt officia.
-
-Reprehenderit Lorem proident incididunt deserunt officia ipsum occaecat eiusmod pariatur. Eiusmod et dolore ipsum est do et consectetur duis sunt culpa dolor qui. Proident aliqua laborum magna et tempor culpa amet proident. Proident eiusmod veniam ipsum do nulla eiusmod.
-
-Cupidatat culpa culpa reprehenderit pariatur dolore dolore do magna duis magna exercitation tempor ut. Reprehenderit eiusmod fugiat nulla veniam est velit. Aliquip esse consequat deserunt aute.
-            </ShowMoreParagraph>
+            <ShowMoreParagraph
+              isDanger={true} content={productSingle.description}
+              heigth={product?.description?.length > 200 ? '190px': 'auto'}
+              canShowMore={product?.description?.length > 200 ? true: false}
+            />
             <Box sx={{ pb: 6 }} />
           </StyledPaper>
         </Grid>
@@ -237,9 +231,11 @@ Cupidatat culpa culpa reprehenderit pariatur dolore dolore do magna duis magna e
             <Typography variant='h6' component='h1' color='text.primary' sx={{ mb: 2 }}>
               Information
             </Typography>
-            <Typography varaint='body1'>
-              Laboris est Lorem laborum ut voluptate ut aute ad mollit adipisicing sit nulla deserunt. Consectetur cupidatat non reprehenderit ipsum enim quis esse dolor excepteur commodo deserunt consectetur pariatur laboris. Quis in minim occaecat consectetur est velit ullamco ad mollit laboris et officia laboris aliqua. Esse id ea consequat minim dolore. Adipisicing commodo ea fugiat tempor ullamco nostrud nisi proident culpa. Cillum labore labore ullamco amet nulla tempor minim dolore laboris nulla ex esse.
-            </Typography>
+            <Typography
+              variant='body1'
+              color='text.primary'
+              dangerouslySetInnerHTML={createMarkup(productSingle?.information)}
+            />
           </StyledPaper>
         </Grid>
       </Grid>

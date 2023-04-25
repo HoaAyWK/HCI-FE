@@ -4,10 +4,12 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import { Iconify } from '../../../../components';
 import { StyledBox, StyledCard, StyledSelected } from './styles';
+import { fCurrency } from '../../../../utils/formatNumber';
 
 const SpecificationsButton = ({ variant, select }) => {
+  console.log(variant);
   return (
-    <Link component={RouterLink} to='#' underline='none'>
+    <Link component={RouterLink} to={`/products/${variant.id}`} underline='none'>
       <StyledBox >
         <StyledCard className={select ? 'active' : ''}>
           <StyledSelected className='check'>
@@ -18,7 +20,7 @@ const SpecificationsButton = ({ variant, select }) => {
               {variant.specifications}
             </Typography>
             <Typography variant='body2' color='text.secondary' textAlign='center'>
-              ${variant.price - variant.discount}
+              {fCurrency(variant.realPrice)}
             </Typography>
           </Stack>
         </StyledCard>

@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { alpha } from '@mui/material/styles';
 import { Box, Button, Typography } from '@mui/material';
 
-const ShowMoreParagraph = ({ height, children }) => {
+import { createMarkup } from '../utils/sanitizeHtml';
+
+const ShowMoreParagraph = ({ height, isDanger, canShowMore, content }) => {
   const [showMore, setShowMore] = useState(false);
 
   const handleToggleShowMore = () => {
@@ -18,11 +20,19 @@ const ShowMoreParagraph = ({ height, children }) => {
           mb: 1,
         }}
       >
-        <Typography variant='body1'>
-          {children}
-        </Typography>
+        {isDanger ? (
+          <Typography
+            variant='body1'
+            color='text.primary'
+            dangerouslySetInnerHTML={createMarkup(content)}
+          />
+        ) : (
+          <Typography variant='body1'>
+            {content}
+          </Typography>
+        )}
       </Box>
-      {!showMore && (
+      {canShowMore &&  !showMore && (
         <Box
           sx={{
             display: 'flex',
