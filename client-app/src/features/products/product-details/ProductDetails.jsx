@@ -8,7 +8,7 @@ import ProductReviewDialog from './ProductReviewDialog';
 import { ColorButton, SpecificationsButton, Divider as DashedDivider } from './components';
 import ProductReviews from './product-reviews';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductDetails, selectProductDetailById } from '../../common/productDetailsSlice';
+import { getProductDetailSingle } from '../../common/productDetailsSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import { fCurrency } from '../../../utils/formatNumber';
 
@@ -67,14 +67,57 @@ const COLORS = [
     price: 5000,
     select: false
   },
-]
+];
+
+const images = [
+  {
+    id: 1,
+    url: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
+  },
+  {
+    id: 2,
+    url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
+  },
+  {
+    id: 4,
+    url: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+  },
+  {
+    id: 3,
+    url: 'https://images.unsplash.com/photo-1485988412941-77a35537dae4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1196&q=80',
+  },
+  {
+    id: 5,
+    url: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+  },
+  {
+    id: 6,
+    url: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1332&q=80',
+  },
+  {
+    id: 7,
+    url: 'https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80'
+  },
+];
+
+const product = {
+  name: 'Laptop Thinkpad E490',
+  price: '299.99',
+  priceSale: '349.99',
+  numOfReviews: 99,
+  colors: ['red', 'green', 'blue'],
+  rating: 4.5
+};
 
 const ProductDetails = (props) => {
   const { id } = props;
   const dispatch = useDispatch();
-  const productDetail = useSelector((state) => selectProductDetailById(state, id));
-  const { getProductDetailsStatus } = useSelector((state) => state.productDetails);
+  const { getSingleStatus, productSingle } = useSelector((state) => state.productDetails);
   const [openReview, setOpenReview] = useState(false);
+
+  useEffect(() => {
+    dispatch(getProductDetailSingle(id));
+  }, [id]);
 
   const handleCloseReview = () => {
     setOpenReview(false);;
@@ -84,58 +127,12 @@ const ProductDetails = (props) => {
     setOpenReview(true);
   };
 
-  const product = {
-    name: 'Laptop Thinkpad E490',
-    price: '299.99',
-    priceSale: '349.99',
-    numOfReviews: 99,
-    colors: ['red', 'green', 'blue'],
-    rating: 4.5
-  };
-
-  const images = [
-    {
-      id: 1,
-      url: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
-    },
-    {
-      id: 2,
-      url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
-    },
-    {
-      id: 4,
-      url: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-    },
-    {
-      id: 3,
-      url: 'https://images.unsplash.com/photo-1485988412941-77a35537dae4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1196&q=80',
-    },
-    {
-      id: 5,
-      url: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-    },
-    {
-      id: 6,
-      url: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1332&q=80',
-    },
-    {
-      id: 7,
-      url: 'https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80'
-    },
-  ];
-
-  useEffect(() => {
-    if (getProductDetailsStatus === ACTION_STATUS.IDLE) {
-      dispatch(getProductDetails());
-    }
-  }, []);
-
-  if (getProductDetailsStatus === ACTION_STATUS.IDLE ||
-      getProductDetailsStatus === ACTION_STATUS.LOADING) {
+  if (getSingleStatus === ACTION_STATUS.IDLE ||
+    getSingleStatus === ACTION_STATUS.LOADING) {
     return <Loading />;
   }
 
-  if (getProductDetailsStatus === ACTION_STATUS.FAILED) {
+  if (getSingleStatus === ACTION_STATUS.FAILED) {
     return <Navigate to='/' />;
   }
 
@@ -143,12 +140,12 @@ const ProductDetails = (props) => {
     <>
       <Grid container spacing={4} sx={{ pt: 2 }}>
         <Grid item xs={12} md={6}>
-          <SyncSlider images={productDetail.media} />
+          <SyncSlider images={productSingle.media} />
         </Grid>
         <Grid item xs={12} md={6}>
             <Stack spacing={1}>
               <Typography variant='h5' component='h1'>
-                {productDetail.name}
+                {productSingle.name}
               </Typography>
               <Stack spacing={1} direction='row'>
                 <Rating readOnly value={product.rating} precision={0.5} />
@@ -158,10 +155,10 @@ const ProductDetails = (props) => {
               </Stack>
               <Stack spacing={1} direction='row' alignItems='center'>
                 <Typography variant='h3' component='span' color='error'>
-                  {fCurrency(productDetail.price - (productDetail.price * (productDetail.discount / 100)))}
+                  {fCurrency(productSingle.price - (productSingle.price * (productSingle.discount / 100)))}
                 </Typography>
                 <Typography variant='h4' component='span' color='text.secondary'>
-                  <s>{fCurrency(productDetail.price)}</s>
+                  <s>{fCurrency(productSingle.price)}</s>
                 </Typography>
               </Stack>
             </Stack>

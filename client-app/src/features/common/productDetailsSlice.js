@@ -6,7 +6,9 @@ import ACTION_STATUS from '../../constants/actionStatus';
 const productDetailsAdapter = createEntityAdapter();
 
 const initialState = productDetailsAdapter.getInitialState({
-  getProductDetailsStatus: ACTION_STATUS.IDLE
+  getProductDetailsStatus: ACTION_STATUS.IDLE,
+  getSingleStatus: ACTION_STATUS.IDLE,
+  productSingle: null
 });
 
 export const getProductDetails = createAsyncThunk(
@@ -14,7 +16,14 @@ export const getProductDetails = createAsyncThunk(
   async () => {
     return await productDetailsApi.getAll();
   }
-)
+);
+
+export const getProductDetailSingle = createAsyncThunk(
+  'productDetails/single',
+  async (id) => {
+    return await productDetailsApi.getSingle(id);
+  }
+);
 
 const productDetailsSlice = createSlice({
   name: 'productDetails',
@@ -32,6 +41,18 @@ const productDetailsSlice = createSlice({
       })
       .addCase(getProductDetails.rejected, (state) => {
         state.getProductDetailsStatus = ACTION_STATUS.FAILED;
+      })
+
+
+      .addCase(getProductDetailSingle.pending, (state) => {
+        state.getSingleStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(getProductDetailSingle.fulfilled, (state, action) => {
+        state.getSingleStatus = ACTION_STATUS.SUCCEEDED;
+        state.productSingle = action.payload;
+      })
+      .addCase(getProductDetailSingle.rejected, (state) => {
+        state.getSingleStatus = ACTION_STATUS.FAILED;
       })
   }
 });

@@ -18,6 +18,12 @@ class ProductDetailsApi {
 
     return axiosClient.put(url, data);
   };
+
+  getSingle = (id) => {
+    const url = `/detail/single/${id}`;
+
+    return axiosClient.get(url);
+  }
 };
 
 export default new ProductDetailsApi();
