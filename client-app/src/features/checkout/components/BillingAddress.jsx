@@ -2,9 +2,16 @@ import React from 'react';
 import { Box, Button, Card, CardContent, Stack, Typography } from '@mui/material';
 
 import { Iconify, Label } from '../../../components';
+import { useLocalStorage } from '../../../hooks';
 
 const BillingAddress = ({ item, showTitle, onSelectAddress, onClickEdit, sx }) => {
   const { name, isDefault, address, phone } = item;
+  const [shippingAddressId, setShippingAddressId] = useLocalStorage('shippingAddress', 'default');
+
+  const handleSelectAddress = () => {
+    setShippingAddressId(item.id);
+    onSelectAddress();
+  };
 
   return (
     <Card sx={{ ...sx }}>
@@ -27,9 +34,6 @@ const BillingAddress = ({ item, showTitle, onSelectAddress, onClickEdit, sx }) =
               <Typography variant='body1' fontWeight='bold' color='text.primary'>
                 {name}
               </Typography>
-              <Typography variant='body2' color='text.secondary'>
-                {isDefault ? '(Home)' : '(Office)'}
-              </Typography>
             </Stack>
             {isDefault && !showTitle && (<Label color='info' sx={{ ml: 2 }}>Default</Label>)}
           </Box>
@@ -47,7 +51,7 @@ const BillingAddress = ({ item, showTitle, onSelectAddress, onClickEdit, sx }) =
                     Delete
                   </Button>
                 )}
-                <Button variant='outlined' color='primary' size='small' onClick={onSelectAddress}>
+                <Button variant='outlined' color='primary' size='small' onClick={handleSelectAddress}>
                   Deliver to this address
                 </Button>
               </Stack>

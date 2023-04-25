@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { Box, Button, Grid, IconButton, Link, Stack, Rating, Typography } from '@mui/material';
+import { Box, Button, Grid, IconButton, Link, Stack, Rating, Tooltip, Typography } from '@mui/material';
 
 import { Label, Iconify } from '../../../components';
 import { fCurrency } from '../../../utils/formatNumber';
@@ -83,11 +83,13 @@ const SearchHit = ({ hit }) => {
         </Link>
       </Box>
       <Stack spacing={0.5} sx={{ px: 2, py: 2 }}>
-        <Link color="inherit" underline="hover" component={RouterLink} to={`/products/${objectID}`}>
-          <Typography variant="subtitle2" noWrap>
-            {name}
-          </Typography>
-        </Link>
+        <Tooltip title={name}>
+          <Link color="inherit" underline="hover" component={RouterLink} to={`/products/${objectID}`}>
+            <Typography variant="subtitle2" noWrap>
+              {name}
+            </Typography>
+          </Link>
+        </Tooltip>
         <Rating readOnly value={4} size='small' precision={0.5} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">

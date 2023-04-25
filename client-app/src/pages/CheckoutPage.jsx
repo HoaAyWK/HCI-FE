@@ -1,10 +1,14 @@
 import React from 'react';
+
 import Checkout from '../features/checkout';
+import { Page } from '../components';
 
 const CheckoutPage = () => {
 
   return (
-    <Checkout />
+    <Page title='Checkout'>
+      <Checkout />
+    </Page>
   );
 };
 

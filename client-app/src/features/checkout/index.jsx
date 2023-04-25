@@ -8,39 +8,24 @@ import OrderSummary from './OrderSummary';
 import { BillingAddress } from './components';
 import PaymentOptions from './PaymentOptions';
 import ACTION_STATUS from '../../constants/actionStatus';
-import { getCart } from '../common/cartSlice';
+import { clearCheckoutClick, getCart } from '../common/cartSlice';
+import { useLocalStorage } from '../../hooks';
+import { PAYMENT_OPTIONS } from '../../constants/payment';
 
 const steps = [
   'Cart',
-  'Billing & address',
+  'Shipping address',
   'Payment'
-];
-
-const ADDRESSES = [
-  {
-    name: 'Sioay',
-    isDefault: true,
-    address: '19034 Verna Unions Apt. 164 - Honolulu, RI / 87535',
-    phone: '0391239781'
-  },
-  {
-    name: 'Lucas Steve',
-    isDefault: false,
-    address: 'Di An, Binh Duong, Viet Nam',
-    phone: '06293012801'
-  },
-  {
-    name: 'Mike Williams',
-    isDefault: false,
-    address: '1 Vo Van Ngan stress, Thu Duc, Ho Chi Minh',
-    phone: '0391239781'
-  }
 ];
 
 const Checkout = () => {
   const dispatch = useDispatch();
-  const [activeStep, setActiveStep] = useState(0);
-  const { getCartStatus, cart } = useSelector((state) => state.cart);
+  const [activeStep, setActiveStep] = useLocalStorage('checkoutStep', 0);
+  const { user } = useSelector((state) => state.auth);
+  const [address, setAddress] = useState({ name: user?.firstName + " " + user?.lastName, phone: user?.phone, address: user?.address });
+  const [paymentOption, setPaymentOption] = useState(PAYMENT_OPTIONS.CASH);
+
+  const { getCartStatus, cart, checkoutClicked } = useSelector((state) => state.cart);
 
   const numSelected = useMemo(() => {
     if (!cart || !cart?.cartItems) {
@@ -53,11 +38,39 @@ const Checkout = () => {
     }
   }, [cart]);
 
+  const subTotal = useMemo(() => {
+    if (!cart || !cart?.cartItems || cart?.cartItems?.length === 0) {
+      return 0;
+    }
+
+    if (cart.cartItems) {
+      const initialValue = 0;
+      return cart.cartItems.reduce(
+        (sum, item) => item.status ?
+          sum + item.quantity * (item.price - item.price * (item.discount / 100)) : sum + 0, initialValue);
+    }
+  }, [cart]);
+
+
   useEffect(() => {
     if (getCartStatus === ACTION_STATUS.IDLE) {
       dispatch(getCart());
     }
+
+    if (checkoutClicked) {
+      dispatch(clearCheckoutClick());
+    }
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setAddress({
+        name: user.firstName + " " + user.lastName,
+        phone: user.phone,
+        address: user.address
+      });
+    }
+  }, [user])
 
   const handleNext = () => {
     setActiveStep(prevStep => prevStep + 1);
@@ -65,6 +78,19 @@ const Checkout = () => {
 
   const handleBack = () => {
     setActiveStep(prevStep => prevStep - 1);
+  };
+
+  const onBackActiveStep = (step) => {
+    setActiveStep(step);
+  };
+
+  const handleSelectPaymentOption = (option) => {
+    setPaymentOption(option);
+  };
+
+  const handleCompleteOrder = () => {
+    console.log(paymentOption);
+    console.log(address);
   };
 
   if (getCartStatus === ACTION_STATUS.IDLE ||
@@ -106,25 +132,42 @@ const Checkout = () => {
       <Grid container spacing={2} sx={{ mt: 4 }}>
         <Grid item xs={12} md={8}>
           <Cart step={activeStep} cart={cart} numSelected={numSelected} />
-          <BillingAndAddress addresses={ADDRESSES} step={activeStep} onNext={handleNext} onBack={handleBack} />
-          <PaymentOptions step={activeStep} onBack={handleBack} />
+          <BillingAndAddress
+            user={user}
+            addresses={[]}
+            step={activeStep}
+            onNext={handleNext}
+            onBack={handleBack}
+            onBackActiveStep={onBackActiveStep}
+          />
+          <PaymentOptions
+            user={user}
+            onBackActiveStep={onBackActiveStep}
+            step={activeStep}
+            onBack={handleBack}
+            paymentOption={paymentOption}
+            onSelectPaymentOption={handleSelectPaymentOption}
+          />
         </Grid>
         <Grid item xs={12} md={4}>
           <Stack spacing={3}>
             {activeStep === 2 && (
               <BillingAddress
                 showTitle={true}
-                item={ADDRESSES[0]}
+                item={address}
                 onClickEdit={handleBack}
               />
             )}
             {numSelected > 0 && (
               <OrderSummary
+                user={user}
                 cart={cart}
                 step={activeStep}
                 onNext={handleNext}
                 onClickEdit={() => setActiveStep(0)}
                 numSelected={numSelected}
+                subTotal={subTotal}
+                onClickCompleteOrder={handleCompleteOrder}
               />
             )}
           </Stack>

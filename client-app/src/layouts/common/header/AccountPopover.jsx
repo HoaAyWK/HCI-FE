@@ -17,7 +17,6 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../../features/auth/authSlice";
 import ROLES from "../../../constants/userRoles";
 
-
 const AccountPopover = ({ user, menuOptions }) => {
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();

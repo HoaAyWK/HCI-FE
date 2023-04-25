@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import {
   Box,
@@ -18,6 +18,7 @@ import { Iconify } from '../../components';
 import vnpayIcon from '../../assets/icons/payments/ic_vnpay.svg';
 import visaIcon from '../../assets/icons/payments/ic_visa.svg';
 import mastercardIcon from '../../assets/icons/payments/ic_mastercard.svg';
+import { PAYMENT_OPTIONS } from '../../constants/payment';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   display: 'flex',
@@ -72,12 +73,14 @@ const Option = ({ value, name, description, logos }) => {
   )
 };
 
-const PaymentOptions = ({ step, onBack }) => {
-  const [value, setValue] = useState('vnpay');
-
+const PaymentOptions = ({ step, onBack, user, onBackActiveStep, paymentOption, onSelectPaymentOption }) => {
   const handleValueChange = (event) => {
-    setValue(event.target.value);
+    onSelectPaymentOption(event.target.value);
   };
+
+  if (!user) {
+    onBackActiveStep(0);
+  }
 
   return (
     <Box sx={{ display: step === 2 ? 'block' : 'none' }}>
@@ -90,24 +93,24 @@ const PaymentOptions = ({ step, onBack }) => {
             <RadioGroup
               aria-label='payment options'
               name='payment-options-radio-group'
-              value={value}
+              value={paymentOption}
               onChange={handleValueChange}
             >
               <Stack spacing={3}>
                 <Option
-                  name='VNPAY'
+                  name={PAYMENT_OPTIONS.VNPAY}
                   description='VNPAY provides its services to more than 40 banks in Vietnam.'
                   value='vnpay'
                   logos={[vnpayIcon]}
                 />
                 <Option
-                  value='credit'
+                  value={PAYMENT_OPTIONS.CREDIT}
                   name='Credit / Debit Card'
                   description='We support Mastercard, Visa, Discover and Stripe.'
                   logos={[mastercardIcon, visaIcon]}
                 />
                 <Option
-                  value='cash'
+                  value={PAYMENT_OPTIONS.CASH}
                   name='Cash on Checkout Delivery'
                   description='Pay with cash when your order is delivered.'
                 />

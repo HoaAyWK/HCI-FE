@@ -5,6 +5,7 @@ import cartApi from '../../services/cartApi';
 
 const initialState = {
   cart: null,
+  checkoutClicked: false,
   getCartStatus: ACTION_STATUS.IDLE,
   addToCartStatus: ACTION_STATUS.IDLE,
   checkItemStatus: ACTION_STATUS.IDLE,
@@ -70,6 +71,12 @@ const cartSlice = createSlice({
       state.addToCartStatus = ACTION_STATUS.IDLE;
       state.removeFromCartStatus = ACTION_STATUS.IDLE;
       state.decreaseQuantity = ACTION_STATUS.IDLE;
+    },
+    clickCheckout: (state) => {
+      state.checkoutClicked = true;
+    },
+    clearCheckoutClick: (state) => {
+      state.checkoutClicked = false;
     }
   },
   extraReducers: (builder) => {
@@ -155,6 +162,6 @@ const cartSlice = createSlice({
 
 const { reducer, actions } = cartSlice;
 
-export const { refresh } = actions;
+export const { refresh, clearCheckoutClick, clickCheckout } = actions;
 
 export default reducer;

@@ -4,6 +4,9 @@ import { Box, Button, Card, CardContent, Divider, Stack, Typography } from '@mui
 
 import { Iconify } from '../../components';
 import { fCurrency } from '../../utils/formatNumber';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { clickCheckout } from '../common/cartSlice';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -26,19 +29,18 @@ const OrderLine = ({ label, value, color, typoVariant }) => {
   );
 };
 
-const OrderSummary = ({ step, onNext, onClickEdit, cart, numSelected }) => {
-  const subTotal = useMemo(() => {
-    if (!cart || !cart.cartItems) {
-      return 0;
-    }
+const OrderSummary = ({ step, onNext, onClickEdit, numSelected, subTotal, user, onClickCompleteOrder }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    if (cart.cartItems) {{
-      const initialValue = 0;
-      return cart.cartItems.reduce(
-        (sum, item) => item.status ?
-          sum + item.quantity * (item.price - item.price * (item.discount / 100)) : 0, initialValue);
-    }}
-  }, [cart]);
+  const onCheckout = () => {
+    if (!user) {
+      dispatch(clickCheckout());
+      navigate('/login');
+    }
+    onNext();
+  };
+
 
   return (
     <Box sx={{ width: '100%', m: 0 }}>
@@ -84,7 +86,7 @@ const OrderSummary = ({ step, onNext, onClickEdit, cart, numSelected }) => {
             color='primary'
             variant='contained'
             fullWidth size='large'
-            onClick={onNext}
+            onClick={onCheckout}
           >
             Checkout
           </Button>
@@ -97,7 +99,7 @@ const OrderSummary = ({ step, onNext, onClickEdit, cart, numSelected }) => {
           color='primary'
           variant='contained'
           fullWidth size='large'
-          onClick={onNext}
+          onClick={onClickCompleteOrder}
         >
           Complete Order
         </Button>

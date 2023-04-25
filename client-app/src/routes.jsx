@@ -23,12 +23,14 @@ import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
 import { ProductOriginListPage, CreateProductOriginPage, ProductOriginDetailsPage, UpdateProductOriginPage } from './pages/admin/product-origin';
 import { CreateProductVariantPage, ProductVariantDetailsPage, ProductVariantListPage, UpdateProductVariantPage } from './pages/admin/product-variant';
 import { BannersPage } from './pages/admin/banner';
+import { clearCheckoutClick } from './features/common/cartSlice';
 
 
 const RejectedRoute = () => {
   const dispatch = useDispatch();
   const [accessToken] = useLocalStorage('accessToken', null);
   const { getCurrentUserStatus, user } = useSelector((state) => state.auth);
+  const { checkoutClicked } = useSelector((state) => state.cart);
 
   useEffect(() => {
     if (accessToken && getCurrentUserStatus === ACTION_STATUS.IDLE) {
@@ -41,6 +43,10 @@ const RejectedRoute = () => {
   }
 
   if (getCurrentUserStatus === ACTION_STATUS.SUCCEEDED) {
+    if (checkoutClicked) {
+      return <Navigate to='/checkout' />;
+    }
+
     if (user?.role === ROLES.ADMIN) {
       return <Navigate to='/admin/dashboard' />;
     } else {

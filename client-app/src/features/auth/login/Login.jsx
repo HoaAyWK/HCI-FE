@@ -3,7 +3,6 @@ import { Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { unwrapResult } from '@reduxjs/toolkit';
-import { Navigate, useNavigate } from 'react-router-dom';
 
 import { LoginForm } from './components';
 import { AuthFooter } from '../components';
@@ -14,7 +13,7 @@ import { Page } from '../../../components';
 const Login = () => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const { loginStatus, user } = useSelector(state => state.auth);
+  const { loginStatus } = useSelector(state => state.auth);
 
   const submit = async (data) => {
     try {
