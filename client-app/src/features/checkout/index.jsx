@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, CircularProgress, Grid, Stack, Step, StepLabel, Stepper } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { enqueueSnackbar } from 'notistack';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 import BillingAndAddress from './BillingAndAddress';
 import Cart from './cart';
@@ -11,6 +14,7 @@ import ACTION_STATUS from '../../constants/actionStatus';
 import { clearCheckoutClick, getCart } from '../common/cartSlice';
 import { useLocalStorage } from '../../hooks';
 import { PAYMENT_OPTIONS } from '../../constants/payment';
+import { checkoutWithCash, refresh } from './checkoutSlice';
 
 const steps = [
   'Cart',
@@ -24,7 +28,7 @@ const Checkout = () => {
   const { user } = useSelector((state) => state.auth);
   const [address, setAddress] = useState({ name: user?.firstName + " " + user?.lastName, phone: user?.phone, address: user?.address });
   const [paymentOption, setPaymentOption] = useState(PAYMENT_OPTIONS.CASH);
-
+  const navigate = useNavigate();
   const { getCartStatus, cart, checkoutClicked } = useSelector((state) => state.cart);
 
   const numSelected = useMemo(() => {
@@ -88,9 +92,19 @@ const Checkout = () => {
     setPaymentOption(option);
   };
 
-  const handleCompleteOrder = () => {
-    console.log(paymentOption);
-    console.log(address);
+  const handleCompleteOrder = async () => {
+    try {
+      const actionResult = await dispatch(checkoutWithCash({ paymentType: paymentOption, status: 'processing' }));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar('Checkout successfully!', { variant: 'success' });
+        dispatch(getCart());
+        navigate('/checkout-success');
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   if (getCartStatus === ACTION_STATUS.IDLE ||

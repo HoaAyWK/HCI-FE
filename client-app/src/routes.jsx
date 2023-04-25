@@ -24,6 +24,7 @@ import { ProductOriginListPage, CreateProductOriginPage, ProductOriginDetailsPag
 import { CreateProductVariantPage, ProductVariantDetailsPage, ProductVariantListPage, UpdateProductVariantPage } from './pages/admin/product-variant';
 import { BannersPage } from './pages/admin/banner';
 import { clearCheckoutClick } from './features/common/cartSlice';
+import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
 
 
 const RejectedRoute = () => {
@@ -134,6 +135,7 @@ const Router = () => {
           children: [
             { path: 'profile', element: <ProfilePage /> },
             { path: 'orders/:id', element: <OrderDetailsPage /> },
+            { path: 'checkout-success', element: <CheckoutSuccessPage /> },
             {
               path: 'settings',
               element: <SettingsLayout />,
