@@ -17,7 +17,6 @@ import { SearchBox } from './components';
 const SearchRefinementList = (props) => {
   const { searchable, label } = props;
   const [filter, setFilter] = useState('');
-
   const { items, refine, canToggleShowMore, toggleShowMore, searchForItems } = useRefinementList(props);
 
 
@@ -53,12 +52,14 @@ const SearchRefinementList = (props) => {
               </ListItemButton>
             </ListItem>
           ))}
-          <Button
-            onClick={toggleShowMore}
-            fullWidth
-          >
-            {canToggleShowMore ? 'Show less' : 'Show more'}
-          </Button>
+          {canToggleShowMore && (
+            <Button
+              onClick={toggleShowMore}
+              fullWidth
+            >
+              Show more
+            </Button>
+          )}
         </List>
       </Stack>
     </Stack>

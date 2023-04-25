@@ -60,7 +60,11 @@ const AutoComplete = ({ searchClient, indexName, className, sx, ...autocompleteP
         return {
           ...source,
           onSelect({ item }) {
-            setInstantSearchUiState({ query: item.label, category: item.category });
+            if (item && item.label) {
+              navigate(`/search?q=${item.label}`);
+            }
+
+            return;
           }
         }
       }
@@ -209,8 +213,12 @@ const AutoComplete = ({ searchClient, indexName, className, sx, ...autocompleteP
         }
       },
       onSelect({ item }) {
-        if (item && item?.name) {
-          navigate('/products/thinkpad');
+        if (item && item?.objectID) {
+          navigate(`/products/${item.objectID}`);
+        }
+
+        if (item && item.label) {
+          navigate(`/search/${item.label}`);
         }
         return;
       },
@@ -223,7 +231,7 @@ const AutoComplete = ({ searchClient, indexName, className, sx, ...autocompleteP
           {
             sourceId: 'products',
             getItemUrl({ item }) {
-              return `/products/thinkpad`;
+              return `/products/${item.objectID}`;
             },
             getItemInputValue({ item }) {
               return item.name;
