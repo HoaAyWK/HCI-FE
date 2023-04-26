@@ -20,7 +20,7 @@ const Banners = ({ banners }) => {
         <MainBannerSlider banners={slideBanners} />
       </Grid>
       <Grid item xs={12} md={5}>
-        <Stack spacing={1}>
+        <Stack spacing={2.5}>
           {secondaryBanners?.map((banner) => (
             <SecondaryBanner key={banner?.id} image={banner?.image} />
           ))}

@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { useImage } from '../../hooks';
 
-const Cover = ({ src, alt, sx }) => {
+const Cover = ({ src, alt, sx, ...other }) => {
   const { loaded } = useImage({ src });
 
   if (!loaded) {
@@ -18,6 +18,7 @@ const Cover = ({ src, alt, sx }) => {
       src={src}
       className={cx("smooth", { loaded })}
       sx={{...sx}}
+      {...other}
     />
   );
 };

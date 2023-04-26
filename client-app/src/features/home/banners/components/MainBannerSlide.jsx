@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box } from '@mui/material';
 
+import { Cover } from '../../../../components';
+
 const MainBannerSlide = ({ image }) => {
   return (
     <Box
@@ -13,11 +15,10 @@ const MainBannerSlide = ({ image }) => {
         borderRadius: 1,
       }}
     >
-      <Box
-        component='img'
+      <Cover
         sx={{
           width: '100%',
-          maxHeight: 400,
+          height: 400,
           display: 'inline-block',
           objectFit: 'cover',
           borderRadius: 1

@@ -7,24 +7,44 @@ import ACTION_STATUS from './constants/actionStatus';
 import ROLES from './constants/userRoles';
 import { useLocalStorage } from './hooks';
 
+import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
+
 import { Login, Register } from './features/auth';
 import { AccountSettings, AdminSettings, PasswordSettings } from './features/settings';
-import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
-import { getCurrentUserInfo } from './features/auth/authSlice';
+import {
+  HomePage,
+  CheckoutPage,
+  ProductsPage,
+  ProductPage,
+  ProfilePage,
+  SearchPage,
+  OrderDetailsPage,
+  CheckoutSuccessPage
+} from './pages';
 
-import { HomePage, CheckoutPage, ProductsPage, ProductPage, ProfilePage, SearchPage, OrderDetailsPage } from './pages';
 import { DashboardPage } from './pages/admin';
 import { CreateUserPage, UserListPage, UserDetailsPage } from './pages/admin/user';
-import AHome from './features/home/AHome';
 import { CategoryListPage } from './pages/admin/category';
 import { BrandListPage } from './pages/admin/brand';
 import { InventoryListPage } from './pages/admin/inventory';
 import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
-import { ProductOriginListPage, CreateProductOriginPage, ProductOriginDetailsPage, UpdateProductOriginPage } from './pages/admin/product-origin';
-import { CreateProductVariantPage, ProductVariantDetailsPage, ProductVariantListPage, UpdateProductVariantPage } from './pages/admin/product-variant';
-import { BannersPage } from './pages/admin/banner';
-import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
+import {
+  ProductOriginListPage,
+  CreateProductOriginPage,
+  ProductOriginDetailsPage,
+  UpdateProductOriginPage
+} from './pages/admin/product-origin';
 
+import {
+  CreateProductVariantPage,
+  ProductVariantDetailsPage,
+  ProductVariantListPage,
+  UpdateProductVariantPage
+} from './pages/admin/product-variant';
+
+import { BannersPage } from './pages/admin/banner';
+
+import { getCurrentUserInfo } from './features/auth/authSlice';
 
 const RejectedRoute = () => {
   const dispatch = useDispatch();

@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import bannerApi from '../../../services/bannerApi';
 import { uploadTaskPromise } from '../../../utils/uploadTaskPromise';
+import { getBanners as clientBanners } from '../../home/banners/bannerSlice';
 
 const bannersAdapter = createEntityAdapter();
 
@@ -22,7 +23,7 @@ export const getBanners = createAsyncThunk(
 
 export const createBanner = createAsyncThunk(
   'adminBanners/create',
-  async (banner) => {
+  async (banner, thunkApi) => {
     const { image, ...data } = banner;
 
     if (image) {
@@ -30,7 +31,11 @@ export const createBanner = createAsyncThunk(
       data.image = await uploadTaskPromise(filePath, image);
     }
 
-    return await bannerApi.create(data);
+    const res = await bannerApi.create(data);
+
+    thunkApi.dispatch(clientBanners());
+
+    return res;
   }
 );
 

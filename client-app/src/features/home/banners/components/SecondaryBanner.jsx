@@ -1,14 +1,14 @@
 import React from 'react';
-import { Box } from '@mui/material';
+
+import { Cover } from '../../../../components';
 
 const SecondaryBanner = ({ image }) => {
   return (
-    <Box
-      component='img'
+    <Cover
       src={image}
       alt='image'
       sx={{
-        maxHeight: 120,
+        height: 120,
         objectFit: 'cover',
         width: '100%',
         borderRadius: 1,

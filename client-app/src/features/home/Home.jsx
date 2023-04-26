@@ -47,7 +47,7 @@ const Home = () => {
   return (
     <>
       <Banners banners={banners} />
-      <ProductListSection products={products} />
+      <ProductListSection title='Best Seller' products={products} />
     </>
   );
 };
