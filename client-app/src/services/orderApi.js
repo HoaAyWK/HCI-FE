@@ -1,8 +1,15 @@
+import { STATUS } from '../constants/orderStatus';
 import axiosClient from './axios';
 
 class OrderApi {
   getAll = () => {
     const url = '/bill/api';
+
+    return axiosClient.get(url);
+  };
+
+  getMyBill = (status = STATUS.ALL, num = 5, page = 1) => {
+    const url = `/bill/my-bills?status=${status}&num=${num}&page=${page}`;
 
     return axiosClient.get(url);
   };

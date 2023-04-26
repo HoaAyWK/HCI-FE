@@ -5,9 +5,11 @@ import { Box, Button, Typography, Stack } from '@mui/material';
 import ProductItem from './ProductItem';
 import { Label } from '../../../../components';
 import { STATUS } from '../../../../constants/orderStatus';
+import { fCurrency } from '../../../../utils/formatNumber';
+import { fDateTime } from '../../../../utils/formatTime';
 
 const Order = ({ order }) => {
-  const { id, createdDate, status, items } = order;
+  const { id, orderDate, status, price, paymentType, orderItems } = order;
 
   const labelColor = (status) => {
     if (status === STATUS.PAID) {
@@ -18,10 +20,6 @@ const Order = ({ order }) => {
       return 'success';
     } return 'error';
   };
-
-  const totalPrice = useMemo(() => {
-    return items.reduce((total, item) => (item.price * item.quantity) + total, 0);
-  }, [items]);
 
   return (
     <Box>
@@ -37,14 +35,14 @@ const Order = ({ order }) => {
             Order ID: {id}
           </Typography>
           <Typography variant='body1'>
-            Order Date: {createdDate}
+            Order Date: {fDateTime(orderDate)}
           </Typography>
         </Stack>
         <Label color={labelColor(status)}>{status}</Label>
       </Box>
       <Box sx={{ mt: 1, mb: 3, borderBottom: `1px dashed`, borderColor: 'divider' }} />
       <Stack spacing={2}>
-        {items.map((item) => (
+        {orderItems.map((item) => (
           <ProductItem key={item.id} item={item} />
         ))}
       </Stack>
@@ -56,7 +54,7 @@ const Order = ({ order }) => {
           justifyContent: 'space-between'
         }}>
         <Typography variant='body1'>Total</Typography>
-        <Typography variant='h6' component='span' color='error'>${totalPrice}</Typography>
+        <Typography variant='h6' component='span' color='error'>{fCurrency(price)}</Typography>
       </Box>
       <Box
         sx={{

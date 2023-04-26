@@ -15,6 +15,7 @@ import { clearCheckoutClick, getCart } from '../common/cartSlice';
 import { useLocalStorage } from '../../hooks';
 import { PAYMENT_OPTIONS } from '../../constants/payment';
 import { checkoutWithCash, refresh } from './checkoutSlice';
+import { STATUS } from '../../constants/orderStatus';
 
 const steps = [
   'Cart',
@@ -94,7 +95,7 @@ const Checkout = () => {
 
   const handleCompleteOrder = async () => {
     try {
-      const actionResult = await dispatch(checkoutWithCash({ paymentType: paymentOption, status: 'processing' }));
+      const actionResult = await dispatch(checkoutWithCash({ paymentType: paymentOption, status: STATUS.PROCESSING }));
       const result = unwrapResult(actionResult);
 
       if (result) {

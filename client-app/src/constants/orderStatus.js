@@ -1,4 +1,5 @@
 export const STATUS = Object.freeze({
+  ALL: 'All',
   PAID: 'Paid',
   PROCESSING: 'Processing',
   DELIVERED: 'Delivered',
@@ -6,6 +7,7 @@ export const STATUS = Object.freeze({
 });
 
 export const ORDER_STATUS = Object.freeze([
+  STATUS.ALL,
   STATUS.PAID,
   STATUS.PROCESSING,
   STATUS.DELIVERED,

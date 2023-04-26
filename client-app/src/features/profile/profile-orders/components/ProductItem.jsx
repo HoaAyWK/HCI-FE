@@ -1,9 +1,10 @@
 import React from 'react';
 import { Box, Typography, Stack } from '@mui/material';
 import { Iconify } from '../../../../components';
+import { fCurrency } from '../../../../utils/formatNumber';
 
 const ProductItem = ({ item }) => {
-  const { name, image, quantity, price } = item;
+  const { productName, image, quantity, productPrice } = item;
 
   return (
     <Box
@@ -17,7 +18,7 @@ const ProductItem = ({ item }) => {
         <Box
           component='img'
           src={image}
-          alt={name}
+          alt={productName}
           sx={{
             width: 56,
             height: 56,
@@ -26,14 +27,14 @@ const ProductItem = ({ item }) => {
           }}
         />
         <Stack spacing={0.5}>
-          <Typography variant='subtitle1' color='text.primary'>{name}</Typography>
+          <Typography variant='subtitle1' color='text.primary'>{productName}</Typography>
           <Stack spacing={1} direction='row'>
             <Iconify icon='fluent-mdl2:quantity' width={24} height={24} sx={{ color: 'text.secondary' }} />
             <Typography variant='body1' color='text.primary'>{quantity}</Typography>
           </Stack>
         </Stack>
       </Stack>
-      <Typography variant='subtitle1' color='text.primary'>${price * quantity}</Typography>
+      <Typography variant='subtitle1' color='text.primary'>{fCurrency(productPrice * quantity)}</Typography>
     </Box>
   );
 };
