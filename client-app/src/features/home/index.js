@@ -1,2 +1,1 @@
-export { default as Banners } from './banners';
-export { default as ProductListSection } from './ProductListSection';
+export { default as Home } from './Home';

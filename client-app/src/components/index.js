@@ -4,6 +4,7 @@ export { default as Iconify } from './iconify';
 export { default as NavSection } from './nav-section';
 export { default as QuantityControl } from './quantity-control';
 export { default as AvatarUploader } from './avatar-uploader';
+export { default as Cover } from './cover';
 
 export { default as MenuPopover } from './MenuPopover';
 export { default as Page } from './Page';

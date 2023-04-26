@@ -13,8 +13,9 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 const ProductListSectionSkeleton = () => {
-  <Box
-      sx={{ mt: 4 }}
+  return (
+    <Box
+      sx={{ mt: 4, width: '100%' }}
     >
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <Grid item xs={12} md={6}>
@@ -54,6 +55,7 @@ const ProductListSectionSkeleton = () => {
         ))}
       </Grid>
     </Box>
+  );
 };
 
 export default ProductListSectionSkeleton;

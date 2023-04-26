@@ -1,17 +1,16 @@
 import React, { useMemo } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { Box, Button, Grid, IconButton, Link, Stack, Rating, Tooltip, Typography } from '@mui/material';
+import { Box, Button, IconButton, Link, Stack, Rating, Tooltip, Typography } from '@mui/material';
 
-import { Label, Iconify } from '../../../components';
+import { Cover, Label, Iconify } from '../../../components';
 import { fCurrency } from '../../../utils/formatNumber';
 
 const SearchHit = ({ hit }) => {
   const { objectID, name, price, discount, image } = hit;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
 
   const priceReal = useMemo(() => {
     if (discount > 0) {
@@ -66,8 +65,7 @@ const SearchHit = ({ hit }) => {
           <Iconify icon='mdi:cards-heart' width={24} height={24} />
         </IconButton>
         <Link component={RouterLink} to={`/products/${objectID}`}>
-          <Box
-            component='img'
+          <Cover
             src={image}
             alt={name}
             sx={{

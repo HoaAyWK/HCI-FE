@@ -5,7 +5,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
 import { useDispatch } from 'react-redux';
 
-import { Iconify, Label } from '../../../components'
+import { Cover, Iconify, Label } from '../../../components'
 import { fCurrency } from '../../../utils/formatNumber';
 import { addToCart } from '../cartSlice';
 
@@ -64,7 +64,8 @@ const ProductCard = ({ product }) => {
         '&:hover': {
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
-        }
+        },
+        transition: 'all 0.3s ease-in-out 0s'
       }}
     >
       <Box sx={{ pt: '100%', position: 'relative' }}>
@@ -81,8 +82,7 @@ const ProductCard = ({ product }) => {
           <Iconify icon='mdi:cards-heart' width={24} height={24} />
         </IconButton>
         <Link component={RouterLink} to={`/products/${id}`}>
-          <Box
-            component='img'
+          <Cover
             src={media[0]}
             alt={name}
             sx={{

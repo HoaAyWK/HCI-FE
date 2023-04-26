@@ -23,13 +23,6 @@ const SearchPage = () => {
             borderRadius: 1,
           }}
         >
-          {/* <SearchRefinement
-            label='Categories'
-            attribute='categories'
-            sortBy={['name:asc', 'count:desc']}
-            limit={5}
-          />
-          <Divider sx={{ mb: 2 }} /> */}
           <SearchRefinement
             label='brands'
             attribute='brand'
@@ -38,6 +31,29 @@ const SearchPage = () => {
           />
           <Divider sx={{ mb: 2 }} />
           <RangeSlider attribute='price' label='price' />
+          <Divider sx={{ my: 2 }} />
+          <SearchRefinement
+            label='Model'
+            attribute='model'
+            sortBy={['name:asc', 'count:desc']}
+            limit={5}
+          />
+          <Divider sx={{ mb: 2 }} />
+          <SearchRefinement
+            label='Specifications'
+            attribute='specifications'
+            sortBy={['name:asc', 'count:desc']}
+            limit={5}
+          />
+          <Divider sx={{ mb: 2 }} />
+          <SearchRefinement
+            label='Color'
+            attribute='color'
+            sortBy={['name:asc', 'count:desc']}
+            limit={5}
+          />
+          <Divider sx={{ mb: 2 }} />
+
         </Box>
       </Grid>
       <Grid item xs={12} sm={9}>
@@ -45,7 +61,10 @@ const SearchPage = () => {
           sx={{
             width: '100%',
             display: 'flex',
-            mb: 2
+            mb: 2,
+            backgroundColor: (theme) => theme.palette.background.neutral,
+            p: 1,
+            borderRadius: 1
           }}
         >
           <SortByPriceButtons items={sortByItems} />

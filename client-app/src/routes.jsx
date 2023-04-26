@@ -23,7 +23,6 @@ import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
 import { ProductOriginListPage, CreateProductOriginPage, ProductOriginDetailsPage, UpdateProductOriginPage } from './pages/admin/product-origin';
 import { CreateProductVariantPage, ProductVariantDetailsPage, ProductVariantListPage, UpdateProductVariantPage } from './pages/admin/product-variant';
 import { BannersPage } from './pages/admin/banner';
-import { clearCheckoutClick } from './features/common/cartSlice';
 import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
 
 

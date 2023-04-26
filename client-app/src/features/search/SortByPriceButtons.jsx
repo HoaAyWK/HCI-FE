@@ -18,7 +18,6 @@ const SortByPriceButtons = (props) => {
       {sorts.map((option) => (
         <Button
           key={option.label}
-          variant='contained'
           color={option.value === currentRefinement ? 'primary' : 'inherit'}
           onClick={() => refine(option.value)}
         >
