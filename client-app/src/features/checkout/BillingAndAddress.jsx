@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
-import { Box, Button, Stack } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, CircularProgress, Stack } from '@mui/material';
 
 import { BillingAddress } from './components';
 import { Iconify } from '../../components';
 import BillingAddressForm from './BillingAddressForm';
+import ACTION_STATUS from '../../constants/actionStatus';
 
-const BillingAndAddress = ({ addresses, step, onNext, onBack, user, onBackActiveStep }) => {
+const BillingAndAddress = ({ addresses, status, step, numSelected, onNext, onBack, user, onBackActiveStep, onSelectAddress }) => {
   const [openAddAddress, setOpenAddAddress] = useState(false);
 
-  if (!user) {
-    onBackActiveStep(0);
+  useEffect(() => {
+    if (numSelected === 0) {
+      onBackActiveStep(0);
+    }
+  }, [numSelected]);
+
+  useEffect(() => {
+    if (!user) {
+      onBackActiveStep(0);
+    }
+  }, [user]);
+
+  const handleSelectAddress = (address) => {
+    onSelectAddress(address);
+    onNext();
+  };
+
+  if (status === ACTION_STATUS.FAILED) {
+    return <></>;
   }
 
   return (
@@ -18,17 +36,17 @@ const BillingAndAddress = ({ addresses, step, onNext, onBack, user, onBackActive
         {user && (
           <BillingAddress
             item={{
-              id: 'default',
-              name: user.firstName + " " + user.lastName,
-              address: user.address,
-              phone: user.phone,
+              id: 0,
+              acceptorName: user.firstName + " " + user.lastName,
+              deliveryAddress: user.address,
+              acceptorPhone: user.phone,
               isDefault: true
             }}
-            onSelectAddress={onNext}
+            onSelectAddress={handleSelectAddress}
           />
         )}
         {addresses.map((address) => (
-          <BillingAddress key={address.name} item={address} onSelectAddress={onNext} />
+          <BillingAddress key={address.name} item={address} onSelectAddress={handleSelectAddress} />
         ))}
       </Stack>
       <Box

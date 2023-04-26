@@ -73,14 +73,24 @@ const Option = ({ value, name, description, logos }) => {
   )
 };
 
-const PaymentOptions = ({ step, onBack, user, onBackActiveStep, paymentOption, onSelectPaymentOption }) => {
+const PaymentOptions = ({ step, onBack, user, numSelected, onBackActiveStep, paymentOption, onSelectPaymentOption }) => {
+
+  useEffect(() => {
+    if (!user) {
+      onBackActiveStep(0);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (numSelected === 0) {
+      onBackActiveStep(0);
+    }
+  }, [numSelected]);
+
   const handleValueChange = (event) => {
     onSelectPaymentOption(event.target.value);
   };
 
-  if (!user) {
-    onBackActiveStep(0);
-  }
 
   return (
     <Box sx={{ display: step === 2 ? 'block' : 'none' }}>

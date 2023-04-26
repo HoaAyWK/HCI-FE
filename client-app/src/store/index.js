@@ -16,6 +16,7 @@ import productReviewsReducer from '../features/products/product-details/product-
 import cartReducer from '../features/common/cartSlice';
 import checkoutReducer from '../features/checkout/checkoutSlice';
 import orderReducer from '../features/common/orderSlice';
+import shippingReducer from '../features/checkout/shippingAddressSlice';
 
 export const store = configureStore({
   reducer: {
@@ -35,5 +36,6 @@ export const store = configureStore({
     cart: cartReducer,
     checkout: checkoutReducer,
     orders: orderReducer,
+    shippingAddresses: shippingReducer,
   }
 });

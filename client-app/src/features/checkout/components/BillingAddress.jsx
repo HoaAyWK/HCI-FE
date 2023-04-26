@@ -1,16 +1,32 @@
 import React from 'react';
 import { Box, Button, Card, CardContent, Stack, Typography } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 import { Iconify, Label } from '../../../components';
-import { useLocalStorage } from '../../../hooks';
+import { deleteShippingAddress } from '../shippingAddressSlice';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 const BillingAddress = ({ item, showTitle, onSelectAddress, onClickEdit, sx }) => {
-  const { name, isDefault, address, phone } = item;
-  const [shippingAddressId, setShippingAddressId] = useLocalStorage('shippingAddress', 'default');
+  const { id, acceptorName, isDefault, deliveryAddress, acceptorPhone } = item;
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const handleSelectAddress = () => {
-    setShippingAddressId(item.id);
-    onSelectAddress();
+  const handleSelectAddress = (address) => () => {
+    onSelectAddress(address);
+  };
+
+  const handleClickDelete = async () => {
+    try {
+      const actionResult = await dispatch(deleteShippingAddress(id));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar('Deleted successfully', { variant: 'success' });
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   return (
@@ -32,26 +48,26 @@ const BillingAddress = ({ item, showTitle, onSelectAddress, onClickEdit, sx }) =
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Stack spacing={1} direction='row'>
               <Typography variant='body1' fontWeight='bold' color='text.primary'>
-                {name}
+                {acceptorName}
               </Typography>
             </Stack>
             {isDefault && !showTitle && (<Label color='info' sx={{ ml: 2 }}>Default</Label>)}
           </Box>
           <Typography variant='body2' color='text.primary'>
-            {address}
+            {deliveryAddress}
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
             <Typography variant='body2' color='text.secondary'>
-              {phone}
+              {acceptorPhone}
             </Typography>
             {!showTitle && (
               <Stack spacing={1} direction='row'>
                 {!isDefault && (
-                  <Button color='inherit' variant='outlined' size='small'>
+                  <Button color='inherit' variant='outlined' size='small' onClick={handleClickDelete}>
                     Delete
                   </Button>
                 )}
-                <Button variant='outlined' color='primary' size='small' onClick={handleSelectAddress}>
+                <Button variant='outlined' color='primary' size='small' onClick={handleSelectAddress(id)}>
                   Deliver to this address
                 </Button>
               </Stack>

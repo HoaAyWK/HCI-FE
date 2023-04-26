@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, CircularProgress, Grid, Stack, Step, StepLabel, Stepper } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 import { unwrapResult } from '@reduxjs/toolkit';
 
@@ -14,8 +14,9 @@ import ACTION_STATUS from '../../constants/actionStatus';
 import { clearCheckoutClick, getCart } from '../common/cartSlice';
 import { useLocalStorage } from '../../hooks';
 import { PAYMENT_OPTIONS } from '../../constants/payment';
-import { checkoutWithCash, refresh } from './checkoutSlice';
+import { checkoutWithCash } from './checkoutSlice';
 import { STATUS } from '../../constants/orderStatus';
+import { selectAllShippingAddresses, getShippingAddresses } from './shippingAddressSlice';
 
 const steps = [
   'Cart',
@@ -26,11 +27,15 @@ const steps = [
 const Checkout = () => {
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useLocalStorage('checkoutStep', 0);
+  const [address, setAddress] = useLocalStorage('shippingAddress', 0);
   const { user } = useSelector((state) => state.auth);
-  const [address, setAddress] = useState({ name: user?.firstName + " " + user?.lastName, phone: user?.phone, address: user?.address });
+  const [selectedAddress, setSelectedAddress] = useState({});
+
   const [paymentOption, setPaymentOption] = useState(PAYMENT_OPTIONS.CASH);
   const navigate = useNavigate();
   const { getCartStatus, cart, checkoutClicked } = useSelector((state) => state.cart);
+  const shippingAddresses = useSelector(selectAllShippingAddresses);
+  const { getShippingAddressesStatus, entities: addressEntities } = useSelector((state) => state.shippingAddresses);
 
   const numSelected = useMemo(() => {
     if (!cart || !cart?.cartItems) {
@@ -65,17 +70,26 @@ const Checkout = () => {
     if (checkoutClicked) {
       dispatch(clearCheckoutClick());
     }
+
+    if (getShippingAddressesStatus === ACTION_STATUS.IDLE) {
+      dispatch(getShippingAddresses());
+    }
+
   }, []);
 
   useEffect(() => {
-    if (user) {
-      setAddress({
-        name: user.firstName + " " + user.lastName,
-        phone: user.phone,
-        address: user.address
+    if (address === 0 && user) {
+      setSelectedAddress({
+        id: 0,
+        acceptorName: user.firstName + " " + user.lastName,
+        acceptorPhone: user.phone,
+        deliveryAddress: user.address
       });
+    } else if (addressEntities.length > 0 ) {
+      setSelectedAddress(addressEntities[address]);
     }
-  }, [user])
+  }, [address, user, addressEntities]);
+
 
   const handleNext = () => {
     setActiveStep(prevStep => prevStep + 1);
@@ -93,6 +107,10 @@ const Checkout = () => {
     setPaymentOption(option);
   };
 
+  const handleSelectAddress = (address) => {
+    setAddress(address);
+  };
+
   const handleCompleteOrder = async () => {
     try {
       const actionResult = await dispatch(checkoutWithCash({ paymentType: paymentOption, status: STATUS.PROCESSING }));
@@ -101,6 +119,7 @@ const Checkout = () => {
       if (result) {
         enqueueSnackbar('Checkout successfully!', { variant: 'success' });
         dispatch(getCart());
+        setActiveStep(0);
         navigate('/checkout-success');
       }
     } catch (error) {
@@ -109,7 +128,9 @@ const Checkout = () => {
   };
 
   if (getCartStatus === ACTION_STATUS.IDLE ||
-    getCartStatus === ACTION_STATUS.LOADING) {
+    getCartStatus === ACTION_STATUS.LOADING ||
+    getShippingAddressesStatus === ACTION_STATUS.IDLE ||
+    getShippingAddressesStatus === ACTION_STATUS.LOADING) {
     return (
       <Box
         sx={{
@@ -149,17 +170,21 @@ const Checkout = () => {
           <Cart step={activeStep} cart={cart} numSelected={numSelected} />
           <BillingAndAddress
             user={user}
-            addresses={[]}
+            addresses={shippingAddresses}
+            status={getShippingAddressesStatus}
             step={activeStep}
             onNext={handleNext}
             onBack={handleBack}
+            numSelected={numSelected}
             onBackActiveStep={onBackActiveStep}
+            onSelectAddress={handleSelectAddress}
           />
           <PaymentOptions
             user={user}
             onBackActiveStep={onBackActiveStep}
             step={activeStep}
             onBack={handleBack}
+            numSelected={numSelected}
             paymentOption={paymentOption}
             onSelectPaymentOption={handleSelectPaymentOption}
           />
@@ -169,7 +194,7 @@ const Checkout = () => {
             {activeStep === 2 && (
               <BillingAddress
                 showTitle={true}
-                item={address}
+                item={selectedAddress}
                 onClickEdit={handleBack}
               />
             )}
