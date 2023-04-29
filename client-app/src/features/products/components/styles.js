@@ -11,6 +11,7 @@ export const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 export const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  marginInline: 'auto',
   [theme.breakpoints.up('xs')]: {
     width: 67,
     height: 67

@@ -3,37 +3,22 @@ import { Box, Grid, Stack, Typography, Rating, Button, Tab, Pagination, LinearPr
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
+import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { SyncSlider } from '../components';
 import { StyledPaper } from '../components/styles';
 import { Iconify, Loading, QuantityControl, ShowMoreParagraph } from '../../../components';
-import ProductReviewDialog from './ProductReviewDialog';
+import { ProductReviewDialog } from '../../common/product-reviews';
 import { ColorButton, SpecificationsButton, Divider as DashedDivider } from './components';
 import ProductReviews from './product-reviews';
 import { getProductDetailSingle } from '../../common/productDetailsSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { fCurrency } from '../../../utils/formatNumber';
+import { fCurrency, fShortenNumber2 } from '../../../utils/formatNumber';
 import { createMarkup } from '../../../utils/sanitizeHtml';
 import { addToCart } from '../../common/cartSlice';
-import { useNavigate } from 'react-router-dom';
+import { getProductReviewsByProductId, refresh } from '../../common/product-reviews/productReviewSlice';
 
-const RATINGS  = [
-  { name: '5 Star', percentage: 70, numOfRatings: 16 },
-  { name: '4 Star', percentage: 12, numOfRatings: 7 },
-  { name: '3 Star', percentage: 8, numOfRatings: 5 },
-  { name: '2 Star', percentage: 7, numOfRatings: 3 },
-  { name: '1 Star', percentage: 3, numOfRatings: 1 },
-];
-
-
-const product = {
-  name: 'Laptop Thinkpad E490',
-  price: '299.99',
-  priceSale: '349.99',
-  numOfReviews: 99,
-  colors: ['red', 'green', 'blue'],
-  rating: 4.5
-};
 
 const ProductDetails = (props) => {
   const { id } = props;
@@ -43,6 +28,7 @@ const ProductDetails = (props) => {
   const [quantity, setQuantity] = useState(1);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const { reviews, getReviewsStatus, createReviewStatus } = useSelector((state) => state.productReviews);
 
   const variantColors = useMemo(() => {
     if (!productSingle && !productSingle?.sameOriginProducts) {
@@ -53,10 +39,26 @@ const ProductDetails = (props) => {
       .filter((product) => product.specifications === productSingle.specifications);
   }, [productSingle]);
 
+  const reviewStats = useMemo(() => {
+    if (reviews?.stats) {
+      return reviews.stats.toReversed();
+    }
+
+    return [];
+  });
 
   useEffect(() => {
     dispatch(getProductDetailSingle(id));
+    dispatch(getProductReviewsByProductId(id));
   }, [id]);
+
+  useEffect(() => {
+    if (createReviewStatus === ACTION_STATUS.SUCCEEDED) {
+      dispatch(getProductReviewsByProductId(id));
+      dispatch(getProductDetailSingle(id));
+      dispatch(refresh());
+    }
+  }, [createReviewStatus]);
 
   const handleCloseReview = () => {
     setOpenReview(false);
@@ -122,12 +124,14 @@ const ProductDetails = (props) => {
               <Typography variant='h5' component='h1'>
                 {productSingle.name}
               </Typography>
-              <Stack spacing={1} direction='row'>
-                <Rating readOnly value={product.rating} precision={0.5} />
-                <Typography variant='body1' color='text.secondary'>
-                  ({product.numOfReviews} reviews)
-                </Typography>
-              </Stack>
+              {productSingle.averageRating > 0 && (
+                <Stack spacing={1} direction='row'>
+                  <Rating readOnly value={productSingle.averageRating} precision={0.5} />
+                  <Typography variant='body1' color='text.secondary'>
+                    {`(${productSingle.numReviews} ${productSingle.numReviews > 1 ? 'reviews' : 'review'})`}
+                  </Typography>
+                </Stack>
+              )}
               <Stack spacing={1} direction='row' alignItems='center'>
                 <Typography variant='h3' component='span' color='error'>
                   {fCurrency(productSingle.price - (productSingle.price * (productSingle.discount / 100)))}
@@ -220,8 +224,8 @@ const ProductDetails = (props) => {
             </Typography>
             <ShowMoreParagraph
               isDanger={true} content={productSingle.description}
-              heigth={product?.description?.length > 200 ? '190px': 'auto'}
-              canShowMore={product?.description?.length > 200 ? true: false}
+              heigth={productSingle?.description?.length > 200 ? '190px': 'auto'}
+              canShowMore={productSingle?.description?.length > 200 ? true: false}
             />
             <Box sx={{ pb: 6 }} />
           </StyledPaper>
@@ -278,37 +282,41 @@ const ProductDetails = (props) => {
                   Average Rating
                 </Typography>
                 <Typography variant='h2' color='text.primary' sx={{ my: 1 }}>
-                  4.5/5
+                  {fShortenNumber2(productSingle.averageRating)}/5
                 </Typography>
                 <Stack spacing={0.5}>
-                  <Rating readOnly value={4.6} precision={0.5} />
-                  <Typography variant='caption' color='text.secondary' textAlign='center'>(25 reviews)</Typography>
+                  <Rating readOnly value={productSingle.averageRating} precision={0.5} />
+                  <Typography variant='caption' color='text.secondary' textAlign='center'>
+                    {`(${productSingle.numReviews} ${productSingle.numReviews > 1 ? 'reviews' : 'review'})`}
+                  </Typography>
                 </Stack>
               </Box>
             </Grid>
             <Grid item xs={12} md={4}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alginItems: 'center',
-                  my: 2
-                }}
-              >
-                <Stack spacing={1}>
-                  {RATINGS.map((rating) => (
-                    <Stack spacing={2} direction='row' key={rating.name} alignItems='center'>
-                      <Typography varaint='subtitle1' color='text.primary'>
-                        {rating.name}
-                      </Typography>
-                      <LinearProgress color='inherit' variant='determinate' value={rating.percentage} sx={{ minWidth: 200 }} />
-                      <Typography variant='subtitle1' color='text.secondary'>
-                        {rating.numOfRatings}
-                      </Typography>
-                    </Stack>
-                  ))}
-                </Stack>
-              </Box>
+              {getReviewsStatus === ACTION_STATUS.SUCCEEDED && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alginItems: 'center',
+                    my: 2
+                  }}
+                >
+                  <Stack spacing={1}>
+                    {reviewStats.map((rating) => (
+                      <Stack spacing={2} direction='row' key={rating.name} alignItems='center'>
+                        <Typography varaint='subtitle1' color='text.primary'>
+                          {rating.value} &nbsp; Star
+                        </Typography>
+                        <LinearProgress color='inherit' variant='determinate' value={rating.total / productSingle.numReviews * 100} sx={{ minWidth: 200 }} />
+                        <Typography variant='subtitle1' color='text.secondary'>
+                          {rating.total}
+                        </Typography>
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Box>
+              )}
             </Grid>
             <Grid item xs={12} md={4}
               sx={{
@@ -337,9 +345,10 @@ const ProductDetails = (props) => {
             open={openReview}
             handleClose={handleCloseReview}
             isEdit={false}
+            productId={id}
           />
           <Box sx={{ px: 2, pb: 2 }}>
-            <ProductReviews />
+            <ProductReviews reviews={reviews.reviews} status={getReviewsStatus} />
             <Box
               sx={{
                 mt: 2,

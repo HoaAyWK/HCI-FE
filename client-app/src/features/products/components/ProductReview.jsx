@@ -3,8 +3,10 @@ import { Button, Grid, Box, Typography, Stack, Rating } from '@mui/material';
 
 import { StyledAvatar } from './styles';
 import { Iconify } from '../../../components';
+import { fToNow } from '../../../utils/formatTime';
+import { createMarkup } from '../../../utils/sanitizeHtml';
 
-const ProductReview = () => {
+const ProductReview = ({ review }) => {
   return (
     <Grid container spacing={2} sx={{ my: 1 }}>
       <Grid item xs={3} lg={2}>
@@ -15,25 +17,41 @@ const ProductReview = () => {
             alginItems: 'center',
           }}
         >
-          <div>
-            <StyledAvatar />
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <StyledAvatar src={review.reviewer.avatar} />
             <Stack spacing={0.2} justifyContent='center' alignItems='center'>
               <Typography variant='body1' color='text.primary'>
-                Sioay Here
+                {review.reviewer.firstName + " " + review.reviewer.lastName}
               </Typography>
               <Typography variant='caption' color='text.secondary'>
-                2 hours ago
+                {fToNow(review.createdAt)}
               </Typography>
             </Stack>
-          </div>
+          </Box>
         </Box>
       </Grid>
       <Grid item xs={9} lg={10}>
-        <Stack spacing={1}>
-          <Rating value={4} readOnly />
-          <Typography variant='body2' color='text.secondary'>
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-          </Typography>
+        <Stack spacing={1} sx={{ mt: 1 }}>
+          <Stack spacing={1.5} direction='row'>
+            <Rating value={review.stars} readOnly />
+            <Box
+              sx={{
+                display: 'flex',
+                alginItems: 'center',
+                color: 'success.main'
+              }}
+            >
+              <Iconify icon='mdi:tick-decagram' width={24} height={24} />
+              <Typography variant='subtitle2' color='success.main' sx={{ ml: 0.5 }}>
+                Verified purchase
+              </Typography>
+            </Box>
+          </Stack>
+          <Typography
+            variant='body2'
+            color='text.secondary'
+            dangerouslySetInnerHTML={createMarkup(review.content)}
+          />
           <Stack direction='row' spacing={2}>
             <Button>
               <Iconify icon='mdi:like' width={20} height={20} />

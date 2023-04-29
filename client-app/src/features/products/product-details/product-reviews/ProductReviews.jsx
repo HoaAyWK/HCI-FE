@@ -1,28 +1,22 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, CircularProgress, Stack } from '@mui/material';
 
 import { ProductReview } from '../../components';
-import { useDispatch, useSelector } from 'react-redux';
 import ACTION_STATUS from '../../../../constants/actionStatus';
-import { getProductReviewsByProductId } from './productReviewSlice';
-import { useParams } from 'react-router-dom';
 
-const ProductReviews = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const { reviews, getReviewsStatus } = useSelector((state) => state.productReviews);
+const ProductReviews = ({ reviews, status }) => {
 
-  useEffect(() => {
-    dispatch(getProductReviewsByProductId(id))
-  }, [id]);
-
-  if (getReviewsStatus === ACTION_STATUS.IDLE ||
-      getReviewsStatus === ACTION_STATUS.LOADING) {
+  if (status === ACTION_STATUS.IDLE ||
+      status === ACTION_STATUS.LOADING) {
     return (
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', py: 4 }}>
         <CircularProgress />
       </Box>
     );
+  }
+
+  if (status === ACTION_STATUS.FAILED) {
+    return <></>;
   }
 
   return (

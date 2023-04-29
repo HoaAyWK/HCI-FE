@@ -8,13 +8,22 @@ const billsAdapter = createEntityAdapter();
 const initialState = billsAdapter.getInitialState({
   totalMyBillsPage: 0,
   myBillsPerPage: 0,
+  bill: null,
   getMyBillsStatus: ACTION_STATUS.IDLE,
+  getSingleBillStatus: ACTION_STATUS.IDLE,
 });
 
 export const getMyBills = createAsyncThunk(
   'bill/my',
   async ({ page, status }) => {
     return await orderApi.getMyBill(status, 5, page);
+  }
+);
+
+export const getSingleBill = createAsyncThunk(
+  'bill/single',
+  async (id) => {
+    return await orderApi.getSingle(id);
   }
 );
 
@@ -36,6 +45,18 @@ const orderSlice = createSlice({
         billsAdapter.setAll(state, action.payload.bills);
       })
       .addCase(getMyBills.rejected, (state) => {
+        state.getMyBillsStatus = ACTION_STATUS.FAILED;
+      })
+
+
+      .addCase(getSingleBill.pending, (state) => {
+        state.getSingleBillStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(getSingleBill.fulfilled, (state, action) => {
+        state.getSingleBillStatus = ACTION_STATUS.SUCCEEDED;
+        state.bill = action.payload;
+      })
+      .addCase(getSingleBill.rejected, (state) => {
         state.getMyBillsStatus = ACTION_STATUS.FAILED;
       })
   }

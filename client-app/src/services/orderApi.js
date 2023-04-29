@@ -14,6 +14,12 @@ class OrderApi {
     return axiosClient.get(url);
   };
 
+  getSingle = (id) => {
+    const url = `/bill/${id}`;
+
+    return axiosClient.get(url);
+  };
+
   create = (data) => {
     const url = '/bill';
 

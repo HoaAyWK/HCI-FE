@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import productReviewApi from '../../../../services/productReviewApi';
-import ACTION_STATUS from '../../../../constants/actionStatus';
+import productReviewApi from '../../../services/productReviewApi';
+import ACTION_STATUS from '../../../constants/actionStatus';
 
 const initialState = {
   reviews: [],
-  getReviewsState: ACTION_STATUS.IDLE,
-  createReviewState: ACTION_STATUS.IDLE,
+  getReviewsStatus: ACTION_STATUS.IDLE,
+  createReviewStatus: ACTION_STATUS.IDLE,
 };
 
 export const getProductReviewsByProductId = createAsyncThunk(
@@ -19,7 +19,9 @@ export const getProductReviewsByProductId = createAsyncThunk(
 export const createProductReview = createAsyncThunk(
   'productReviews/create',
   async (data) => {
-    return await productReviewApi.createrProductReview(data);
+    const res = await productReviewApi.createrProductReview(data);
+
+    return res;
   }
 );
 
@@ -28,7 +30,7 @@ const productReviewsSlice = createSlice({
   initialState,
   reducers: {
     refresh: (state) => {
-      state.createReviewState = ACTION_STATUS.IDLE;
+      state.createReviewStatus = ACTION_STATUS.IDLE;
     }
   },
   extraReducers: (builder) => {
@@ -36,25 +38,26 @@ const productReviewsSlice = createSlice({
 
 
       .addCase(getProductReviewsByProductId.pending, (state) => {
-        state.getReviewsState = ACTION_STATUS.LOADING;
+        state.getReviewsStatus = ACTION_STATUS.LOADING;
       })
       .addCase(getProductReviewsByProductId.fulfilled, (state, action) => {
+        state.getReviewsStatus = ACTION_STATUS.SUCCEEDED;
         state.reviews = action.payload;
       })
       .addCase(getProductReviewsByProductId.rejected, (state) => {
-        state.getReviewsState = ACTION_STATUS.FAILED;
+        state.getReviewsStatus = ACTION_STATUS.FAILED;
       })
 
 
       .addCase(createProductReview.pending, (state) => {
-        state.createReviewState = ACTION_STATUS.LOADING;
+        state.createReviewStatus = ACTION_STATUS.LOADING;
       })
       .addCase(createProductReview.fulfilled, (state, action) => {
-        state.createReviewState = ACTION_STATUS.SUCCEEDED;
-        state.reviews.push(action.payload);
+        state.createReviewStatus = ACTION_STATUS.SUCCEEDED;
+        // state.reviews.push(action.payload);
       })
       .addCase(createProductReview.rejected, (state) => {
-        state.createReviewState = ACTION_STATUS.FAILED;
+        state.createReviewStatus = ACTION_STATUS.FAILED;
       })
   }
 });

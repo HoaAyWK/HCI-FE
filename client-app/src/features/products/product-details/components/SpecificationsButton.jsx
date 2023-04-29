@@ -7,7 +7,6 @@ import { StyledBox, StyledCard, StyledSelected } from './styles';
 import { fCurrency } from '../../../../utils/formatNumber';
 
 const SpecificationsButton = ({ variant, select }) => {
-  console.log(variant);
   return (
     <Link component={RouterLink} to={`/products/${variant.id}`} underline='none'>
       <StyledBox >

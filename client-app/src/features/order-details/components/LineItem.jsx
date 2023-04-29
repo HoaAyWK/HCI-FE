@@ -1,10 +1,22 @@
-import React from 'react';
-import { TableRow, TableCell, Stack, Box, Typography, Icon } from '@mui/material';
+import React, { useState } from 'react';
+import { TableRow, TableCell, Stack, Box, Typography, IconButton, Tooltip } from '@mui/material';
 
+import { fCurrency } from '../../../utils/formatNumber';
 import { Iconify } from '../../../components';
+import { ProductReviewDialog } from '../../common/product-reviews';
 
 const LineItem = ({ item, index }) => {
-  const { name, image, quantity, price } = item;
+  const { productName, image, quantity, productPrice, reviewed, id } = item;
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
   return (
     <TableRow>
       <TableCell>
@@ -15,7 +27,7 @@ const LineItem = ({ item, index }) => {
           <Box
             component='img'
             src={image}
-            alt={name}
+            alt={productName}
             sx={{
               width: 56,
               height: 56,
@@ -24,22 +36,32 @@ const LineItem = ({ item, index }) => {
               my: 1
             }}
           />
-          <Stack spacing={1}>
+          <Stack spacing={1} direction='row' alignItems='center'>
             <Typography variant='subtitle2'>
-              {name}
+              {productName}
             </Typography>
-            {/* <Stack spacing={1} direction='row'>
-              <Iconify icon='fluent-mdl2:quantity' width={20} heiht={20} />
-            </Stack> */}
+            {!reviewed && (
+              <Tooltip title='Click to review the product.' onClick={handleOpenDialog}>
+                <IconButton size='small' color='warning'>
+                  <Iconify icon='material-symbols:release-alert-rounded' width={20} height={20} />
+                </IconButton>
+              </Tooltip>
+            )}
           </Stack>
         </Stack>
+        <ProductReviewDialog
+          dialogTitle={`Write review for '${productName}'`}
+          open={openDialog}
+          handleClose={handleCloseDialog}
+          orderId={id}
+        />
       </TableCell>
 
       <TableCell align='right'>
         {quantity}
       </TableCell>
-      <TableCell align='right'>{price}</TableCell>
-      <TableCell align='right'>{price * quantity}</TableCell>
+      <TableCell align='right'>{fCurrency(productPrice)}</TableCell>
+      <TableCell align='right'>{fCurrency(productPrice * quantity)}</TableCell>
     </TableRow>
   );
 };

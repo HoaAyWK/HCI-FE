@@ -24,6 +24,12 @@ export function fShortenNumber(number) {
   return result(format, '.00');
 }
 
+export function fShortenNumber2(number) {
+  const format = number ? numeral(number).format('0.0a') : '';
+
+  return result(format, '.0');
+}
+
 export function fData(number) {
   const format = number ? numeral(number).format('0.0 b') : '';
 

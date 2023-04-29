@@ -10,23 +10,23 @@ import { useSnackbar } from 'notistack';
 
 import ACTION_STATUS from '../../../constants/actionStatus';
 import { FormProvider, RHFEditor, RHFRating } from '../../../components/hook-form';
-import { createProductReview } from './product-reviews/productReviewSlice';
+import { createProductReview } from './productReviewSlice';
 
 const ProductReviewDialog = (props) => {
-  const { dialogTitle, dialogContent, open, handleClose } = props;
+  const { dialogTitle, dialogContent, open, handleClose, orderId, productId } = props;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const { createReviewStatus } = useSelector((state) => state.productReviews);
 
   const ReviewSchema = Yup.object().shape({
-    rating: Yup.number()
+    stars: Yup.number()
       .required('Rating is required'),
     content: Yup.string()
       .required('Content is required')
   });
 
   const defaultValues = {
-    rating: 0,
+    stars: 0,
     content: ''
   };
 
@@ -38,19 +38,20 @@ const ProductReviewDialog = (props) => {
   const { handleSubmit, reset } = methods;
 
   const onSubmit = async (data) => {
-    console.log(data);
-    // try {
-    //   const actionResult = await dispatch(createProductReview(data));
-    //   const result = unwrapResult(actionResult);
+    data.orderId = orderId;
+    data.productId = productId;
+    try {
+      const actionResult = await dispatch(createProductReview(data));
+      const result = unwrapResult(actionResult);
 
-    //   if (result) {
-    //     enqueueSnackbar('Created successfully', { variant: 'success' });
-    //     handleClose();
-    //     reset();
-    //   }
-    // } catch (error) {
-    //   enqueueSnackbar(error.message, { variant: 'error' });
-    // }
+      if (result) {
+        enqueueSnackbar('Created successfully', { variant: 'success' });
+        handleClose();
+        reset();
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   const onCancel = () => {
@@ -67,7 +68,7 @@ const ProductReviewDialog = (props) => {
           <Stack spacing={2}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant='body1'>Your review about this product: &nbsp;</Typography>
-              <RHFRating name='rating' />
+              <RHFRating name='stars' />
             </Box>
             <RHFEditor name='content' label='Content' />
           </Stack>

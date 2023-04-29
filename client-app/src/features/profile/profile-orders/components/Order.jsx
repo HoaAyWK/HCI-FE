@@ -9,7 +9,7 @@ import { fCurrency } from '../../../../utils/formatNumber';
 import { fDateTime } from '../../../../utils/formatTime';
 
 const Order = ({ order }) => {
-  const { id, orderDate, status, price, paymentType, orderItems } = order;
+  const { id, orderDate, status, price, orderItems } = order;
 
   const labelColor = (status) => {
     if (status === STATUS.PAID) {
@@ -63,8 +63,8 @@ const Order = ({ order }) => {
           justifyContent: 'flex-end'
         }}
       >
-        <Stack spacing={2}>
-          <Button LinkComponent={RouterLink} to='/orders/12099' color='inherit' variant='outlined'>Details</Button>
+        <Stack spacing={2} direction='row'>
+          <Button LinkComponent={RouterLink} to={`/orders/${id}`} color='inherit' variant='outlined'>Details</Button>
           {status === STATUS.PROCESSING && (
             <Button color='error' variant='outlined'>Cancel</Button>
           )}
