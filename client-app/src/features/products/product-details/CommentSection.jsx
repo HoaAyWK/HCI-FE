@@ -9,6 +9,8 @@ import ACTION_STATUS from '../../../constants/actionStatus';
 import ROLES from '../../../constants/userRoles';
 import CommentWithReply from './comments/comment';
 import CommentForm from './comments/CommentForm';
+import discuss from '../../../assets/images/discuss.png';
+import MessageForEmptyItem from './components/MessageForEmptyItem';
 
 const CommentSection = ({ productId }) => {
   const dispatch = useDispatch();
@@ -94,16 +96,7 @@ const CommentSection = ({ productId }) => {
           <Box sx={{ px: 2, pb: 2 }}>
             {comments.length === 0 ? (
               !user && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    py: 2,
-                  }}
-                >
-                  This product does not have any comments
-                </Box>
+                <MessageForEmptyItem image={discuss} message='This product does not have any comments.' />
               )
             ) : (
               <Stack spacing={2}>

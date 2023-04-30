@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
-import { Box, Grid, Stack, Typography, Rating, Button, Tab, Pagination, LinearProgress } from '@mui/material';
+import { Box, Grid, Stack, Typography, Rating, Button } from '@mui/material';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -9,27 +9,25 @@ import { useNavigate } from 'react-router-dom';
 import { SyncSlider } from '../components';
 import { StyledPaper } from '../components/styles';
 import { Iconify, Loading, QuantityControl, ShowMoreParagraph } from '../../../components';
-import { ProductReviewDialog } from '../../common/product-reviews';
 import { ColorButton, SpecificationsButton, Divider as DashedDivider } from './components';
-import ProductReviews from './product-reviews';
 import { getProductDetailSingle } from '../../common/productDetailsSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { fCurrency, fShortenNumber2 } from '../../../utils/formatNumber';
+import { fCurrency } from '../../../utils/formatNumber';
 import { createMarkup } from '../../../utils/sanitizeHtml';
 import { addToCart } from '../../common/cartSlice';
-import { getProductReviewsByProductId, refresh } from '../../common/product-reviews/productReviewSlice';
+import { refresh } from '../../common/product-reviews/productReviewSlice';
 import CommentSection from './CommentSection';
+import ReviewSection from './ReviewSection';
 
 
 const ProductDetails = (props) => {
   const { id } = props;
   const dispatch = useDispatch();
   const { getSingleStatus, productSingle } = useSelector((state) => state.productDetails);
-  const [openReview, setOpenReview] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const { reviews, getReviewsStatus, createReviewStatus } = useSelector((state) => state.productReviews);
+  const { createReviewStatus } = useSelector((state) => state.productReviews);
 
   const variantColors = useMemo(() => {
     if (!productSingle && !productSingle?.sameOriginProducts) {
@@ -40,34 +38,16 @@ const ProductDetails = (props) => {
       .filter((product) => product.specifications === productSingle.specifications);
   }, [productSingle]);
 
-  const reviewStats = useMemo(() => {
-    if (reviews?.stats) {
-      return reviews.stats.toReversed();
-    }
-
-    return [];
-  });
-
   useEffect(() => {
     dispatch(getProductDetailSingle(id));
-    dispatch(getProductReviewsByProductId(id));
   }, [id]);
 
   useEffect(() => {
     if (createReviewStatus === ACTION_STATUS.SUCCEEDED) {
-      dispatch(getProductReviewsByProductId(id));
       dispatch(getProductDetailSingle(id));
       dispatch(refresh());
     }
   }, [createReviewStatus]);
-
-  const handleCloseReview = () => {
-    setOpenReview(false);
-  };
-
-  const handleOpenReview = () => {
-    setOpenReview(true);
-  };
 
   const handleIncreaseQuantity = () => {
     setQuantity(prev => prev + 1);
@@ -244,125 +224,10 @@ const ProductDetails = (props) => {
           </StyledPaper>
         </Grid>
       </Grid>
-      <Box
-        sx={{ width: '100%', my: 4 }}
-      >
-        <StyledPaper>
-          <Grid container spacing={2}
-            sx={{
-              borderBottom: (theme) => `1px dashed ${theme.palette.divider}`,
-              mb: 4
-            }}
-          >
-            <Grid item xs={12}>
-              <Box
-                sx={{
-                  background: (theme) => theme.palette.background.neutral,
-                  width: '100%',
-                  p: 2
-                }}
-              >
-                <Typography variant='h6' component='h1'>Reviews</Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={4}
-              sx={{
-                borderRight: (theme) => `1px dashed ${theme.palette.divider}`,
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  my: 3
-                }}
-              >
-                <Typography varaint='subtitle1' color='text.secondary' fontWeight='bold'>
-                  Average Rating
-                </Typography>
-                <Typography variant='h2' color='text.primary' sx={{ my: 1 }}>
-                  {fShortenNumber2(productSingle.averageRating)}/5
-                </Typography>
-                <Stack spacing={0.5}>
-                  <Rating readOnly value={productSingle.averageRating} precision={0.5} />
-                  <Typography variant='caption' color='text.secondary' textAlign='center'>
-                    {`(${productSingle.numReviews} ${productSingle.numReviews > 1 ? 'reviews' : 'review'})`}
-                  </Typography>
-                </Stack>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              {getReviewsStatus === ACTION_STATUS.SUCCEEDED && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alginItems: 'center',
-                    my: 2
-                  }}
-                >
-                  <Stack spacing={1}>
-                    {reviewStats.map((rating) => (
-                      <Stack spacing={2} direction='row' key={rating.name} alignItems='center'>
-                        <Typography varaint='subtitle1' color='text.primary'>
-                          {rating.value} &nbsp; Star
-                        </Typography>
-                        <LinearProgress color='inherit' variant='determinate' value={rating.total / productSingle.numReviews * 100} sx={{ minWidth: 200 }} />
-                        <Typography variant='subtitle1' color='text.secondary'>
-                          {rating.total}
-                        </Typography>
-                      </Stack>
-                    ))}
-                  </Stack>
-                </Box>
-              )}
-            </Grid>
-            <Grid item xs={12} md={4}
-              sx={{
-                borderLeft: (theme) => `1px dashed ${theme.palette.divider}`,
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '100%',
-                  mb: 4
-                }}
-              >
-                <Button variant='outlined' color='inherit' size='large' onClick={handleOpenReview}>
-                  <Iconify icon='eva:edit-outline' width={24} height={24} />
-                  &nbsp;
-                  Write your review
-                </Button>
-              </Box>
-            </Grid>
-          </Grid>
-          <ProductReviewDialog
-            dialogTitle='Write Review'
-            open={openReview}
-            handleClose={handleCloseReview}
-            isEdit={false}
-            productId={id}
-          />
-          <Box sx={{ px: 2, pb: 2 }}>
-            <ProductReviews reviews={reviews.reviews} status={getReviewsStatus} />
-            <Box
-              sx={{
-                mt: 2,
-                display: 'flex',
-                justifyContent: 'flex-end',
-                alignItems: 'center'
-              }}
-            >
-              <Pagination count={10} color='primary' />
-            </Box>
-          </Box>
-        </StyledPaper>
-      </Box>
+      <ReviewSection
+        id={id}
+        productSingle={productSingle}
+      />
       <CommentSection productId={id} />
     </>
   );

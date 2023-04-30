@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box } from '@mui/material';
 
+import { Cover } from '../../../components';
+
 const SubSlide = ({ image }) => {
 
   return (
@@ -32,7 +34,7 @@ const SubSlide = ({ image }) => {
             backgroundSize: 'cover'
           }}
         >
-          <Box
+          <Cover
             component='img'
             sx={{
               width: '100%',

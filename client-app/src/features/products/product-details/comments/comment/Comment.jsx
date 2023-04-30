@@ -44,7 +44,7 @@ const Comment = ({ comment, parentCommentId, avatarSize, currentUser, productId,
         </Box>
         <Stack spacing={0.5} sx={{ mt: 1 }}>
           <Stack spacing={1} direction='row' alignItems='center' >
-            {currentUser.id === comment.user.id ? (
+            {currentUser?.id === comment.user.id ? (
               <Box sx={{ color: 'inherit' }}>
                 <Label>{comment.user.firstName + " " + comment.user.lastName}</Label>
               </Box>
