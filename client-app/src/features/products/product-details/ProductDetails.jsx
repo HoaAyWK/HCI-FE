@@ -18,6 +18,7 @@ import { fCurrency, fShortenNumber2 } from '../../../utils/formatNumber';
 import { createMarkup } from '../../../utils/sanitizeHtml';
 import { addToCart } from '../../common/cartSlice';
 import { getProductReviewsByProductId, refresh } from '../../common/product-reviews/productReviewSlice';
+import CommentSection from './CommentSection';
 
 
 const ProductDetails = (props) => {
@@ -362,6 +363,7 @@ const ProductDetails = (props) => {
           </Box>
         </StyledPaper>
       </Box>
+      <CommentSection productId={id} />
     </>
   );
 };

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -12,8 +12,8 @@ import ACTION_STATUS from '../../../../constants/actionStatus';
 import { FormProvider, RHFTextField } from '../../../../components/hook-form';
 import { createComment } from './commentSlice';
 
-const CommentDialog = () => {
-  const { dialogTitle, dialogContent, open, handleClose } = props;
+
+const CommentForm = ({ productId, replyUserId, reply, handleClose }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const { createCommentStatus } = useSelector((state) => state.comments);
@@ -31,30 +31,63 @@ const CommentDialog = () => {
     defaultValues
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, formState: { isDirty } } = methods;
+
+  const showCancel = useMemo(() => {
+    if (handleClose) {
+      return true;
+    }
+
+    if (isDirty) {
+      return true;
+    }
+
+    return false;
+  }, [handleClose, isDirty]);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    data.productId = productId;
+    data.replyUserId = replyUserId;
+    data.reply = reply;
+
+    try {
+      const actionResult = await dispatch(createComment(data));
+      const result = unwrapResult(actionResult);
+
+      if (result) {
+        enqueueSnackbar('Commented successfully', { variant: 'success' });
+        reset();
+
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   const onCancel = () => {
-    handleClose();
+    if (handleClose) {
+      handleClose();
+    }
+
     reset();
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth='md'>
+    <Box sx={{ width: '100%' }}>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>{dialogTitle}</DialogTitle>
-        {dialogContent && (<DialogContent>{dialogContent}</DialogContent>)}
-        <Box sx={{ p: 2 }}>
-          <Stack spacing={2}>
-            <RHFTextField name='content' label='Content' multiline minRows={2} />
-          </Stack>
-        </Box>
-        <DialogActions>
+        <Stack spacing={2} sx={{ mb: 1 }}>
+          <RHFTextField
+            name='content'
+            label='Content'
+            multiline minRows={2}
+            placeholder='Write comment...'
+          />
+        </Stack>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
           <Stack spacing={1} direction='row' sx={{ mb: 1 }}>
-            <Button variant='contained' color='inherit' onClick={onCancel}>Cancel</Button>
+            {showCancel && (
+              <Button color='inherit' onClick={onCancel}>Cancel</Button>
+            )}
             <LoadingButton
               variant='contained'
               color='primary'
@@ -64,10 +97,10 @@ const CommentDialog = () => {
               Comment
             </LoadingButton>
           </Stack>
-        </DialogActions>
+        </Box>
       </FormProvider>
-    </Dialog>
+    </Box>
   );
 };
 
-export default CommentDialog;
+export default CommentForm;

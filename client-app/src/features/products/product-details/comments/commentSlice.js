@@ -7,17 +7,19 @@ const commentsAdapter = createEntityAdapter();
 
 const initialState = commentsAdapter.getInitialState({
   getCommentsByProductStatus: ACTION_STATUS.IDLE,
-  createCommentStatus: ACTION_STATUS.IDLE
+  createCommentStatus: ACTION_STATUS.IDLE,
+  totalPage: 0,
+  totalItems: 0,
 });
 
-const getCommentsByProduct = createAsyncThunk(
+export const getCommentsByProduct = createAsyncThunk(
   'comments/product',
-  async (id) => {
-    return await commentApi.getByProduct(id);
+  async ({ productId, num, page }) => {
+    return await commentApi.getByProduct(productId, num, page);
   }
 );
 
-const createComment = createAsyncThunk(
+export const createComment = createAsyncThunk(
   'comments/create',
   async (data) => {
     return await commentApi.create(data);
@@ -42,6 +44,8 @@ const commentSlice = createSlice({
       })
       .addCase(getCommentsByProduct.fulfilled, (state, action) => {
         state.getCommentsByProductStatus = ACTION_STATUS.SUCCEEDED;
+        state.totalPage = action.payload.totalPage;
+        state.totalItems = action.payload.totalItems;
         commentsAdapter.addMany(state, action.payload.comments);
       })
       .addCase(getCommentsByProduct.rejected, (state) => {
@@ -54,7 +58,8 @@ const commentSlice = createSlice({
         state.createCommentStatus = ACTION_STATUS.IDLE;
       })
       .addCase(createComment.fulfilled, (state, action) => {
-        commentsAdapter.addOne(state, action.payload);
+        state.createCommentStatus = ACTION_STATUS.SUCCEEDED;
+        state.entities[action.payload.reply]?.replies?.push(action.payload);
       })
       .addCase(createComment.rejected, (state) => {
         state.createCommentStatus = ACTION_STATUS.FAILED;
