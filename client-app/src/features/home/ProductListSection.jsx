@@ -19,7 +19,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   }
 }));
 
-const ProductListSection = ({ title, products }) => {
+const ProductListSection = ({ title, products, favorites }) => {
   return (
     <Box
       sx={{ mt: 4 }}
@@ -49,7 +49,7 @@ const ProductListSection = ({ title, products }) => {
       <Grid container spacing={2}>
         {products.map((product) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-            <ProductCard product={product} />
+            <ProductCard favorites={favorites} product={product} />
           </Grid>
         ))}
       </Grid>

@@ -64,7 +64,7 @@ const AccountCard = () => {
         <StyledBoxName>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography variant='h6' color='text.primary' sx={{ mr: 1 }}>{`${user?.firstName} ${user?.lastName}`}</Typography>
-            {user?.gender === 'male' ? (
+            {user?.gender === 'Male' ? (
               <Iconify icon='mdi:gender-male' width={24} height={24} />
             ) : (
               <Iconify icon='mdi:gender-female' width={24} height={24} />

@@ -9,6 +9,7 @@ import ACTION_STATUS from '../../constants/actionStatus';
 import { BannersSkeleton } from './banners/components';
 import ProductListSectionSkeleton from './components/ProductListSectionSkeleton';
 import { SomethingWentWrong } from '../common/components';
+import { getMyFavorites, selectAllFavorites } from '../common/productFavoriteSlice';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,9 @@ const Home = () => {
   const products = useSelector(selectProductDetailWithImage);
   const { getBannersStatus } = useSelector((state) => state.banners);
   const { getProductDetailsStatus } = useSelector((state) => state.productDetails);
+  const { user } = useSelector((state) => state.auth);
+  const favorites = useSelector(selectAllFavorites);
+  const { getFavoritesStatus } = useSelector((state) => state.favorites);
 
   useEffect(() => {
     if (getBannersStatus === ACTION_STATUS.IDLE) {
@@ -25,7 +29,15 @@ const Home = () => {
     if (getProductDetailsStatus === ACTION_STATUS.IDLE) {
       dispatch(getProductDetails());
     }
+
+
   }, []);
+
+  useEffect(() => {
+    if (getFavoritesStatus === ACTION_STATUS.IDLE && user) {
+      dispatch(getMyFavorites());
+    }
+  }, [user])
 
   if (getBannersStatus === ACTION_STATUS.IDLE ||
       getBannersStatus === ACTION_STATUS.LOADING ||
@@ -47,7 +59,7 @@ const Home = () => {
   return (
     <>
       <Banners banners={banners} />
-      <ProductListSection title='Best Seller' products={products} />
+      <ProductListSection title='Best Seller' products={products} favorites={favorites} />
     </>
   );
 };

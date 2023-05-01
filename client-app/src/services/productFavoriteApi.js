@@ -14,7 +14,7 @@ class ProductFavoriteApi {
   };
 
   delete = (id) => {
-    const url = `/favorite/${id}`;
+    const url = `/favorite/remove/${id}`;
 
     return axiosClient.delete(url);
   };

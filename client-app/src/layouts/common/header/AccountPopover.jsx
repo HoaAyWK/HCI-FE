@@ -15,6 +15,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 
 import { logout } from "../../../features/auth/authSlice";
+import { clearData } from '../../../features/common/productFavoriteSlice';
 import ROLES from "../../../constants/userRoles";
 
 const AccountPopover = ({ user, menuOptions }) => {
@@ -32,6 +33,7 @@ const AccountPopover = ({ user, menuOptions }) => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearData());
     setOpen(null);
     navigate('/');
   };

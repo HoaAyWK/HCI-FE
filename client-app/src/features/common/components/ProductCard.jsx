@@ -3,17 +3,47 @@ import { Link as RouterLink, useNavigate} from 'react-router-dom';
 import { Box, Button, Grid, IconButton, Link, Rating, Stack, Typography  } from '@mui/material';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Cover, Iconify, Label } from '../../../components'
 import { fCurrency } from '../../../utils/formatNumber';
 import { addToCart } from '../cartSlice';
+import { createFavorite, deleteFavorite } from '../productFavoriteSlice';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, favorites }) => {
   const { id, name, media, price, discount } = product;
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
+  const isFavorited = useMemo(() => {
+    if (favorites) {
+      for (let favorite of favorites) {
+        if (favorite.productId === id) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    return false;
+  }, [favorites]);
+
+  const favoriteId = useMemo(() => {
+    if (favorites) {
+      for (let favorite of favorites) {
+        if (favorite.productId === id) {
+          return favorite.id;
+        }
+      }
+
+      return undefined;
+    }
+
+    return undefined;
+  }, [favorites]);
 
   const priceReal = useMemo(() => {
     if (discount > 0) {
@@ -49,6 +79,39 @@ const ProductCard = ({ product }) => {
     }
   };
 
+  const handleClickHeart = async () => {
+    try {
+      if (!isFavorited && !user) {
+        enqueueSnackbar('Please login first!');
+        return;
+      }
+
+      if (!isFavorited) {
+        const actionResult = await dispatch(createFavorite({ productId: id }));
+        const result = unwrapResult(actionResult);
+
+        if (result) {
+          enqueueSnackbar('Favorited successfully', { variant: 'success' });
+        }
+      } else {
+        if (!favoriteId) {
+          enqueueSnackbar('Something went wrong.', { variant: 'error' });
+          return;
+        }
+
+        const actionResult = await dispatch(deleteFavorite(favoriteId));
+        const result = unwrapResult(actionResult);
+
+        if (result) {
+          enqueueSnackbar('Remove favorite successfully', { variant: 'success' });
+        }
+      }
+
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -70,6 +133,7 @@ const ProductCard = ({ product }) => {
     >
       <Box sx={{ pt: '100%', position: 'relative' }}>
         <IconButton
+          onClick={handleClickHeart}
           aria-label='favorite'
           sx={{
             zIndex: 9,
@@ -77,6 +141,7 @@ const ProductCard = ({ product }) => {
             right: 8,
             position: 'absolute',
             textTransform: 'uppercase',
+            color: isFavorited ? 'error.main' : 'inherit'
           }}
         >
           <Iconify icon='mdi:cards-heart' width={24} height={24} />

@@ -1,4 +1,4 @@
-import { createAsynThunk, createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
 import ACTION_STATUS from '../../constants/actionStatus';
 import productFavoriteApi from '../../services/productFavoriteApi';
@@ -11,21 +11,21 @@ const initialState = favoritesAdapter.getInitialState({
   deleteFavoriteStatus: ACTION_STATUS.IDLE
 });
 
-export const getMyFavorites = createAsynThunk(
+export const getMyFavorites = createAsyncThunk(
   'favorites/my',
   async () => {
     return await productFavoriteApi.getMyFavorites();
   }
 );
 
-export const createFavorite = createAsynThunk(
+export const createFavorite = createAsyncThunk(
   'favorites/create',
   async (data) => {
     return await productFavoriteApi.create(data);
   }
 );
 
-export const deleteFavorite = createAsynThunk(
+export const deleteFavorite = createAsyncThunk(
   'favorites/delete',
   async (id) => {
     return await productFavoriteApi.delete(id);
@@ -39,6 +39,10 @@ const favoriteSlice = createSlice({
     refresh: (state) => {
       state.createFavoriteStatus = ACTION_STATUS.IDLE;
       state.deleteFavoriteStatus = ACTION_STATUS.IDLE;
+    },
+    clearData: (state) => {
+      state.getFavoritesStatus = ACTION_STATUS.IDLE;
+      favoritesAdapter.setAll(state, []);
     }
   },
   extraReducers: (builder) => {
@@ -89,7 +93,7 @@ export const {
 
 const { actions, reducer } = favoriteSlice;
 
-export const { refresh } = actions;
+export const { refresh, clearData } = actions;
 
 export default reducer;
 
