@@ -35,7 +35,7 @@ const lineItems = [
   },
 ];
 
-const LineItemTable = ({ items }) => {
+const LineItemTable = ({ items, status }) => {
   return (
     <TableContainer>
       <Table>
@@ -53,7 +53,7 @@ const LineItemTable = ({ items }) => {
         </TableHead>
         <TableBody>
           {items.map((item, index) => (
-            <LineItem key={item.id} item={item} index={index} />
+            <LineItem key={item.id} item={item} index={index} status={status} />
           ))}
         </TableBody>
       </Table>

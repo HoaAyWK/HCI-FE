@@ -3,10 +3,7 @@ import { styled } from '@mui/material/styles';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 
 import { ProductCard } from '../common/components';
-import { useDispatch, useSelector } from 'react-redux';
-import { getProductDetails, selectAllProductDetails, selectProductDetailWithImage } from '../common/productDetailsSlice';
-import ACTION_STATUS from '../../constants/actionStatus';
-import ProductListSectionSkeleton from './components/ProductListSectionSkeleton';
+
 
 
 const StyledBox = styled(Box)(({ theme }) => ({

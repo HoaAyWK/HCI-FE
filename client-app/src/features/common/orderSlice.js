@@ -11,6 +11,7 @@ const initialState = billsAdapter.getInitialState({
   bill: null,
   getMyBillsStatus: ACTION_STATUS.IDLE,
   getSingleBillStatus: ACTION_STATUS.IDLE,
+  cancelOrderStatus: ACTION_STATUS.IDLE
 });
 
 export const getMyBills = createAsyncThunk(
@@ -27,10 +28,21 @@ export const getSingleBill = createAsyncThunk(
   }
 );
 
+export const cancelOrder = createAsyncThunk(
+  'bill/cancel',
+  async (id) => {
+    return await orderApi.cancel(id);
+  }
+);
+
 const orderSlice = createSlice({
   name: 'order',
   initialState,
-  reducers: {},
+  reducers: {
+    clearGetDataStatus: (state) => {
+      state.getMyBillsStatus = ACTION_STATUS.IDLE;
+    }
+  },
   extraReducers: (builder) => {
     builder
 
@@ -59,6 +71,20 @@ const orderSlice = createSlice({
       .addCase(getSingleBill.rejected, (state) => {
         state.getMyBillsStatus = ACTION_STATUS.FAILED;
       })
+
+
+      .addCase(cancelOrder.pending, (state) => {
+        state.cancelOrderStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(cancelOrder.fulfilled, (state, action) => {
+        state.cancelOrderStatus = ACTION_STATUS.SUCCEEDED;
+        const { id, ...data } = action.payload.bill;
+
+        billsAdapter.updateOne(state, { id, changes: data });
+      })
+      .addCase(cancelOrder.rejected, (state) => {
+        state.cancelOrderStatus = ACTION_STATUS.FAILED;
+      })
   }
 });
 
@@ -67,6 +93,8 @@ export const {
   selectById: selectBillById
 } = billsAdapter.getSelectors(state => state.orders);
 
-const { reducer } = orderSlice;
+const { reducer, actions } = orderSlice;
+
+export const { clearGetDataStatus } = actions;
 
 export default reducer;

@@ -1,17 +1,19 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, Link, Stack, Typography } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import checkout from '../../assets/images/checkout.png';
 import { runFireworks } from '../../utils/runFireworks';
+import { clearGetDataStatus } from '../common/orderSlice';
 
 const CheckoutSuccess = () => {
+  const dispatch = useDispatch();
 
   useEffect(() => {
     runFireworks();
+    dispatch(clearGetDataStatus());
   }, []);
-
 
   return (
     <Box

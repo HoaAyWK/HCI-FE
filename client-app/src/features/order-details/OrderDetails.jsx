@@ -9,6 +9,7 @@ import { getSingleBill } from '../common/orderSlice';
 import ACTION_STATUS from '../../constants/actionStatus';
 import { fDateTime } from '../../utils/formatTime';
 import { fCurrency } from '../../utils/formatNumber';
+import { PAYMENT_OPTIONS } from '../../constants/payment';
 
 const OrderDetails = ({ id }) => {
   const dispatch = useDispatch();
@@ -78,13 +79,13 @@ const OrderDetails = ({ id }) => {
                 <Typography variant='subtitle1' color='text.secondary' textTransform='uppercase'>
                   To
                 </Typography>
-                <Typography variant='body2' color='text.primary'>Lucas Steve</Typography>
-                <Typography variant='body2' color='text.primary'>0192321882</Typography>
-                <Typography variant='body2' color='text.primary'>36901 Elmer Spurs Apt. 762 - Miramar, DE / 92836</Typography>
+                <Typography variant='body2' color='text.primary'>{bill?.shippingAddress?.acceptorName}</Typography>
+                <Typography variant='body2' color='text.primary'>{bill?.shippingAddress?.acceptorPhone}</Typography>
+                <Typography variant='body2' color='text.primary'>{bill?.shippingAddress?.deliveryAddress}</Typography>
               </Stack>
             </Grid>
           </Grid>
-          <LineItemTable items={bill.orderItems} />
+          <LineItemTable items={bill.orderItems} status={bill.status} />
           <Box
             sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}
           >
@@ -99,7 +100,11 @@ const OrderDetails = ({ id }) => {
               Payment method
             </Typography>
             <Stack spacing={1} direction='row' alignItems='center'>
-              <Iconify icon='ph:money' width={24} height={24} />
+              <Iconify
+                icon={bill.paymentType === PAYMENT_OPTIONS.CASH ? 'ph:money' : 'material-symbols:credit-card-outline'}
+                width={24}
+                height={24}
+              />
               <Typography variant='body1' textTransform='capitalize'>{bill.paymentType}</Typography>
             </Stack>
           </Stack>

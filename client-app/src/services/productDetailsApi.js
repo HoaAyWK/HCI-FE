@@ -7,6 +7,12 @@ class ProductDetailsApi {
     return axiosClient.get(url);
   };
 
+  getBestSellers = (num = 8, page = 1) => {
+    const url = `/detail/best-seller?num=${num}&page=${page}`;
+
+    return axiosClient.get(url);
+  };
+
   create = (data) => {
     const url = '/detail/save';
 

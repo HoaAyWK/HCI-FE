@@ -3,25 +3,27 @@ import { createAsyncThunk, createSlice, createEntityAdapter, createSelector } fr
 import productDetailsApi from '../../services/productDetailsApi';
 import ACTION_STATUS from '../../constants/actionStatus';
 
-const productDetailsAdapter = createEntityAdapter();
+const bestSellersAdapter = createEntityAdapter();
 
-const initialState = productDetailsAdapter.getInitialState({
-  getProductDetailsStatus: ACTION_STATUS.IDLE,
+const initialState = bestSellersAdapter.getInitialState({
+  getBestSellersStatus: ACTION_STATUS.IDLE,
   getSingleStatus: ACTION_STATUS.IDLE,
+  totalItems: 0,
   productSingle: null
 });
 
-export const getProductDetails = createAsyncThunk(
-  'productDetails/all',
-  async () => {
-    return await productDetailsApi.getAll();
-  }
-);
 
 export const getProductDetailSingle = createAsyncThunk(
   'productDetails/single',
   async (id) => {
     return await productDetailsApi.getSingle(id);
+  }
+);
+
+export const getBestSellers = createAsyncThunk(
+  'productDetails/bestSellers',
+  async ({ num, page }) => {
+    return await productDetailsApi.getBestSellers(num, page);
   }
 );
 
@@ -32,15 +34,16 @@ const productDetailsSlice = createSlice({
     builder
 
 
-      .addCase(getProductDetails.pending, (state) => {
-        state.getProductDetailsStatus = ACTION_STATUS.LOADING;
+      .addCase(getBestSellers.pending, (state) => {
+        state.getBestSellersStatus = ACTION_STATUS.LOADING;
       })
-      .addCase(getProductDetails.fulfilled, (state, action) => {
-        state.getProductDetailsStatus = ACTION_STATUS.SUCCEEDED;
-        productDetailsAdapter.setAll(state, action.payload.items);
+      .addCase(getBestSellers.fulfilled, (state, action) => {
+        state.getBestSellersStatus = ACTION_STATUS.SUCCEEDED;
+        state.totalItems = action.payload.totalItems;
+        bestSellersAdapter.addMany(state, action.payload.items);
       })
-      .addCase(getProductDetails.rejected, (state) => {
-        state.getProductDetailsStatus = ACTION_STATUS.FAILED;
+      .addCase(getBestSellers.rejected, (state) => {
+        state.getBestSellersStatus = ACTION_STATUS.FAILED;
       })
 
 
@@ -60,7 +63,7 @@ const productDetailsSlice = createSlice({
 export const {
   selectAll: selectAllProductDetails,
   selectById: selectProductDetailById
-} = productDetailsAdapter.getSelectors((state) => state.productDetails);
+} = bestSellersAdapter.getSelectors((state) => state.productDetails);
 
 export const selectProductDetailWithImage = createSelector(
   [selectAllProductDetails],

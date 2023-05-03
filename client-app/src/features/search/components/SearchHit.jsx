@@ -8,7 +8,7 @@ import { Cover, Label, Iconify } from '../../../components';
 import { fCurrency } from '../../../utils/formatNumber';
 
 const SearchHit = ({ hit }) => {
-  const { objectID, name, price, discount, image } = hit;
+  const { objectID, name, price, discount, image, averageRating } = hit;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -88,7 +88,7 @@ const SearchHit = ({ hit }) => {
             </Typography>
           </Link>
         </Tooltip>
-        <Rating readOnly value={4} size='small' precision={0.5} />
+        <Rating readOnly value={averageRating} size='small' precision={0.5} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h6" component='p' color='error'>

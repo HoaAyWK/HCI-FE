@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,9 +10,10 @@ import { useDispatch } from 'react-redux';
 
 import { ImagesUploader } from './components';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { FormProvider, RHFMultiSelect, RHFSelect, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { COLOR } from '../../../constants/colors';
 import { refresh } from './productVariantSlice';
+import { getBestSellers } from '../../common/productDetailsSlice';
 
 const colors = [
   { id: COLOR.NONE, name: 'None' },
@@ -37,7 +38,6 @@ const statuses = [
 const FullProductVariantForm = ({ productOrigins, productVariant, action, status }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const [colorItems, setColorItems] = useState([]);
 
   const ProductSchema = Yup.object().shape({
     id: Yup.string(),
@@ -86,13 +86,13 @@ const FullProductVariantForm = ({ productOrigins, productVariant, action, status
   }, [status]);
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       const actionResult = await dispatch(action(data));
       const result = unwrapResult(actionResult);
 
       if (result) {
         enqueueSnackbar(`Updated successfully`, { variant: 'success' });
+        dispatch(getBestSellers());
         dispatch(refresh());
       }
     } catch (error) {

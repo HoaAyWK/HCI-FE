@@ -4,8 +4,9 @@ import { TableRow, TableCell, Stack, Box, Typography, IconButton, Tooltip } from
 import { fCurrency } from '../../../utils/formatNumber';
 import { Iconify } from '../../../components';
 import { ProductReviewDialog } from '../../common/product-reviews';
+import { STATUS } from '../../../constants/orderStatus';
 
-const LineItem = ({ item, index }) => {
+const LineItem = ({ item, index, status }) => {
   const { productName, image, quantity, productPrice, reviewed, id } = item;
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -40,7 +41,7 @@ const LineItem = ({ item, index }) => {
             <Typography variant='subtitle2'>
               {productName}
             </Typography>
-            {!reviewed && (
+            {!reviewed && status !== STATUS.CANCELLED && status !== STATUS.PROCESSING && (
               <Tooltip title='Click to review the product.' onClick={handleOpenDialog}>
                 <IconButton size='small' color='warning'>
                   <Iconify icon='material-symbols:release-alert-rounded' width={20} height={20} />

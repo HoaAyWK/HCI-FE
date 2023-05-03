@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, Typography, Stack } from '@mui/material';
 
@@ -7,9 +7,18 @@ import { Label } from '../../../../components';
 import { STATUS } from '../../../../constants/orderStatus';
 import { fCurrency } from '../../../../utils/formatNumber';
 import { fDateTime } from '../../../../utils/formatTime';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import { cancelOrder } from '../../../common/orderSlice';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { LoadingButton } from '@mui/lab';
+import ACTION_STATUS from '../../../../constants/actionStatus';
 
 const Order = ({ order }) => {
   const { id, orderDate, status, price, orderItems } = order;
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const { cancelOrderStatus } = useSelector((state) => state.orders);
 
   const labelColor = (status) => {
     if (status === STATUS.PAID) {
@@ -19,6 +28,19 @@ const Order = ({ order }) => {
     } else if (status === STATUS.DELIVERED) {
       return 'success';
     } return 'error';
+  };
+
+  const handleClickCancel = async () => {
+    try {
+      const actionResult = await dispatch(cancelOrder(id));
+      const result = unwrapResult(actionResult);
+
+      if (result?.success) {
+        enqueueSnackbar('Cancel successfully', { variant: 'success' });
+      }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   };
 
   return (
@@ -66,7 +88,14 @@ const Order = ({ order }) => {
         <Stack spacing={2} direction='row'>
           <Button LinkComponent={RouterLink} to={`/orders/${id}`} color='inherit' variant='outlined'>Details</Button>
           {status === STATUS.PROCESSING && (
-            <Button color='error' variant='outlined'>Cancel</Button>
+            <LoadingButton
+              color='error'
+              variant='outlined'
+              onClick={handleClickCancel}
+              loading={cancelOrderStatus === ACTION_STATUS.LOADING ? true : false}
+            >
+              Cancel
+            </LoadingButton>
           )}
         </Stack>
       </Box>

@@ -20,6 +20,13 @@ class OrderApi {
     return axiosClient.get(url);
   };
 
+  cancel = (id) => {
+    const url = 'bill/edit';
+    const data = { id, status: STATUS.CANCELLED };
+
+    return axiosClient.put(url, data);
+  };
+
   create = (data) => {
     const url = '/bill';
 

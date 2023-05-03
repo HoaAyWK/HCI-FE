@@ -14,7 +14,7 @@ import ACTION_STATUS from '../../constants/actionStatus';
 import { clearCheckoutClick, getCart } from '../common/cartSlice';
 import { useLocalStorage } from '../../hooks';
 import { PAYMENT_OPTIONS } from '../../constants/payment';
-import { checkoutWithCash } from './checkoutSlice';
+import { checkoutWithCash, checkoutWithStripe } from './checkoutSlice';
 import { STATUS } from '../../constants/orderStatus';
 import { selectAllShippingAddresses, getShippingAddresses } from './shippingAddressSlice';
 
@@ -34,6 +34,7 @@ const Checkout = () => {
   const [paymentOption, setPaymentOption] = useState(PAYMENT_OPTIONS.CASH);
   const navigate = useNavigate();
   const { getCartStatus, cart, checkoutClicked } = useSelector((state) => state.cart);
+  const { checkoutStripeStatus } = useSelector((state) => state.checkout);
   const shippingAddresses = useSelector(selectAllShippingAddresses);
   const { getShippingAddressesStatus, entities: addressEntities } = useSelector((state) => state.shippingAddresses);
 
@@ -85,7 +86,7 @@ const Checkout = () => {
         acceptorPhone: user.phone,
         deliveryAddress: user.address
       });
-    } else if (addressEntities.length > 0 ) {
+    } else if (Object.keys(addressEntities).length > 0) {
       setSelectedAddress(addressEntities[address]);
     }
   }, [address, user, addressEntities]);
@@ -112,25 +113,49 @@ const Checkout = () => {
   };
 
   const handleCompleteOrder = async () => {
-    try {
-      const actionResult = await dispatch(checkoutWithCash({ paymentType: paymentOption, status: STATUS.PROCESSING }));
-      const result = unwrapResult(actionResult);
+    if (paymentOption === PAYMENT_OPTIONS.CASH) {
+      try {
+        const actionResult = await dispatch(checkoutWithCash({
+          paymentType: paymentOption,
+          status: STATUS.PROCESSING,
+          shippingAddress: address
+        }));
+        const result = unwrapResult(actionResult);
 
-      if (result) {
-        enqueueSnackbar('Checkout successfully!', { variant: 'success' });
-        dispatch(getCart());
-        setActiveStep(0);
-        navigate('/checkout-success');
+        if (result) {
+          enqueueSnackbar('Checkout successfully!', { variant: 'success' });
+          dispatch(getCart());
+          setActiveStep(0);
+          navigate('/checkout-success');
+        }
+      } catch (error) {
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+    } else if (paymentOption === PAYMENT_OPTIONS.CREDIT) {
+      try {
+        const actionResult = await dispatch(checkoutWithStripe({
+          paymentType: paymentOption,
+          status: STATUS.PROCESSING,
+          shippingAddress: address
+        }));
+        const result = unwrapResult(actionResult);
+
+        if (result) {
+          if (result.url) {
+            window.location.href = result.url;
+          }
+        }
+      } catch (error) {
+        enqueueSnackbar(error.message, { variant: 'error' });
+      }
     }
   };
 
   if (getCartStatus === ACTION_STATUS.IDLE ||
     getCartStatus === ACTION_STATUS.LOADING ||
     getShippingAddressesStatus === ACTION_STATUS.IDLE ||
-    getShippingAddressesStatus === ACTION_STATUS.LOADING) {
+    getShippingAddressesStatus === ACTION_STATUS.LOADING ||
+    checkoutStripeStatus === ACTION_STATUS.LOADING) {
     return (
       <Box
         sx={{

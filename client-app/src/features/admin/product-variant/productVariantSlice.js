@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import productDetailsApi from '../../../services/productDetailsApi';
 import { uploadTaskPromise } from '../../../utils/uploadTaskPromise';
-import { getProductDetails } from '../../common/productDetailsSlice';
+import { getBestSellers } from '../../common/productDetailsSlice';
 
 const productVariantsAdapter = createEntityAdapter();
 
@@ -52,8 +52,6 @@ export const updateProductVariant = createAsyncThunk(
     }
 
     const res = await productDetailsApi.update(data);
-
-    thunkApi.dispatch(getProductDetails());
 
     return res;
   }

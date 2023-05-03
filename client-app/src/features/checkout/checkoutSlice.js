@@ -4,13 +4,21 @@ import ACTION_STATUS from '../../constants/actionStatus';
 import checkoutApi from '../../services/checkoutApi';
 
 const initialState = {
-  checkoutStatus: ACTION_STATUS.IDLE
+  checkoutStatus: ACTION_STATUS.IDLE,
+  checkoutStripeStatus: ACTION_STATUS.IDLE
 };
 
 export const checkoutWithCash = createAsyncThunk(
   'checkout/cash',
   async (data) => {
     return await checkoutApi.checkoutWithCash(data);
+  }
+);
+
+export const checkoutWithStripe = createAsyncThunk(
+  'checkout/stripe',
+  async (data) => {
+    return await checkoutApi.checkoutWithStripe(data);
   }
 );
 
@@ -33,6 +41,18 @@ const checkoutSlice = createSlice({
       })
       .addCase(checkoutWithCash.rejected, (state) => {
         state.checkoutStatus = ACTION_STATUS.FAILED;
+      })
+
+
+
+      .addCase(checkoutWithStripe.pending, (state) => {
+        state.checkoutStripeStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(checkoutWithStripe.fulfilled, (state) => {
+        state.checkoutStripeStatus = ACTION_STATUS.SUCCEEDED;
+      })
+      .addCase(checkoutWithStripe.rejected, (state) => {
+        state.checkoutStripeStatus = ACTION_STATUS.FAILED;
       })
   }
 });

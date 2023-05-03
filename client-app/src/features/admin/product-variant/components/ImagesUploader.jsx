@@ -51,7 +51,11 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, actionStatus, 
     const files = Array.from(acceptedFiles);
     const idFiles = files.map((file) => ({ id: uuidv4(), file }));
 
-    setValue(name, [...currentValue, ...idFiles]);
+    if (currentValue) {
+      setValue(name, [...currentValue, ...idFiles]);
+    } else {
+      setValue(name, [...idFiles]);
+    }
     setFiles(idFiles);
     clearErrors(name);
   }, []);
@@ -67,8 +71,10 @@ const ImagesUploader = ({ name, getValues, setValue, clearErrors, actionStatus, 
 
   useEffect(() => {
     const defaultImages = getValues(name);
-    setImages(defaultImages);
+    if (defaultImages) {
 
+      setImages(defaultImages);
+    }
     return () => images.map((image) => URL.revokeObjectURL(image.url));
   }, []);
 

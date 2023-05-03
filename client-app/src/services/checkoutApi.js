@@ -6,6 +6,12 @@ class CheckoutApi {
 
     return axiosClient.post(url, data);
   };
+
+  checkoutWithStripe = (data) => {
+    const url = '/order/credit';
+
+    return axiosClient.post(url, data);
+  }
 }
 
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import {
   Box,
@@ -107,12 +107,6 @@ const PaymentOptions = ({ step, onBack, user, numSelected, onBackActiveStep, pay
               onChange={handleValueChange}
             >
               <Stack spacing={3}>
-                <Option
-                  name={PAYMENT_OPTIONS.VNPAY}
-                  description='VNPAY provides its services to more than 40 banks in Vietnam.'
-                  value='vnpay'
-                  logos={[vnpayIcon]}
-                />
                 <Option
                   value={PAYMENT_OPTIONS.CREDIT}
                   name='Credit / Debit Card'
