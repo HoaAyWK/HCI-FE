@@ -19,7 +19,7 @@ const SortByPriceButtons = (props) => {
         <Button
           key={option.label}
           color={option.value === currentRefinement ? 'primary' : 'inherit'}
-          onClick={() => refine(option.value)}
+          onClick={() => { refine(option.value); }}
         >
           {option.label}
         </Button>

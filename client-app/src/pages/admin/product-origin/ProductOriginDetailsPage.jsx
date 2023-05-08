@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 import { AdminPageLayout } from '../common';
 import { ProductOriginDetails } from '../../../features/admin/product-origin';
@@ -10,6 +11,8 @@ const breadcrumbs = [
 ];
 
 const ProductOriginDetailsPage = () => {
+  const { id } = useParams();
+
   return (
     <AdminPageLayout
       pageTitle='Product origin details'
@@ -17,7 +20,7 @@ const ProductOriginDetailsPage = () => {
       breadcrumbs={breadcrumbs}
       showCreateButton={false}
     >
-      <ProductOriginDetails />
+      <ProductOriginDetails id={id} />
     </AdminPageLayout>
   );
 };

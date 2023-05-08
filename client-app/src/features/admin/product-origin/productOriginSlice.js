@@ -116,7 +116,7 @@ const productOriginSlice = createSlice({
 
 export const {
   selectAll: selectAllProductOrigins,
-  selectById: selectProductOriginyById,
+  selectById: selectProductOriginById,
   selectIds: selectProductOriginIds,
 } = productOriginsAdapter.getSelectors((state) => state.adminProductOrigins);
 

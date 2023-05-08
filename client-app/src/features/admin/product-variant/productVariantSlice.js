@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, createEntityAdapter, createSelector } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
 import ACTION_STATUS from '../../../constants/actionStatus';
@@ -114,6 +114,14 @@ export const {
   selectAll: selectAllProductVariants,
   selectById: selectProductVariantById,
 } = productVariantsAdapter.getSelectors((state) => state.adminProductVariants);
+
+export const selectProductVariantByProductOriginId = createSelector(
+  [
+    selectAllProductVariants,
+    (state, productOriginId) => productOriginId
+  ],
+  (variants, productOriginId) => variants.filter((variant) => variant.productId === productOriginId)
+);
 
 const { reducer, actions } = productVariantSlice;
 

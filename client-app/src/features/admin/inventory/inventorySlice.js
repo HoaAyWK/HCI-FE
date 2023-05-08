@@ -8,12 +8,21 @@ const inventoryAdapter = createEntityAdapter();
 const initialState = inventoryAdapter.getInitialState({
   getInventoriesStatus: ACTION_STATUS.IDLE,
   updateInventoryStatus: ACTION_STATUS.IDLE,
+  getWarehouseHistoryStatus: ACTION_STATUS.IDLE,
+  warehouseHistory: []
 });
 
 export const getInventories = createAsyncThunk(
   'inventories/all',
   async () => {
     return await inventoryApi.getAll();
+  }
+);
+
+export const getWarehouseHistory = createAsyncThunk(
+  'inventories/warehouseHistory',
+  async (id) => {
+    return await inventoryApi.getWarehouseHistory(id);
   }
 );
 
@@ -48,6 +57,19 @@ const inventorySlice = createSlice({
       })
       .addCase(getInventories.rejected, (state) => {
         state.getInventoriesStatus = ACTION_STATUS.FAILED;
+      })
+
+
+
+      .addCase(getWarehouseHistory.pending, (state) => {
+        state.getWarehouseHistoryStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(getWarehouseHistory.fulfilled, (state, action) => {
+        state.getWarehouseHistoryStatus = ACTION_STATUS.SUCCEEDED;
+        state.warehouseHistory = action.payload;
+      })
+      .addCase(getWarehouseHistory.rejected, (state) => {
+        state.getWarehouseHistoryStatus = ACTION_STATUS.FAILED;
       })
 
 

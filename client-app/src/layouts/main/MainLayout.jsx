@@ -15,6 +15,7 @@ import { getCurrentUserInfo } from '../../features/auth/authSlice';
 const searchClient = algoliaSearch(import.meta.env.VITE_ALGOLIA_APP_ID, import.meta.env.VITE_ALGOLIA_API_KEY);
 const indexName = import.meta.env.VITE_ALGOLIA_INDEX;
 
+
 const RootStyle = styled('div')({
     minHeight: '100%',
     overflow: 'hidden',

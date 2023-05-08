@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Card, Stack, Typography } from '@mui/material';
-import { Label } from '../../../../../components';
+
+import { Label, Cover } from '../../../../../components';
+import defaultProductImage from '../../../../../assets/images/default_product_image.png';
+import { fCurrency } from '../../../../../utils/formatNumber';
+import { COLOR_LIST } from '../../../../../constants/colors';
 
 const ProductVariantCard = ({ variant }) => {
-  const { image, color, specification, price, discount, status } = variant;
+  const { media, color, specifications, price, discount, status } = variant;
+  const realPrice = useMemo(() => {
+    return price - price * (discount / 100);
+  }, [variant]);
+
   return (
     <Card sx={{ borderRadius: 1, p: 2, border: (theme) => `1px dashed ${theme.palette.divider}`, boxShadow: 'none' }}>
     <Box
@@ -13,13 +21,13 @@ const ProductVariantCard = ({ variant }) => {
         justifyContent: 'space-between'
       }}
     >
-      <Box
+      <Cover
         component='img'
-        src={image}
+        src={media?.[0] ? media[0] : defaultProductImage}
         alt='image'
         sx={{
           width: 76,
-          height: 76,
+          height: 58,
           objectFit: 'cover',
           borderRadius: 1
         }}
@@ -36,10 +44,10 @@ const ProductVariantCard = ({ variant }) => {
       >
         <Stack spacing={0.5}>
         <Typography variant='h6' component='span' color='error' textAlign='center'>
-          ${price - discount}
+          {fCurrency(realPrice)}
         </Typography>
         <Typography variant='body2' color='text.secondary' textAlign='center'>
-          <s>${price}</s>
+          <s>{fCurrency(price)}</s>
         </Typography>
         </Stack>
       </Box>
@@ -49,7 +57,7 @@ const ProductVariantCard = ({ variant }) => {
         Color:
         &nbsp;
         <Typography variant='body1' component='span' color='text.primary'>
-          {color}
+          {COLOR_LIST[color]}
         </Typography>
       </Typography>
       <Box
@@ -61,13 +69,13 @@ const ProductVariantCard = ({ variant }) => {
         <Typography variant='body1' color='text.secondary'>
           Status: &nbsp;
         </Typography>
-        <Label color={status ? 'success' : 'error'}>{status ? 'Available' : 'Out of stock'}</Label>
+        <Label color={status ? 'success' : 'error'}>{status ? 'Available' : 'Unavailable'}</Label>
       </Box>
       <Typography variant='body1' color='text.secondary'>
         Specification:
         &nbsp;
         <Typography variant='body1' component='span' color='text.primary'>
-          {specification}
+          {specifications}
         </Typography>
       </Typography>
     </Stack>

@@ -1,22 +1,31 @@
 import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 
-const inventoryHistories = [
-  { createdAt: '04/04/2023 09:12 AM', isIncrease: false, value: 5 },
-  { createdAt: '04/04/2023 07:48 AM', isIncrease: false, value: 2 },
-  { createdAt: '03/04/2023 17:20 PM', isIncrease: false, value: 4 },
-  { createdAt: '04/04/2023 20:57 PM', isIncrease: true, value: 20 },
-  { createdAt: '04/04/2023 10:15 AM', isIncrease: false, value: 1 },
-];
+import { fDateTime } from '../../../utils/formatTime';
+import { WAREHOUSE_HISTORY_TYPE } from '../../../constants/warehouse';
+import ACTION_STATUS from '../../../constants/actionStatus';
+import { FetchDataErrorMessage, Loading } from '../components';
 
-const InventoryHistory = () => {
+const InventoryHistory = ({ histories, selectedProduct, inventories, status }) => {
+  if (status === ACTION_STATUS.IDLE ||
+      status === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  if (status === ACTION_STATUS.FAILED) {
+    return <FetchDataErrorMessage />;
+  }
+
   return (
     <Box sx={{ px: 1 }}>
-      <Typography variant='h5' component='h1' color='text.primary'>
-         #129120
-      </Typography>
+      <Stack spacing={0.5}>
+        <Typography variant='subtitle1'>Product ID</Typography>
+        <Typography variant='h5' component='h1' color='text.primary'>
+          {selectedProduct ? selectedProduct : inventories[0]?.productId }
+        </Typography>
+      </Stack>
       <Stack spacing={2} sx={{ mt: 2 }}>
-        {inventoryHistories.map((ih) => (
+        {histories.map((ih) => (
           <Box
             key={ih.createdAt}
             sx={{
@@ -25,8 +34,8 @@ const InventoryHistory = () => {
               justifyContent: 'space-between'
             }}
           >
-            <Typography variant='body1'>{ih.createdAt}</Typography>
-            <Typography variant='body1'>{`${ih.isIncrease ? '+' : '-'}${ih.value}`}</Typography>
+            <Typography variant='body1'>{fDateTime(ih.createdAt)}</Typography>
+            <Typography variant='body1'>{`${ih.type === WAREHOUSE_HISTORY_TYPE.PLUS ? '+' : '-'}${ih.quantity}`}</Typography>
           </Box>
         ))}
       </Stack>

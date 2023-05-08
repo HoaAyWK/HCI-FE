@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Stack, TableRow, TableCell, Typography } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Stack, Link, TableRow, TableCell, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
 
-import { Label } from '../../../components';
+import { Label, Cover } from '../../../components';
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { DataTable, FetchDataErrorMessage, Loading } from '../components';
 import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
@@ -108,22 +109,25 @@ const ProductList = () => {
             tabIndex={-1}
           >
             <TableCell component='th' scope='row'>
-              <Stack spacing={1} direction='row' alignItems='center'>
-                {media?.length > 0 && (
-                  <Box
-                    component='img'
-                    src={media?.[0]}
-                    alt={name}
-                    sx={{
-                      width: 56,
-                      height: 56,
-                      borderRadius: 1,
-                      objectFit: 'cover'
-                    }}
-                  />
-                )}
-                <Typography variant='body1'>{name}</Typography>
-              </Stack>
+              <Link component={RouterLink} to={`/admin/product-variants/details/${id}`} underline='hover'>
+                <Stack spacing={1} direction='row' alignItems='center'>
+                  {media?.length > 0 && (
+
+                    <Cover
+                      component='img'
+                      src={media?.[0]}
+                      alt={name}
+                      sx={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: 1,
+                        objectFit: 'cover'
+                      }}
+                    />
+                  )}
+                  <Typography variant='body1'>{name}</Typography>
+                </Stack>
+              </Link>
             </TableCell>
             <TableCell>
               {specifications}

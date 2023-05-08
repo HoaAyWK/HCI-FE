@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { TableRow, TableCell, Typography } from '@mui/material';
+import { TableRow, TableCell, Typography, Button } from '@mui/material';
 import { useSelector } from 'react-redux';
 
 import { MoreMenu, MoreMenuItem } from '../../../components/table';
 import InventoryForm from './InventoryForm';
 import { updateInventory } from './inventorySlice';
 
-const InventoryLine = ({ inventory }) => {
+const InventoryLine = ({ inventory, onSelectProduct }) => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
-  const { productId, productName, quantity } = inventory;
+  const { productId, productName, quantity, id } = inventory;
   const { updateInventoryStatus } = useSelector((state) => state.adminInventories);
 
   const handleOpenEditDialog = () => {
@@ -19,6 +19,10 @@ const InventoryLine = ({ inventory }) => {
     setOpenEditDialog(false);
   };
 
+  const handleClickProductId = () => {
+    onSelectProduct(productId);
+  };
+
   return (
     <>
       <TableRow
@@ -27,7 +31,9 @@ const InventoryLine = ({ inventory }) => {
         tabIndex={-1}
       >
         <TableCell component='th' scope='row'>
-          <Typography variant='body1'>#{productId}</Typography>
+          <Button color='inherit' onClick={handleClickProductId} >
+            {productId}
+          </Button>
         </TableCell>
         <TableCell>
         <Typography variant='body1'>{productName}</Typography>
@@ -38,7 +44,6 @@ const InventoryLine = ({ inventory }) => {
         <TableCell align="right">
           <MoreMenu>
             <MoreMenuItem title='Edit' iconName='eva:edit-outline' handleClick={handleOpenEditDialog} />
-            <MoreMenuItem title="Delete" iconName="eva:trash-2-outline"/>
           </ MoreMenu>
         </TableCell>
       </TableRow>

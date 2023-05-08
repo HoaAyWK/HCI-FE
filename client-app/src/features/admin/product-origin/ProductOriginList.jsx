@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { TableRow, TableCell, Typography } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Link, TableRow, TableCell, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
@@ -105,7 +106,9 @@ const ProductOriginList = () => {
             tabIndex={-1}
           >
             <TableCell component='th' scope='row'>
-              <Typography variant='body1'>{name}</Typography>
+              <Link component={RouterLink} to={`/admin/product-origins/details/${id}`} underline='hover'>
+                <Typography variant='body1'>{name}</Typography>
+              </Link>
             </TableCell>
             <TableCell sx={{ maxWidth: 400 }}>
               <Typography

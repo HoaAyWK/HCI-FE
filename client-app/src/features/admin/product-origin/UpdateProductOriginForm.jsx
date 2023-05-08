@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import ProductOriginForm from './ProductOriginForm';
-import { getProductOrigins, selectProductOriginyById, updateProductOrigin } from './productOriginSlice';
+import { getProductOrigins, selectProductOriginById, updateProductOrigin } from './productOriginSlice';
 import { Loading, FetchDataErrorMessage } from '../components';
 import { getBrands, selectAllBrands } from '../brand/brandSlice';
 import { getCategories, selectAllCategories } from '../category/categorySlice';
@@ -12,7 +12,7 @@ const UpdateProductOriginForm = ({ productId }) => {
   const dispatch = useDispatch();
   const categories = useSelector(selectAllCategories);
   const brands = useSelector(selectAllBrands);
-  const product = useSelector((state) => selectProductOriginyById(state, productId));
+  const product = useSelector((state) => selectProductOriginById(state, productId));
   const { getCategoriesStatus } = useSelector((state) => state.adminCategories);
   const { getBrandsStatus } = useSelector((state) => state.adminBrands);
   const { updateProductOriginStatus, getProductOriginsStatus } = useSelector((state) => state.adminProductOrigins);

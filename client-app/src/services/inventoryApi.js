@@ -2,7 +2,13 @@ import axiosClient from './axios';
 
 class InventoryApi {
   getAll = () => {
-    const url = '/warehouse/api';
+    const url = '/warehouse/show';
+
+    return axiosClient.get(url);
+  };
+
+  getWarehouseHistory = (productId) => {
+    const url = `/warehouse/history/${productId}`;
 
     return axiosClient.get(url);
   };
