@@ -3,7 +3,7 @@ import axiosClient from './axios';
 
 class OrderApi {
   getAll = () => {
-    const url = '/bill/api';
+    const url = '/bill/show';
 
     return axiosClient.get(url);
   };
@@ -33,8 +33,8 @@ class OrderApi {
     return axiosClient.post(url, data);
   };
 
-  update = (id, data) => {
-    const url = `/orders/${id}`;
+  update = (data) => {
+    const url = `/bill/edit`;
 
     return axiosClient.put(url, data);
   };

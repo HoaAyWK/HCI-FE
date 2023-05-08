@@ -77,10 +77,6 @@ const navConfig = [
         title: 'order',
         path: '/admin/orders',
         icon: getIcon('solar:delivery-bold'),
-        children: [
-          { title: 'List', path: '/admin/orders/list' },
-          { title: 'Details', path: '/admin/orders/details' }
-        ]
     },
     {
       title: 'warehouse',

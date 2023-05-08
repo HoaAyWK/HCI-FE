@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { TableRow, TableCell, Stack, Box, Typography, IconButton, Tooltip } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 import { fCurrency } from '../../../utils/formatNumber';
 import { Iconify } from '../../../components';
 import { ProductReviewDialog } from '../../common/product-reviews';
 import { STATUS } from '../../../constants/orderStatus';
+import ROLES from '../../../constants/userRoles';
 
-const LineItem = ({ item, index, status }) => {
+const LineItem = ({ item, index, status, orderUser }) => {
   const { productName, image, quantity, productPrice, reviewed, id } = item;
   const [openDialog, setOpenDialog] = useState(false);
+  const { user } = useSelector((state) => state.auth);
+
+  const canReview = useMemo(() => {
+    if (!reviewed &&
+      status !== STATUS.CANCELLED &&
+      status !== STATUS.PROCESSING &&
+      user.id === orderUser &&
+      user.role !== ROLES.ADMIN) {
+        return true;
+    }
+
+    return false;
+  }, [reviewed, status, user]);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -41,7 +56,7 @@ const LineItem = ({ item, index, status }) => {
             <Typography variant='subtitle2'>
               {productName}
             </Typography>
-            {!reviewed && status !== STATUS.CANCELLED && status !== STATUS.PROCESSING && (
+            {canReview && (
               <Tooltip title='Click to review the product.' onClick={handleOpenDialog}>
                 <IconButton size='small' color='warning'>
                   <Iconify icon='material-symbols:release-alert-rounded' width={20} height={20} />

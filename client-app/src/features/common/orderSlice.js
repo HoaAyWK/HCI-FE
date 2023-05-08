@@ -41,6 +41,9 @@ const orderSlice = createSlice({
   reducers: {
     clearGetDataStatus: (state) => {
       state.getMyBillsStatus = ACTION_STATUS.IDLE;
+    },
+    refresh: (state) => {
+      state.cancelOrderStatus = ACTION_STATUS.IDLE;
     }
   },
   extraReducers: (builder) => {
@@ -95,6 +98,6 @@ export const {
 
 const { reducer, actions } = orderSlice;
 
-export const { clearGetDataStatus } = actions;
+export const { clearGetDataStatus, refresh } = actions;
 
 export default reducer;

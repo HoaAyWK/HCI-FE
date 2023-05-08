@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Container } from '@mui/material';
@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocalStorage } from '../../hooks';
 import ACTION_STATUS from '../../constants/actionStatus';
 import { getCurrentUserInfo } from '../../features/auth/authSlice';
+import { Loading } from '../../components';
 
 const searchClient = algoliaSearch(import.meta.env.VITE_ALGOLIA_APP_ID, import.meta.env.VITE_ALGOLIA_API_KEY);
 const indexName = import.meta.env.VITE_ALGOLIA_INDEX;
@@ -65,7 +66,9 @@ export default function Layout() {
         <InstantSearch searchClient={searchClient} indexName={indexName} routing={searchRouting}>
           <Header user={user} />
           <Container maxWidth='lg' sx={{ mt: 8, mb: 20 }}>
-            <Outlet />
+            <Suspense fallback={<Loading />}>
+              <Outlet />
+            </Suspense>
           </Container>
         </InstantSearch>
         <Footer />

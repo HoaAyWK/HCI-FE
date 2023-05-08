@@ -9,13 +9,14 @@ import { fCurrency } from '../../../../utils/formatNumber';
 import { fDateTime } from '../../../../utils/formatTime';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { cancelOrder } from '../../../common/orderSlice';
+import { cancelOrder, refresh } from '../../../common/orderSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { LoadingButton } from '@mui/lab';
 import ACTION_STATUS from '../../../../constants/actionStatus';
+import { PAYMENT_OPTIONS } from '../../../../constants/payment';
 
 const Order = ({ order }) => {
-  const { id, orderDate, status, price, orderItems } = order;
+  const { id, orderDate, status, price, orderItems, paymentType } = order;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const { cancelOrderStatus } = useSelector((state) => state.orders);
@@ -37,6 +38,7 @@ const Order = ({ order }) => {
 
       if (result?.success) {
         enqueueSnackbar('Cancel successfully', { variant: 'success' });
+        dispatch(refresh());
       }
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -87,7 +89,7 @@ const Order = ({ order }) => {
       >
         <Stack spacing={2} direction='row'>
           <Button LinkComponent={RouterLink} to={`/orders/${id}`} color='inherit' variant='outlined'>Details</Button>
-          {status === STATUS.PROCESSING && (
+          {status === STATUS.PROCESSING && paymentType === PAYMENT_OPTIONS.CASH && (
             <LoadingButton
               color='error'
               variant='outlined'

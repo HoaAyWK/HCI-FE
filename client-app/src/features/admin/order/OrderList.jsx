@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
-import { TableRow, TableCell, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Link, TableRow, TableCell, Typography } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
-import { DataTable } from '../components';
+import { DataTable, FetchDataErrorMessage, Loading } from '../components';
 import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
 import { Label } from '../../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import ACTION_STATUS from '../../../constants/actionStatus';
+import { getOrders, selectAllOrders } from './orderSlice';
+import { fCurrency } from '../../../utils/formatNumber';
+import { fDateTime } from '../../../utils/formatTime';
 
 const TABLE_HEAD = [
   { id: 'id', label: 'Order ID', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'total', label: 'Total', alignRight: true },
-  { id: 'createdAt', label: 'Order Date', alignRight: false },
+  { id: 'orderDate', label: 'Order Date', alignRight: false },
   { id: '', label: '', alignRight: false },
-];
-
-const orders = [
-  { id: 12083, status: 'Paid', total: 1299, createdAt: '04/04/2023' },
-  { id: 12084, status: 'Processing', total: 199, createdAt: '03/04/2023' },
-  { id: 12085, status: 'Paid', total: 499, createdAt: '02/04/2023' },
-  { id: 12086, status: 'Cancel', total: 1000, createdAt: '01/04/2023' },
-  { id: 12087, status: 'Delivered', total: 999, createdAt: '31/03/2023' },
 ];
 
 const OrderList = () => {
@@ -28,6 +26,16 @@ const OrderList = () => {
   const [filterName, setFilterName] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const dispatch = useDispatch();
+  const orders = useSelector(selectAllOrders);
+  const { getOrdersStatus } = useSelector((state) => state.adminOrders);
+
+  useEffect(() => {
+    if (getOrdersStatus === ACTION_STATUS.IDLE) {
+      dispatch(getOrders());
+    }
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -60,6 +68,15 @@ const OrderList = () => {
     } else return 'error';
   }
 
+  // if (getOrdersStatus === ACTION_STATUS.IDLE ||
+  //     getOrdersStatus === ACTION_STATUS.LOADING) {
+  //   return <Loading />;
+  // }
+
+  // if (getOrdersStatus === ACTION_STATUS.FAILED) {
+  //   return <FetchDataErrorMessage />;
+  // }
+
   return (
     <DataTable
       order={order}
@@ -76,7 +93,7 @@ const OrderList = () => {
       handleRequestSort={handleRequestSort}
     >
       {filterOrders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-        const { id, total, status, createdAt } = row;
+        const { id, price, status, orderDate } = row;
 
         return (
           <TableRow
@@ -85,20 +102,22 @@ const OrderList = () => {
             tabIndex={-1}
           >
             <TableCell component='th' scope='row'>
-              <Typography variant='body1'>#{id}</Typography>
+              <Link component={RouterLink} to={`/admin/orders/details/${id}`} underline='hover' >
+                <Typography variant='body1'>{id}</Typography>
+              </Link>
             </TableCell>
             <TableCell>
               <Label color={statusColor(status)}>{status}</Label>
             </TableCell>
             <TableCell align='right'>
-              ${total}
+              {fCurrency(price)}
             </TableCell>
             <TableCell>
-              {createdAt}
+              {fDateTime(orderDate)}
             </TableCell>
             <TableCell align="right">
               <MoreMenu>
-                <MoreMenuItemLink title='Details' to='/admin/orders/details' iconName='eva:edit-outline' />
+                <MoreMenuItemLink title='Details' to={`/admin/orders/details/${id}`} iconName='eva:edit-outline' />
               </ MoreMenu>
             </TableCell>
           </TableRow>

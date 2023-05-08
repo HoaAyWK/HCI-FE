@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 // @mui
@@ -7,6 +7,7 @@ import { styled } from '@mui/material/styles';
 import AdminHeader from './header';
 import AdminNavbar from './navbar';
 import { useResponsive } from '../../hooks';
+import { Loading } from '../../components';
 
 // ----------------------------------------------------------------------
 const NAV_WIDTH = 280;
@@ -52,7 +53,7 @@ export default function DashboardLayout() {
     setOpenDesktopNav(prev => !prev);
   };
 
-  const handleOpenMoblileNav = () => {
+  const handleOpenMobileNav = () => {
     setOpenMobileNav(true);
   };
 
@@ -69,7 +70,7 @@ export default function DashboardLayout() {
       <AdminHeader
         user={user}
         openDesktopNav={openDesktopNav}
-        onOpenMobileNav={handleOpenMoblileNav}
+        onOpenMobileNav={handleOpenMobileNav}
       />
 
       <AdminNavbar
@@ -82,7 +83,9 @@ export default function DashboardLayout() {
       />
 
       <Main miniDrawer={isDesktop && !openDesktopNav}>
-        <Outlet />
+        <Suspense fallback={<Loading />}>
+          <Outlet />
+        </Suspense>
       </Main>
 
     </StyledRoot>

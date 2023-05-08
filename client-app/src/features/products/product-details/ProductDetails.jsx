@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { SyncSlider } from '../components';
 import { StyledPaper } from '../components/styles';
-import { Iconify, Loading, QuantityControl, ShowMoreParagraph } from '../../../components';
+import { Iconify, LoadingPage, QuantityControl, ShowMoreParagraph } from '../../../components';
 import { ColorButton, SpecificationsButton, Divider as DashedDivider } from './components';
 import { getProductDetailSingle } from '../../common/productDetailsSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
@@ -86,8 +86,8 @@ const ProductDetails = (props) => {
   };
 
   if (getSingleStatus === ACTION_STATUS.IDLE ||
-    getSingleStatus === ACTION_STATUS.LOADING) {
-    return <Loading />;
+    getSingleStatus === ACTION_STATUS.LOADINGPage) {
+    return <LoadingPage />;
   }
 
   if (getSingleStatus === ACTION_STATUS.FAILED) {

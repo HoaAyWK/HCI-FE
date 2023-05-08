@@ -1,46 +1,56 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, Divider, Grid, Stack, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
-import LineItemTable from './components/LineItemTable';
-import { Iconify, Label, LoadingPage } from '../../components';
-import { getSingleBill } from '../common/orderSlice';
-import ACTION_STATUS from '../../constants/actionStatus';
-import { fDateTime } from '../../utils/formatTime';
-import { fCurrency } from '../../utils/formatNumber';
-import { PAYMENT_OPTIONS } from '../../constants/payment';
-import { STATUS } from '../../constants/orderStatus';
-import ConfirmDialog from '../common/ConfirmDialog';
-import { cancelOrder, refresh } from '../common/orderSlice';
-import { getOrders } from '../admin/order/orderSlice';
+import LineItemTable from '../../order-details/components/LineItemTable';
+import { Iconify, Label } from '../../../components';
+import ACTION_STATUS from '../../../constants/actionStatus';
+import { fDateTime } from '../../../utils/formatTime';
+import { fCurrency } from '../../../utils/formatNumber';
+import { PAYMENT_OPTIONS } from '../../../constants/payment';
+import { cancelOrder, getOrders, selectOrderById, finishOrder } from './orderSlice';
+import { FetchDataErrorMessage, Loading } from '../components';
+import ROLES from '../../../constants/userRoles';
+import { STATUS } from '../../../constants/orderStatus';
+import ConfirmDialog from '../../common/ConfirmDialog';
+import { getInventories } from '../inventory/inventorySlice';
 
 const OrderDetails = ({ id }) => {
   const dispatch = useDispatch();
-  const { getSingleBillStatus, bill, cancelOrderStatus } = useSelector((state) => state.orders);
-  const { createReviewStatus } = useSelector((state) => state.productReviews);
+  const bill = useSelector((state) => selectOrderById(state, id));
+  const { getOrdersStatus, cancelOrderStatus, finishOrderStatus } = useSelector((state) => state.adminOrders);
+  const { user } = useSelector((state) => state.auth);
+  const [openConfirmFinishDialog, setOpenConfirmFinishDialog] = useState(false);
   const [openConfirmCancelDialog, setOpenConfirmCancelDialog] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    dispatch(getSingleBill(id));
-  }, [id]);
-
-  useEffect(() => {
-    if (createReviewStatus === ACTION_STATUS.SUCCEEDED) {
-      dispatch(getSingleBill(id));
-      dispatch(refresh());
+    if (getOrdersStatus === ACTION_STATUS.IDLE) {
+      dispatch(getOrders());
     }
-  }, [createReviewStatus]);
+  }, []);
 
   useEffect(() => {
     if (cancelOrderStatus === ACTION_STATUS.SUCCEEDED) {
       enqueueSnackbar('Cancel successfully', { variant: 'success' });
-      dispatch(refresh());
-      dispatch(getOrders());
     }
   }, [cancelOrderStatus]);
+
+  useEffect(() => {
+    if (finishOrderStatus === ACTION_STATUS.SUCCEEDED) {
+      dispatch(getInventories());
+      enqueueSnackbar('Finished order', { variant: 'success' });
+    }
+  }, [finishOrderStatus]);
+
+  const handleOpenConfirmFinishDialog = () => {
+    setOpenConfirmFinishDialog(true);
+  };
+
+  const handleCloseConfirmFinishDialog = () => {
+    setOpenConfirmFinishDialog(false);
+  };
 
   const handleOpenConfirmCancelDialog = () => {
     setOpenConfirmCancelDialog(true);
@@ -62,18 +72,18 @@ const OrderDetails = ({ id }) => {
     return 'error';
   };
 
-  if (getSingleBillStatus === ACTION_STATUS.IDLE ||
-      getSingleBillStatus === ACTION_STATUS.LOADING) {
-    return <LoadingPage />;
+  if (getOrdersStatus === ACTION_STATUS.IDLE ||
+      getOrdersStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
   }
 
-  if (getSingleBillStatus === ACTION_STATUS.FAILED) {
-    return <Navigate to='/' />;
+  if (getOrdersStatus === ACTION_STATUS.FAILED) {
+    return <FetchDataErrorMessage />;
   }
 
   return (
     <Box>
-      {bill?.status === STATUS.PROCESSING && bill?.paymentType === PAYMENT_OPTIONS.CASH && (
+      {bill.status === STATUS.PROCESSING && bill.paymentType === PAYMENT_OPTIONS.CASH && (
         <>
           <Box
             sx={{
@@ -83,14 +93,30 @@ const OrderDetails = ({ id }) => {
               mb: 2
             }}
           >
-            <Button
-              variant='outlined'
-              color='error'
-              onClick={handleOpenConfirmCancelDialog}
-            >
-              Cancel
-            </Button>
+            <Stack spacing={1} direction='row'>
+              {user.role === ROLES.ADMIN && (
+                <Button variant='outlined' onClick={handleOpenConfirmFinishDialog}>
+                  Finish
+                </Button>
+              )}
+              <Button
+                variant='outlined'
+                color='error'
+                onClick={handleOpenConfirmCancelDialog}
+              >
+                Cancel
+              </Button>
+            </Stack>
           </Box>
+          <ConfirmDialog
+            dialogTitle='Confirm finish order'
+            dialogContent='Are you sure to finish this order'
+            open={openConfirmFinishDialog}
+            handleClose={handleCloseConfirmFinishDialog}
+            billId={id}
+            action={finishOrder}
+            status={finishOrderStatus}
+          />
           <ConfirmDialog
             dialogTitle='Confirm cancel order'
             dialogContent='Are you sure to cancel this order'
@@ -102,7 +128,7 @@ const OrderDetails = ({ id }) => {
           />
         </>
       )}
-      <Card>
+      <Card sx={{ mt: 2 }}>
         <CardContent>
           <Box
             sx={{
@@ -149,7 +175,7 @@ const OrderDetails = ({ id }) => {
               </Stack>
             </Grid>
           </Grid>
-          <LineItemTable items={bill?.orderItems} status={bill?.status} orderUser={bill?.userId} />
+          <LineItemTable items={bill.orderItems} status={bill.status} orderUser={bill?.userId} />
           <Box
             sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}
           >

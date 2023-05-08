@@ -1,14 +1,15 @@
 import React from 'react';
 import { Box, CircularProgress } from '@mui/material';
 
-const Loading = () => {
+const LoadingPage = () => {
   return (
     <Box
       sx={{
+        width: '100vw',
+        height: '100vh',
         display: 'flex',
         justifyContent: 'center',
-        width: '100%',
-        py: 8
+        alignItems: 'center'
       }}
     >
       <CircularProgress />
@@ -16,4 +17,4 @@ const Loading = () => {
   );
 };
 
-export default Loading;
+export default LoadingPage;

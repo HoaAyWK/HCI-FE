@@ -1,7 +1,8 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 import { AdminPageLayout } from '../common';
-import OrderDetails from '../../../features/order-details';
+import { OrderDetails } from '../../../features/admin/order';
 
 const breadcrumbs = [
   { label: 'Dashboard', path: '/admin/dashboard' },
@@ -10,6 +11,8 @@ const breadcrumbs = [
 ];
 
 const OrderDetailsPage = () => {
+  const { id } = useParams();
+
   return (
     <AdminPageLayout
       pageHeaderName='Order details'
@@ -17,7 +20,7 @@ const OrderDetailsPage = () => {
       breadcrumbs={breadcrumbs}
       showCreateButton={false}
     >
-      <OrderDetails />
+      <OrderDetails id={id} />
     </AdminPageLayout>
   );
 };

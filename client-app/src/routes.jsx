@@ -1,50 +1,47 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy } from 'react';
 import { Navigate, useRoutes, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Loading } from './components';
+import { LoadingPage } from './components';
 import ACTION_STATUS from './constants/actionStatus';
 import ROLES from './constants/userRoles';
 import { useLocalStorage } from './hooks';
+import { getCurrentUserInfo } from './features/auth/authSlice';
 
 import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
 
 import { Login, Register } from './features/auth';
-import { AccountSettings, AdminSettings, PasswordSettings } from './features/settings';
-import {
-  HomePage,
-  CheckoutPage,
-  ProductsPage,
-  ProductPage,
-  ProfilePage,
-  SearchPage,
-  OrderDetailsPage,
-  CheckoutSuccessPage
-} from './pages';
-
 import { DashboardPage } from './pages/admin';
-import { CreateUserPage, UserListPage, UserDetailsPage } from './pages/admin/user';
-import { CategoryListPage } from './pages/admin/category';
-import { BrandListPage } from './pages/admin/brand';
-import { InventoryListPage } from './pages/admin/inventory';
-import { AdminOrderDetailsPage, OrderListPage } from './pages/admin/order';
-import {
-  ProductOriginListPage,
-  CreateProductOriginPage,
-  ProductOriginDetailsPage,
-  UpdateProductOriginPage
-} from './pages/admin/product-origin';
 
-import {
-  CreateProductVariantPage,
-  ProductVariantDetailsPage,
-  ProductVariantListPage,
-  UpdateProductVariantPage
-} from './pages/admin/product-variant';
+import { HomePage, CheckoutPage, ProductPage, SearchPage, CheckoutSuccessPage } from './pages';
 
-import { BannersPage } from './pages/admin/banner';
+const AccountSettings = lazy(() => import('./features/settings/AccountSettings'));
+const AdminSettings = lazy(() => import('./features/settings/AdminSettings'));
+const PasswordSettings = lazy(() => import('./features/settings/PasswordSettings'));
 
-import { getCurrentUserInfo } from './features/auth/authSlice';
+const OrderDetailsPage = lazy(() => import('./pages/OrderDetailsPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+
+const BannersPage = lazy(() => import('./pages/admin/banner/BannersPage'));
+const UserListPage = lazy(() => import('./pages/admin/user/UserListPage'));
+const OrderListPage = lazy(() => import('./pages/admin/order/OrderListPage'));
+const BrandListPage = lazy(() => import('./pages/admin/brand/BrandListPage'));
+const CreateUserPage = lazy(() => import('./pages/admin/user/CreateUserPage'));
+const UserDetailsPage = lazy(() => import('./pages/admin/user/UserDetailsPage'));
+const CategoryListPage = lazy(() => import('./pages/admin/category/CategoryListPage'));
+const AdminOrderDetailsPage = lazy(() => import('./pages/admin/order/OrderDetailsPage'));
+const InventoryListPage = lazy(() => import('./pages/admin/inventory/InventoryListPage'));
+
+const ProductOriginListPage = lazy(() => import('./pages/admin/product-origin/ProductOriginListPage'));
+const CreateProductOriginPage = lazy(() => import('./pages/admin/product-origin/CreateProductOriginPage'));
+const UpdateProductOriginPage = lazy(() => import('./pages/admin/product-origin/UpdateProductOriginPage'));
+const ProductOriginDetailsPage = lazy(() => import('./pages/admin/product-origin/ProductOriginDetailsPage'));
+
+const ProductVariantListPage = lazy(() => import('./pages/admin/product-variant/ProductVariantListPage'));
+const CreateProductVariantPage = lazy(() => import('./pages/admin/product-variant/CreateProductVariantPage'));
+const UpdateProductVariantPage = lazy(() => import('./pages/admin/product-variant/UpdateProductVariantPage'));
+const ProductVariantDetailsPage = lazy(() => import('./pages/admin/product-variant/ProductVariantDetailsPage'));
+
 
 const RejectedRoute = () => {
   const dispatch = useDispatch();
@@ -58,8 +55,8 @@ const RejectedRoute = () => {
     }
   }, []);
 
-  if (getCurrentUserStatus === ACTION_STATUS.LOADING) {
-    return <Loading />;
+  if (getCurrentUserStatus === ACTION_STATUS.LOADINGPage) {
+    return <LoadingPage />;
   }
 
   if (getCurrentUserStatus === ACTION_STATUS.SUCCEEDED) {
@@ -88,8 +85,8 @@ const ProtectedRoute = () => {
     }
   }, []);
 
-  if (getCurrentUserStatus === ACTION_STATUS.LOADING) {
-    return <Loading />;
+  if (getCurrentUserStatus === ACTION_STATUS.LOADINGPage) {
+    return <LoadingPage />;
   }
 
   if (getCurrentUserStatus === ACTION_STATUS.SUCCEEDED) {
@@ -127,7 +124,7 @@ const ProtectedAdminRoute = () => {
   }
 
   if (getCurrentUserStatus === ACTION_STATUS.LOADING) {
-    return <Loading />;
+    return <LoadingPage />;
   }
 
   if (getCurrentUserStatus === ACTION_STATUS.FAILED) {
@@ -145,7 +142,6 @@ const Router = () => {
       children: [
         { path: '', element: <HomePage /> },
         { path: 'search', element: <SearchPage /> },
-        { path: 'products', element: <ProductsPage /> },
         { path: 'products/:id', element: <ProductPage />},
         { path: 'checkout', element: <CheckoutPage /> },
         {
@@ -267,7 +263,7 @@ const Router = () => {
               children: [
                 { path: '', element: <Navigate to='list' /> },
                 { path: 'list', element: <OrderListPage /> },
-                { path: 'details', element: <AdminOrderDetailsPage /> }
+                { path: 'details/:id', element: <AdminOrderDetailsPage /> }
               ]
             },
             {

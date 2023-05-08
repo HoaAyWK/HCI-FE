@@ -5,9 +5,6 @@ import ThemeProvider from './theme';
 import { AppThemeProvider } from './context/AppThemeContext';
 import { AppSearchProvider } from './context/AppSearchContext';
 
-
-
-
 function App() {
   return (
     <AppThemeProvider>

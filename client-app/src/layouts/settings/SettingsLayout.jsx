@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Grid } from '@mui/material';
 
 import { Navbar } from './nav';
+import { Loading } from '../../components';
 
 
 const SettingsLayout = () => {
@@ -12,7 +13,9 @@ const SettingsLayout = () => {
         <Navbar />
       </Grid>
       <Grid item xs={12} md={8} lg={8}>
-        <Outlet />
+        <Suspense fallback={<Loading />}>
+          <Outlet />
+        </Suspense>
       </Grid>
     </Grid>
   );
