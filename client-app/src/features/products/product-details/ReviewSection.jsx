@@ -96,7 +96,7 @@ if (getReviewsStatus === ACTION_STATUS.FAILED) {
                   my: 3
                 }}
               >
-                <Typography varaint='subtitle1' color='text.secondary' fontWeight='bold'>
+                <Typography variant='subtitle1' color='text.secondary' fontWeight='bold'>
                   Average Rating
                 </Typography>
                 <Typography variant='h2' color='text.primary' sx={{ my: 1 }}>
@@ -123,7 +123,7 @@ if (getReviewsStatus === ACTION_STATUS.FAILED) {
                   <Stack spacing={1}>
                     {reviewStats.map((rating) => (
                       <Stack spacing={2} direction='row' key={rating.name} alignItems='center'>
-                        <Typography varaint='subtitle1' color='text.primary'>
+                        <Typography variant='subtitle1' color='text.primary'>
                           {rating.value} &nbsp; Star
                         </Typography>
                         <LinearProgress color='inherit' variant='determinate' value={rating.total / productSingle.numReviews * 100} sx={{ minWidth: 200 }} />

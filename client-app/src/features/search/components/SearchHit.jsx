@@ -1,13 +1,31 @@
 import React, { useMemo } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
+import { useDispatch } from 'react-redux';
+import { alpha, styled } from '@mui/material/styles';
+import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, IconButton, Link, Stack, Rating, Tooltip, Typography } from '@mui/material';
 
 import { Cover, Label, Iconify } from '../../../components';
 import { fCurrency } from '../../../utils/formatNumber';
+import { Highlight } from 'react-instantsearch-hooks-web';
+import { createFavorite, deleteFavorite } from '../../common/productFavoriteSlice';
 
-const SearchHit = ({ hit }) => {
+const StyledDefaultIconButton = styled(IconButton)(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.grey[900], 0.08),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.grey[900], 0.32)
+  },
+}));
+
+const StyledRedIconButton = styled(IconButton)(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.error.main, 0.08),
+  color: theme.palette.error.main,
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.error.main, 0.32)
+  },
+}));
+
+const SearchHit = ({ hit, sendEvent, favorites }) => {
   const { objectID, name, price, discount, image, averageRating } = hit;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -20,6 +38,34 @@ const SearchHit = ({ hit }) => {
     return price;
   }, [price, discount]);
 
+  const isFavorite = useMemo(() => {
+    if (favorites) {
+      for (let favorite of favorites) {
+        if (favorite.productId === objectID) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    return false;
+  }, [favorites]);
+
+  const favoriteId = useMemo(() => {
+    if (favorites) {
+      for (let favorite of favorites) {
+        if (favorite.productId === objectID) {
+          return favorite.id;
+        }
+      }
+
+      return undefined;
+    }
+
+    return undefined;
+  }, [favorites]);
+
   const handleClickAddToCart = async () => {
     try {
       const actionResult = await dispatch(addToCart({ productId: id, quantity: 1 }));
@@ -28,6 +74,39 @@ const SearchHit = ({ hit }) => {
       if (result) {
         enqueueSnackbar('Added 1 item to your cart', { variant: 'success' });
       }
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  };
+
+  const handleClickHeart = async () => {
+    try {
+      if (!isFavorite && !user) {
+        enqueueSnackbar('Please login first!');
+        return;
+      }
+
+      if (!isFavorite) {
+        const actionResult = await dispatch(createFavorite({ productId: objectID }));
+        const result = unwrapResult(actionResult);
+
+        if (result) {
+          enqueueSnackbar('Favorite successfully', { variant: 'success' });
+        }
+      } else {
+        if (!favoriteId) {
+          enqueueSnackbar('Something went wrong.', { variant: 'error' });
+          return;
+        }
+
+        const actionResult = await dispatch(deleteFavorite(favoriteId));
+        const result = unwrapResult(actionResult);
+
+        if (result) {
+          enqueueSnackbar('Remove favorite successfully', { variant: 'success' });
+        }
+      }
+
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
@@ -50,20 +129,40 @@ const SearchHit = ({ hit }) => {
           borderBottomRightRadius: 0,
         }
       }}
+      onClick={() => sendEvent('click', hit, 'Product Clicked')}
     >
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        <IconButton
-          aria-label='favorite'
-          sx={{
-            zIndex: 9,
-            top: 8,
-            right: 8,
-            position: 'absolute',
-            textTransform: 'uppercase',
-          }}
-        >
-          <Iconify icon='mdi:cards-heart' width={24} height={24} />
-        </IconButton>
+      {isFavorite ? (
+          <StyledRedIconButton
+            size='small'
+            onClick={handleClickHeart}
+            aria-label='favorite'
+            sx={{
+              zIndex: 9,
+              top: 8,
+              right: 8,
+              position: 'absolute',
+              textTransform: 'uppercase',
+            }}
+          >
+            <Iconify icon='mdi:cards-heart' width={24} height={24} />
+          </StyledRedIconButton>
+        ) : (
+          <StyledDefaultIconButton
+            size='small'
+            onClick={handleClickHeart}
+            aria-label='favorite'
+            sx={{
+              zIndex: 9,
+              top: 8,
+              right: 8,
+              position: 'absolute',
+              textTransform: 'uppercase',
+            }}
+          >
+            <Iconify icon='mdi:cards-heart' width={24} height={24} />
+          </StyledDefaultIconButton>
+        )}
         <Link component={RouterLink} to={`/products/${objectID}`}>
           <Cover
             src={image}
@@ -84,7 +183,7 @@ const SearchHit = ({ hit }) => {
         <Tooltip title={name}>
           <Link color="inherit" underline="hover" component={RouterLink} to={`/products/${objectID}`}>
             <Typography variant="subtitle2" noWrap>
-              {name}
+              <Highlight hit={hit} attribute='name' />
             </Typography>
           </Link>
         </Tooltip>

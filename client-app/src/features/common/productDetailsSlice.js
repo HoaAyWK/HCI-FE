@@ -3,10 +3,10 @@ import { createAsyncThunk, createSlice, createEntityAdapter, createSelector } fr
 import productDetailsApi from '../../services/productDetailsApi';
 import ACTION_STATUS from '../../constants/actionStatus';
 
-const bestSellersAdapter = createEntityAdapter();
+const productsPerCategoryAdapter = createEntityAdapter();
 
-const initialState = bestSellersAdapter.getInitialState({
-  getBestSellersStatus: ACTION_STATUS.IDLE,
+const initialState = productsPerCategoryAdapter.getInitialState({
+  getProductsPerCategoryStatus: ACTION_STATUS.IDLE,
   getSingleStatus: ACTION_STATUS.IDLE,
   totalItems: 0,
   productSingle: null
@@ -20,10 +20,10 @@ export const getProductDetailSingle = createAsyncThunk(
   }
 );
 
-export const getBestSellers = createAsyncThunk(
-  'productDetails/bestSellers',
-  async ({ num, page }) => {
-    return await productDetailsApi.getBestSellers(num, page);
+export const getProductsPerCategory = createAsyncThunk(
+  'productDetails/productsPerCategory',
+  async () => {
+    return await productDetailsApi.getProductsPerCategory();
   }
 );
 
@@ -34,16 +34,15 @@ const productDetailsSlice = createSlice({
     builder
 
 
-      .addCase(getBestSellers.pending, (state) => {
-        state.getBestSellersStatus = ACTION_STATUS.LOADING;
+      .addCase(getProductsPerCategory.pending, (state) => {
+        state.getProductsPerCategoryStatus = ACTION_STATUS.LOADING;
       })
-      .addCase(getBestSellers.fulfilled, (state, action) => {
-        state.getBestSellersStatus = ACTION_STATUS.SUCCEEDED;
-        state.totalItems = action.payload.totalItems;
-        bestSellersAdapter.addMany(state, action.payload.items);
+      .addCase(getProductsPerCategory.fulfilled, (state, action) => {
+        state.getProductsPerCategoryStatus = ACTION_STATUS.SUCCEEDED;
+        productsPerCategoryAdapter.setAll(state, action.payload);
       })
-      .addCase(getBestSellers.rejected, (state) => {
-        state.getBestSellersStatus = ACTION_STATUS.FAILED;
+      .addCase(getProductsPerCategory.rejected, (state) => {
+        state.getProductsPerCategoryStatus = ACTION_STATUS.FAILED;
       })
 
 
@@ -62,13 +61,8 @@ const productDetailsSlice = createSlice({
 
 export const {
   selectAll: selectAllProductDetails,
-  selectById: selectProductDetailById
-} = bestSellersAdapter.getSelectors((state) => state.productDetails);
-
-export const selectProductDetailWithImage = createSelector(
-  [selectAllProductDetails],
-  (productDetails) => productDetails.filter(productDetail => productDetail.media.length > 0)
-);
+  selectById: selectProductsByCategoryName
+} = productsPerCategoryAdapter.getSelectors((state) => state.productDetails);
 
 const { reducer } = productDetailsSlice;
 

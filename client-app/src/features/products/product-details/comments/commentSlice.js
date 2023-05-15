@@ -14,8 +14,11 @@ const initialState = commentsAdapter.getInitialState({
 
 export const getCommentsByProduct = createAsyncThunk(
   'comments/product',
-  async ({ productId, num, page }) => {
-    return await commentApi.getByProduct(productId, num, page);
+  async ({ productId, num, page, sortByNewest }) => {
+    if (!sortByNewest) {
+      sortByNewest = false;
+    }
+    return await commentApi.getByProduct(productId, num, page, sortByNewest);
   }
 );
 
@@ -31,6 +34,7 @@ const commentSlice = createSlice({
   initialState,
   reducers: {
     refresh: (state) => {
+      commentsAdapter.setAll(state, []);
       state.createCommentStatus = ACTION_STATUS.IDLE;
     }
   },
@@ -59,7 +63,13 @@ const commentSlice = createSlice({
       })
       .addCase(createComment.fulfilled, (state, action) => {
         state.createCommentStatus = ACTION_STATUS.SUCCEEDED;
-        state.entities[action.payload.reply]?.replies?.push(action.payload);
+        const comment = action.payload;
+
+        if (comment.reply) {
+          state.entities[action.payload.reply]?.replies?.push(action.payload);
+        } else {
+          commentsAdapter.addOne(state, comment);
+        }
       })
       .addCase(createComment.rejected, (state) => {
         state.createCommentStatus = ACTION_STATUS.FAILED;

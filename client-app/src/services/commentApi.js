@@ -1,8 +1,8 @@
 import axiosClient from './axios/axiosClient';
 
 class CommentApi {
-  getByProduct = (productId, num, page) => {
-    const url = `/comment/product/${productId}?page=${page}&num=${num}`;
+  getByProduct = (productId, num, page, sortByNewest) => {
+    const url = `/comment/product/${productId}?page=${page}&num=${num}&sortByNewest=${sortByNewest}`;
 
     return axiosClient.get(url);
   };

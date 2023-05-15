@@ -17,7 +17,7 @@ const MessageForEmptyItem = ({ image, message }) => {
         alt='image'
         src={image}
         sx={{
-          width: 180,
+          width: 175,
           height: 200,
           objectFit: 'cover',
           mb: 2,

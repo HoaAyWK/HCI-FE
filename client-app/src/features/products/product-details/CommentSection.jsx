@@ -1,25 +1,27 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Avatar, Box, Button, CircularProgress, Stack, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { Avatar, Box, Button, Popover, Stack, Typography } from '@mui/material';
 
 
 import { StyledPaper } from '../components/styles';
 import { getCommentsByProduct, refresh, selectAllComments } from './comments/commentSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import ROLES from '../../../constants/userRoles';
-import CommentWithReply from './comments/comment';
 import CommentForm from './comments/CommentForm';
-import discuss from '../../../assets/images/discuss.png';
-import MessageForEmptyItem from './components/MessageForEmptyItem';
+import { Iconify } from '../../../components';
+import Comments from './Comments';
 
 const CommentSection = ({ productId }) => {
   const dispatch = useDispatch();
   const [showNumber, setShowNumber] = useState(5);
   const [page, setPage] = useState(1);
   const { user } = useSelector((state) => state.auth);
+  const [sortByNewest, setSortByNewest] = useState(true);
+  const [anchorSortByElement, setAnchorSortByElement] = useState(null);
+  const openSortByPopover = Boolean(anchorSortByElement);
+  const anchorSortById = open ? 'sort-by-popover' : undefined;
 
   const comments = useSelector(selectAllComments);
-  const { getCommentsByProductStatus, createCommentStatus, totalPage, totalItems } = useSelector((state) => state.comments);
+  const { getCommentsByProductStatus, createCommentStatus, totalItems } = useSelector((state) => state.comments);
 
   const canShowMore = useMemo(() => {
     if (showNumber >= totalItems) {
@@ -30,9 +32,9 @@ const CommentSection = ({ productId }) => {
   }, [showNumber, totalItems]);
 
   useEffect(() => {
-      dispatch(refresh());
-      dispatch(getCommentsByProduct({ productId, num: 5, page }));
-  }, [productId]);
+    dispatch(refresh());
+    dispatch(getCommentsByProduct({ productId, num: 5, page, sortByNewest }));
+  }, [productId, sortByNewest]);
 
   useEffect(() => {
     dispatch(getCommentsByProduct({ productId, num: 5, page }));
@@ -41,8 +43,8 @@ const CommentSection = ({ productId }) => {
   useEffect(() => {
     if (createCommentStatus === ACTION_STATUS.SUCCEEDED) {
       setPage(1)
-      dispatch(getCommentsByProduct({ productId, num: 5, page: 1 }));
       dispatch(refresh());
+      dispatch(getCommentsByProduct({ productId, num: 5, page: 1 }));
     }
   }, [createCommentStatus]);
 
@@ -51,19 +53,33 @@ const CommentSection = ({ productId }) => {
     setPage(prev => prev + 1);
   };
 
-  if (getCommentsByProductStatus === ACTION_STATUS.IDLE ||
-      getCommentsByProductStatus === ACTION_STATUS.LOADING) {
+  const handleClickSortBy = (event) => {
+    setAnchorSortByElement(event.currentTarget);
+  };
 
-    return (
-      <Box sx={{ py: 4, width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  const handleCloseSortByPopover = () => {
+    setAnchorSortByElement(null);
+  };
 
-  if (getCommentsByProductStatus === ACTION_STATUS.FAILED) {
-    return <></>;
-  }
+  const handleClickSortByNewest = () => {
+    if (sortByNewest) {
+      handleCloseSortByPopover();
+      return;
+    }
+
+    setSortByNewest(true);
+    handleCloseSortByPopover();
+  };
+
+  const handleClickSortByOldest = () => {
+    if (!sortByNewest) {
+      handleCloseSortByPopover();
+      return;
+    }
+
+    setSortByNewest(false);
+    handleCloseSortByPopover();
+  };
 
   return (
     <Box
@@ -72,12 +88,53 @@ const CommentSection = ({ productId }) => {
         <StyledPaper sx={{ p: 2 }}>
           <Box
             sx={{
-              mb: 2
+              mb: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
           >
             <Typography variant='h5' component='h1'>
               Comments
             </Typography>
+            <Box>
+              <Button
+                size='small'
+                color='inherit'
+                aria-describedby={anchorSortById}
+                onClick={handleClickSortBy}
+              >
+                <Iconify icon='material-symbols:sort-rounded' width={20} height={20} />
+                &nbsp;
+                Sort by
+              </Button>
+              <Popover
+                id={anchorSortById}
+                open={openSortByPopover}
+                anchorEl={anchorSortByElement}
+                onClose={handleCloseSortByPopover}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+              >
+                <Stack spacing={0.5} sx={{ width: 90 }}>
+                  <Button
+                    color={sortByNewest ? 'primary' : 'inherit'}
+                    size='small'
+                    onClick={handleClickSortByNewest}
+                  >
+                    Newest
+                  </Button>
+                  <Button
+                    color={!sortByNewest ? 'primary' : 'inherit'} size='small'
+                    onClick={handleClickSortByOldest}
+                  >
+                    Oldest
+                  </Button>
+                </Stack>
+              </Popover>
+            </Box>
           </Box>
           {user && (
             <Stack spacing={2} direction='row'>
@@ -93,33 +150,13 @@ const CommentSection = ({ productId }) => {
               <CommentForm userId={user.id} productId={productId} />
             </Stack>
           )}
-          <Box sx={{ px: 2, pb: 2 }}>
-            {comments.length === 0 ? (
-              !user && (
-                <MessageForEmptyItem image={discuss} message='This product does not have any comments.' />
-              )
-            ) : (
-              <Stack spacing={2}>
-                {comments.map((comment) => (
-                  <CommentWithReply currentUser={user} key={comment.id} comment={comment} />
-                ))}
-              </Stack>
-            )}
-            {canShowMore && (
-              <Box
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  my: 1
-                }}
-              >
-                <Button onClick={handleShowMore}>
-                  Show more
-                </Button>
-              </Box>
-            )}
-          </Box>
+          <Comments
+            user={user}
+            comments={comments}
+            status={getCommentsByProductStatus}
+            canShowMore={canShowMore}
+            onShowMore={handleShowMore}
+          />
         </StyledPaper>
     </Box>
   );

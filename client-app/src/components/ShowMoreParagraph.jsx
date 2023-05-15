@@ -25,6 +25,13 @@ const ShowMoreParagraph = ({ height, isDanger, canShowMore, content }) => {
             variant='body1'
             color='text.primary'
             dangerouslySetInnerHTML={createMarkup(content)}
+            sx={{
+              '& span': {
+                color: 'inherit !important',
+                backgroundColor: 'inherit !important',
+                width: 'auto'
+              },
+            }}
           />
         ) : (
           <Typography variant='body1'>

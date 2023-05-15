@@ -18,6 +18,7 @@ import { addToCart } from '../../common/cartSlice';
 import { refresh } from '../../common/product-reviews/productReviewSlice';
 import CommentSection from './CommentSection';
 import ReviewSection from './ReviewSection';
+import RelatedProducts from './RelatedProducts';
 
 
 const ProductDetails = (props) => {
@@ -86,7 +87,7 @@ const ProductDetails = (props) => {
   };
 
   if (getSingleStatus === ACTION_STATUS.IDLE ||
-    getSingleStatus === ACTION_STATUS.LOADINGPage) {
+    getSingleStatus === ACTION_STATUS.LOADING) {
     return <LoadingPage />;
   }
 
@@ -205,7 +206,7 @@ const ProductDetails = (props) => {
             </Typography>
             <ShowMoreParagraph
               isDanger={true} content={productSingle.description}
-              heigth={productSingle?.description?.length > 200 ? '190px': 'auto'}
+              // height={productSingle?.description?.length > 200 ? '190px': 'auto'}
               canShowMore={productSingle?.description?.length > 200 ? true: false}
             />
             <Box sx={{ pb: 6 }} />
@@ -220,10 +221,18 @@ const ProductDetails = (props) => {
               variant='body1'
               color='text.primary'
               dangerouslySetInnerHTML={createMarkup(productSingle?.information)}
+              sx={{
+                '& span': {
+                  color: 'inherit !important',
+                  backgroundColor: 'inherit !important',
+                  width: 'auto'
+                },
+              }}
             />
           </StyledPaper>
         </Grid>
       </Grid>
+      {/* <RelatedProducts currentObjectID={id} /> */}
       <ReviewSection
         id={id}
         productSingle={productSingle}

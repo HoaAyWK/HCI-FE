@@ -62,7 +62,7 @@ const BrandForm = (props) => {
         {dialogContent && (<DialogContent>{dialogContent}</DialogContent>)}
         <Box sx={{ p: 2 }}>
             <Stack spacing={2}>
-              <RHFTextField name='name' label='Name' />
+              <RHFTextField name='name' label='Name' autoFocus={true} />
               <RHFTextField name='phone' label='Phone' />
             </Stack>
         </Box>

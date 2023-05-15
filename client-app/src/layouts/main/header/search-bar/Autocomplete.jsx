@@ -19,6 +19,7 @@ export const INSTANT_SEARCH_HIERARCHICAL_ATTRIBUTES = [
 ];
 
 export const INSTANT_SEARCH_QUERY_SUGGESTIONS = import.meta.env.VITE_ALGOLIA_QUERY_SUGGESTION_INDEX;
+// export const INSTANT_SEARCH_QUERY_SUGGESTIONS = window._env_.VITE_ALGOLIA_QUERY_SUGGESTION_INDEX;
 
 const AutoComplete = ({ searchClient, indexName, className, sx, ...autocompleteProps }) => {
   const autoCompeleteContainer = useRef(null);

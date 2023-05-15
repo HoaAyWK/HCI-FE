@@ -13,9 +13,15 @@ import ACTION_STATUS from '../../constants/actionStatus';
 import { getCurrentUserInfo } from '../../features/auth/authSlice';
 import { Loading } from '../../components';
 
-const searchClient = algoliaSearch(import.meta.env.VITE_ALGOLIA_APP_ID, import.meta.env.VITE_ALGOLIA_API_KEY);
+const APP_ID = import.meta.env.VITE_ALGOLIA_APP_ID;
+const API_KEY = import.meta.env.VITE_ALGOLIA_API_KEY;
 const indexName = import.meta.env.VITE_ALGOLIA_INDEX;
 
+// const APP_ID = window._env_.VITE_ALGOLIA_APP_ID;
+// const API_KEY = window._env_.VITE_ALGOLIA_API_KEY;
+// const indexName = window._env_.VITE_ALGOLIA_INDEX;
+
+const searchClient = algoliaSearch(APP_ID, API_KEY);
 
 const RootStyle = styled('div')({
     minHeight: '100%',
@@ -29,7 +35,11 @@ const searchRouting = {
       const indexUiState = uiState[indexName];
       return {
         q: indexUiState.query,
-        categories: indexUiState.menu?.categories,
+        categories: indexUiState?.refinementList?.categories,
+        brands: indexUiState?.refinementList?.brand,
+        models: indexUiState?.refinementList?.model,
+        specifications: indexUiState?.refinementList?.specifications,
+        colors: indexUiState?.refinementList?.color,
         page: indexUiState.page,
         tab: indexUiState.tab
       };
@@ -38,8 +48,12 @@ const searchRouting = {
       return {
         [indexName]: {
           query: routeState.q,
-          menu: {
-            categories: routeState.categories
+          refinementList: {
+            categories: routeState.categories,
+            brand: routeState.brands,
+            model: routeState.models,
+            specifications: routeState.specifications,
+            color: routeState.colors,
           },
           page: routeState.page,
           tab: routeState.tab
@@ -60,10 +74,21 @@ export default function Layout() {
     }
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      window.aa('setUserToken', user.id);
+    }
+  }, [user]);
+
   return (
     <>
       <RootStyle>
-        <InstantSearch searchClient={searchClient} indexName={indexName} routing={searchRouting}>
+        <InstantSearch
+          searchClient={searchClient}
+          indexName={indexName}
+          routing={searchRouting}
+          insights={{ useCookie: true }}
+        >
           <Header user={user} />
           <Container maxWidth='lg' sx={{ mt: 8, mb: 20 }}>
             <Suspense fallback={<Loading />}>

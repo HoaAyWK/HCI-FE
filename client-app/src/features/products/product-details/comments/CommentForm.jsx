@@ -19,7 +19,7 @@ const CommentForm = ({ productId, replyUserId, reply, handleClose }) => {
   const { createCommentStatus } = useSelector((state) => state.comments);
 
   const ReviewSchema = Yup.object().shape({
-    content: Yup.string().required('Content is requried')
+    content: Yup.string().required('Content is required')
   });
 
   const defaultValues = {

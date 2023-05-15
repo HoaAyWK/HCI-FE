@@ -108,7 +108,7 @@ const ProductList = () => {
             hover
             tabIndex={-1}
           >
-            <TableCell component='th' scope='row'>
+            <TableCell align='left' width={400} sx={{ maxWidth: 400 }}>
               <Link component={RouterLink} to={`/admin/product-variants/details/${id}`} underline='hover'>
                 <Stack spacing={1} direction='row' alignItems='center'>
                   {media?.length > 0 && (
@@ -129,16 +129,16 @@ const ProductList = () => {
                 </Stack>
               </Link>
             </TableCell>
-            <TableCell>
+            <TableCell width={200}>
               {specifications}
             </TableCell>
-            <TableCell>
+            <TableCell width={200}>
               {COLOR_LIST[color]}
             </TableCell>
-            <TableCell>
+            <TableCell width={200}>
               <Label color={status ? 'success' : 'error'}>{status ? 'Available' : 'Unavailable'}</Label>
             </TableCell>
-            <TableCell align='right'>
+            <TableCell align='right' width={200}>
               ${price}
             </TableCell>
             <TableCell align="right">

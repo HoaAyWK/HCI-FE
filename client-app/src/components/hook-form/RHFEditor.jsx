@@ -7,6 +7,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
 import { stateFromHTML } from 'draft-js-import-html';
+
 import ACTION_STATUS from '../../constants/actionStatus';
 
 

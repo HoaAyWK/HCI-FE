@@ -10,10 +10,10 @@ import { useDispatch } from 'react-redux';
 
 import { ImagesUploader } from './components';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFSelect, RHFSwitch, RHFTextField } from '../../../components/hook-form';
 import { COLOR } from '../../../constants/colors';
 import { refresh } from './productVariantSlice';
-import { getBestSellers } from '../../common/productDetailsSlice';
+import { getProductsPerCategory } from '../../common/productDetailsSlice';
 
 const colors = [
   { id: COLOR.NONE, name: 'None' },
@@ -57,7 +57,8 @@ const FullProductVariantForm = ({ productOrigins, productVariant, action, status
       .min(0, 'Quantity must be a positive number'),
     images: Yup.array()
       .required('Images is required')
-      .min(1, `Images is required`)
+      .min(1, `Images is required`),
+    showOnHomePage: Yup.boolean(),
   });
 
   const defaultValues = {
@@ -69,7 +70,8 @@ const FullProductVariantForm = ({ productOrigins, productVariant, action, status
     price: productVariant.price,
     discount: productVariant.discount ? productVariant.discount : 0,
     quantity: productVariant.warehouse,
-    images: productVariant.media
+    images: productVariant.media,
+    showOnHomePage: productVariant.showOnHomePage,
   };
 
   const methods = useForm({
@@ -92,7 +94,7 @@ const FullProductVariantForm = ({ productOrigins, productVariant, action, status
 
       if (result) {
         enqueueSnackbar(`Updated successfully`, { variant: 'success' });
-        dispatch(getBestSellers());
+        dispatch(getProductsPerCategory());
         dispatch(refresh());
       }
     } catch (error) {
@@ -163,6 +165,11 @@ const FullProductVariantForm = ({ productOrigins, productVariant, action, status
                   name='quantity'
                   label='Quantity'
                   type='number'
+                />
+                <RHFSwitch
+                  name='showOnHomePage'
+                  label='Show on homepage'
+                  id='showOnHomePage'
                 />
               </Stack>
             </CardContent>

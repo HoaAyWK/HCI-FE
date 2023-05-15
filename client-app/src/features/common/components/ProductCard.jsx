@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { alpha, styled } from '@mui/material/styles';
 import { Link as RouterLink, useNavigate} from 'react-router-dom';
 import { Box, Button, Grid, IconButton, Link, Rating, Stack, Typography  } from '@mui/material';
 import { unwrapResult } from '@reduxjs/toolkit';
@@ -10,8 +11,23 @@ import { fCurrency } from '../../../utils/formatNumber';
 import { addToCart } from '../cartSlice';
 import { createFavorite, deleteFavorite } from '../productFavoriteSlice';
 
-const ProductCard = ({ product, favorites }) => {
-  const { id, name, media, price, discount } = product;
+const StyledDefaultIconButton = styled(IconButton)(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.grey[900], 0.08),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.grey[900], 0.32)
+  },
+}));
+
+const StyledRedIconButton = styled(IconButton)(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.error.main, 0.08),
+  color: theme.palette.error.main,
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.error.main, 0.32)
+  },
+}));
+
+const ProductCard = ({ product, favorites, sendEvent }) => {
+  const { id, name, media, price, discount, averageRating } = product;
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
@@ -130,22 +146,40 @@ const ProductCard = ({ product, favorites }) => {
         },
         transition: 'all 0.3s ease-in-out 0s'
       }}
+      onClick={() => sendEvent('click', product, 'Product Clicked')}
     >
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        <IconButton
-          onClick={handleClickHeart}
-          aria-label='favorite'
-          sx={{
-            zIndex: 9,
-            top: 8,
-            right: 8,
-            position: 'absolute',
-            textTransform: 'uppercase',
-            color: isFavorited ? 'error.main' : 'inherit'
-          }}
-        >
-          <Iconify icon='mdi:cards-heart' width={24} height={24} />
-        </IconButton>
+        {isFavorited ? (
+          <StyledRedIconButton
+            size='small'
+            onClick={handleClickHeart}
+            aria-label='favorite'
+            sx={{
+              zIndex: 9,
+              top: 8,
+              right: 8,
+              position: 'absolute',
+              textTransform: 'uppercase',
+            }}
+          >
+            <Iconify icon='mdi:cards-heart' width={24} height={24} />
+          </StyledRedIconButton>
+        ) : (
+          <StyledDefaultIconButton
+            size='small'
+            onClick={handleClickHeart}
+            aria-label='favorite'
+            sx={{
+              zIndex: 9,
+              top: 8,
+              right: 8,
+              position: 'absolute',
+              textTransform: 'uppercase',
+            }}
+          >
+            <Iconify icon='mdi:cards-heart' width={24} height={24} />
+          </StyledDefaultIconButton>
+        )}
         <Link component={RouterLink} to={`/products/${id}`}>
           <Cover
             src={media[0]}
@@ -168,7 +202,7 @@ const ProductCard = ({ product, favorites }) => {
             {name}
           </Typography>
         </Link>
-        <Rating readOnly value={4} size='small' precision={0.5} />
+        <Rating readOnly value={averageRating} size='small' precision={0.5} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h6" component='p' color='error'>

@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import productDetailsApi from '../../../services/productDetailsApi';
 import { uploadTaskPromise } from '../../../utils/uploadTaskPromise';
-import { getBestSellers } from '../../common/productDetailsSlice';
 
 const productVariantsAdapter = createEntityAdapter();
 

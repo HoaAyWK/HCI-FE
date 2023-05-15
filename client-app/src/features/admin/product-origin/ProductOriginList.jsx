@@ -105,23 +105,68 @@ const ProductOriginList = () => {
             hover
             tabIndex={-1}
           >
-            <TableCell component='th' scope='row'>
+            <TableCell align='left' sx={{ maxWidth: 300 }}>
               <Link component={RouterLink} to={`/admin/product-origins/details/${id}`} underline='hover'>
-                <Typography variant='body1'>{name}</Typography>
+                <Typography
+                  variant='body1'
+                  sx={{
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  {name}
+                </Typography>
               </Link>
             </TableCell>
             <TableCell sx={{ maxWidth: 400 }}>
               <Typography
                 variant='body1'
-                sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}
+                sx={{
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+
+                  '& p': {
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap'
+                  },
+                  '& span': {
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    color: 'inherit !important',
+                    backgroundColor: 'inherit !important',
+                    width: 'auto'
+                  },
+                }}
                 dangerouslySetInnerHTML={createMarkup(description)}
               >
               </Typography>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ maxWidth: 400 }}>
               <Typography
                 variant='body1'
-                sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}
+                sx={{
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+
+                  '& p': {
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap'
+                  },
+                  '& span': {
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    color: 'inherit !important',
+                    backgroundColor: 'inherit !important',
+                    width: 'auto'
+                  },
+                }}
                 dangerouslySetInnerHTML={createMarkup(information)}
               >
               </Typography>

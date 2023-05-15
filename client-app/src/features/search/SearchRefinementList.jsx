@@ -1,26 +1,16 @@
 import React, { useState } from 'react';
+import { Button, List, Stack, Typography } from '@mui/material';
 import { useRefinementList } from 'react-instantsearch-hooks-web';
-import {
-  Button,
-  Checkbox,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-  Typography,
-} from '@mui/material';
 
 import { SearchBox } from './components';
+import RefinementItem from './RefinementItem';
 
 const SearchRefinementList = (props) => {
-  const { searchable, label } = props;
+  const { searchable, label, markCategory } = props;
   const [filter, setFilter] = useState('');
   const { items, refine, canToggleShowMore, toggleShowMore, searchForItems } = useRefinementList(props);
 
-
-  const handleToggle = (value) => () => {
+  const handleToggle = (value) => {
     refine(value);
   };
 
@@ -38,19 +28,13 @@ const SearchRefinementList = (props) => {
         {searchable && <SearchBox title='categories' filter={filter} onFilter={handleFilter} />}
         <List>
           {items.map((item) => (
-            <ListItem key={item.value} disablePadding disableGutters>
-              <ListItemButton role={undefined} onClick={handleToggle(item.value)} dense>
-                <ListItemIcon>
-                  <Checkbox
-                    edge='end'
-                    checked={item.isRefined}
-                    tabIndex={-1}
-                    inputProps={{ 'aria-label': item.label }}
-                  />
-                </ListItemIcon>
-                <ListItemText id={item.label} primary={item.label} />
-              </ListItemButton>
-            </ListItem>
+            <RefinementItem
+              key={item.value}
+              item={item}
+              refine={refine}
+              onToggle={handleToggle}
+              markCategory={markCategory?.[0]}
+            />
           ))}
           {canToggleShowMore && (
             <Button

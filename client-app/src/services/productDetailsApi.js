@@ -13,6 +13,12 @@ class ProductDetailsApi {
     return axiosClient.get(url);
   };
 
+  getProductsPerCategory = () => {
+    const url = 'detail/products-per-category';
+
+    return axiosClient.get(url);
+  };
+
   create = (data) => {
     const url = '/detail/save';
 

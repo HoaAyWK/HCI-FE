@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { styled } from '@mui/material/styles';
+import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 
 import { ProductCard } from '../common/components';
@@ -16,7 +17,10 @@ const StyledBox = styled(Box)(({ theme }) => ({
   }
 }));
 
-const ProductListSection = ({ title, products, favorites }) => {
+const ProductListSection = ({ title, products, favorites, value, sendEvent }) => {
+  const encodedParam = encodeURIComponent('categories[0]');
+  const url = `/search?${encodedParam}=${value}`;
+
   return (
     <Box
       sx={{ mt: 4 }}
@@ -30,23 +34,17 @@ const ProductListSection = ({ title, products, favorites }) => {
         <Grid item xs={12} md={6}>
           <StyledBox>
             <Stack spacing={1} direction='row'>
-              <Button variant='contained' color='primary'>
-                Laptop
-              </Button>
-              <Button>
-                Smartphone
-              </Button>
-              <Button>
-                Components
+              <Button color='primary' LinkComponent={RouterLink} to={url} sx={{ textDecoration: 'underline' }}>
+                Show all
               </Button>
             </Stack>
           </StyledBox>
         </Grid>
       </Grid>
       <Grid container spacing={2}>
-        {products.map((product) => (
+        {products?.map((product) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-            <ProductCard favorites={favorites} product={product} />
+            <ProductCard favorites={favorites} product={product} sendEvent={sendEvent} />
           </Grid>
         ))}
       </Grid>

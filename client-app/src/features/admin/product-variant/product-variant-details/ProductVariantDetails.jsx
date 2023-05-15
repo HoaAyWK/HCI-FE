@@ -106,8 +106,8 @@ const ProductVariantDetails = ({ productVariantId }) => {
                 </Box>
               )}
             </Grid>
-            {imagesExceptFirst.length > 0 && (
-              imagesExceptFirst.map((image) => (
+            {imagesExceptFirst?.length > 0 && (
+              imagesExceptFirst?.map((image) => (
                 <Grid key={image} item xs={12} sm={6} md={4}>
                   <ProductVariantImage image={image} />
                 </Grid>

@@ -1,11 +1,11 @@
 import React, { useEffect, lazy } from 'react';
-import { Navigate, useRoutes, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Navigate, useRoutes, Outlet } from 'react-router-dom';
 
-import { LoadingPage } from './components';
-import ACTION_STATUS from './constants/actionStatus';
 import ROLES from './constants/userRoles';
 import { useLocalStorage } from './hooks';
+import { LoadingPage } from './components';
+import ACTION_STATUS from './constants/actionStatus';
 import { getCurrentUserInfo } from './features/auth/authSlice';
 
 import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
@@ -15,12 +15,12 @@ import { DashboardPage } from './pages/admin';
 
 import { HomePage, CheckoutPage, ProductPage, SearchPage, CheckoutSuccessPage } from './pages';
 
-const AccountSettings = lazy(() => import('./features/settings/AccountSettings'));
 const AdminSettings = lazy(() => import('./features/settings/AdminSettings'));
+const AccountSettings = lazy(() => import('./features/settings/AccountSettings'));
 const PasswordSettings = lazy(() => import('./features/settings/PasswordSettings'));
 
-const OrderDetailsPage = lazy(() => import('./pages/OrderDetailsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const OrderDetailsPage = lazy(() => import('./pages/OrderDetailsPage'));
 
 const BannersPage = lazy(() => import('./pages/admin/banner/BannersPage'));
 const UserListPage = lazy(() => import('./pages/admin/user/UserListPage'));
@@ -55,7 +55,7 @@ const RejectedRoute = () => {
     }
   }, []);
 
-  if (getCurrentUserStatus === ACTION_STATUS.LOADINGPage) {
+  if (getCurrentUserStatus === ACTION_STATUS.LOADING) {
     return <LoadingPage />;
   }
 

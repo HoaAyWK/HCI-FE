@@ -1,4 +1,6 @@
 import React from 'react';
+import qs from 'qs';
+import { useLocation } from 'react-router-dom';
 import { Box, Divider, Grid } from '@mui/material';
 
 import { SearchRefinement, SearchResult, RangeSlider } from '../features/search';
@@ -12,6 +14,8 @@ const sortByItems = [
 ];
 
 const SearchPage = () => {
+  const location = useLocation();
+  const { categories } = qs.parse(location.search.slice(1));
 
   return (
     <Grid container spacing={2} sx={{ pt: 2 }}>
@@ -23,6 +27,13 @@ const SearchPage = () => {
             borderRadius: 1,
           }}
         >
+          <SearchRefinement
+            label='categories'
+            attribute='categories'
+            sortBy={['name:asc', 'count:desc']}
+            limit={5}
+            markCategory={categories}
+          />
           <SearchRefinement
             label='brands'
             attribute='brand'

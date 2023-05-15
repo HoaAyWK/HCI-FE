@@ -121,6 +121,25 @@ const ProductOriginDetails = () => {
               variant='body1'
               color='text.primary'
               dangerouslySetInnerHTML={createMarkup(product.description)}
+              sx={{
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+
+                '& p': {
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap'
+                },
+                '& span': {
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  color: 'inherit !important',
+                  backgroundColor: 'inherit !important',
+                  width: 'auto'
+                },
+              }}
             />
           </Stack>
           <Stack spacing={0.5}>
@@ -131,6 +150,25 @@ const ProductOriginDetails = () => {
               variant='body1'
               color='text.primary'
               dangerouslySetInnerHTML={createMarkup(product.information)}
+              sx={{
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+
+                '& p': {
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap'
+                },
+                '& span': {
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  color: 'inherit !important',
+                  backgroundColor: 'inherit !important',
+                  width: 'auto'
+                },
+              }}
             />
           </Stack>
         </Stack>

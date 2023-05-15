@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { getBanners, selectAllBanners } from './banners/bannerSlice';
-import { selectProductDetailWithImage, getBestSellers } from '../common/productDetailsSlice';
+import { selectProductsByCategoryName, getProductsPerCategory } from '../common/productDetailsSlice';
 import Banners from './banners/Banners';
 import ProductListSection from './ProductListSection';
 import ACTION_STATUS from '../../constants/actionStatus';
@@ -12,40 +12,64 @@ import ProductListSectionSkeleton from './components/ProductListSectionSkeleton'
 import { SomethingWentWrong } from '../common/components';
 import { getMyFavorites, selectAllFavorites } from '../common/productFavoriteSlice';
 import { Button } from '@mui/material';
+import { useHits } from 'react-instantsearch-hooks-web';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(2);
+  const [laptopPage, setLaptopPage] = useState(1);
+  const [smartphonePage, setSmartphonePage] = useState(1);
+  const [laptopPerPage, setLaptopPerPage] = useState(8);
+  const [smartphonePerPage, setSmartphonePerPage] = useState(8);
   const banners = useSelector(selectAllBanners);
-  const products = useSelector(selectProductDetailWithImage);
+  const laptops = useSelector((state) => selectProductsByCategoryName(state, 'Laptop'));
+  const smartphones = useSelector((state) => selectProductsByCategoryName(state, 'Smartphone'));
   const { getBannersStatus } = useSelector((state) => state.banners);
-  const { getBestSellersStatus, totalItems } = useSelector((state) => state.productDetails);
+  const { getProductsPerCategoryStatus } = useSelector((state) => state.productDetails);
   const { user } = useSelector((state) => state.auth);
   const favorites = useSelector(selectAllFavorites);
   const { getFavoritesStatus } = useSelector((state) => state.favorites);
+  const { sendEvent } = useHits();
 
-  const canShowmore = useMemo(() => {
-    if (page * perPage < totalItems) {
-      return true;
+
+  const canShowMoreLaptop = useMemo(() => {
+    if (laptops?.products) {
+      if (laptopPage * laptopPerPage < laptops.products.length) {
+        return true;
+      }
     }
 
     return false;
-  }, [totalItems, page, perPage]);
+  }, [laptopPage, laptopPerPage, laptops]);
 
-  const productsToShow = useMemo(() => {
-    if (products) {
-      return products.slice(0, perPage * page);
+  const laptopsToShow = useMemo(() => {
+    if (laptops?.products) {
+      return laptops.products.slice(0, laptopPerPage * laptopPage);
     }
-  }, [products, page, perPage]);
+  }, [laptops, laptopPage, laptopPerPage]);
+
+  const canShowMoreSmartphone = useMemo(() => {
+    if (smartphones?.products) {
+      if (smartphonePage * smartphonePerPage < smartphones.products.length) {
+        return true;
+      }
+    }
+
+    return false;
+  }, [smartphonePage, smartphonePerPage, smartphones]);
+
+  const smartphonesToShow = useMemo(() => {
+    if (smartphones?.products) {
+      return smartphones.products.slice(0, smartphonePage * smartphonePerPage);
+    }
+  }, [smartphonePage, smartphonePerPage, smartphones]);
 
   useEffect(() => {
     if (getBannersStatus === ACTION_STATUS.IDLE) {
       dispatch(getBanners());
     }
 
-    if (getBestSellersStatus === ACTION_STATUS.IDLE) {
-      dispatch(getBestSellers({ num: perPage, page: 1 }));
+    if (getProductsPerCategoryStatus === ACTION_STATUS.IDLE) {
+      dispatch(getProductsPerCategory());
     }
 
   }, []);
@@ -56,14 +80,18 @@ const Home = () => {
     }
   }, [user]);
 
-  const handleClickShowmore = () => {
-    setPage(prev => prev + 1);
+  const handleClickShowMoreLaptop = () => {
+    setLaptopPage(prev => prev + 1);
+  };
+
+  const handleClickShowMoreSmartphone = () => {
+    setSmartphonePage(prev => prev + 1);
   };
 
   if (getBannersStatus === ACTION_STATUS.IDLE ||
       getBannersStatus === ACTION_STATUS.LOADING ||
-      getBestSellersStatus === ACTION_STATUS.IDLE ||
-      getBestSellersStatus === ACTION_STATUS.LOADING) {
+      getProductsPerCategoryStatus === ACTION_STATUS.IDLE ||
+      getProductsPerCategoryStatus === ACTION_STATUS.LOADING) {
     return (
       <>
         <BannersSkeleton />
@@ -73,15 +101,21 @@ const Home = () => {
   }
 
   if (getBannersStatus === ACTION_STATUS.FAILED ||
-      getBestSellersStatus === ACTION_STATUS.FAILED) {
+    getProductsPerCategoryStatus === ACTION_STATUS.FAILED) {
     return <SomethingWentWrong />;
   }
 
   return (
     <>
       <Banners banners={banners} />
-      <ProductListSection title='Best Seller' products={productsToShow} favorites={favorites} />
-      {canShowmore && (
+      <ProductListSection
+        title='Laptops'
+        products={laptopsToShow}
+        favorites={favorites}
+        value='Laptop'
+        sendEvent={sendEvent}
+      />
+      {canShowMoreLaptop && (
         <Box
           sx={{
             display: 'flex',
@@ -90,8 +124,32 @@ const Home = () => {
             mb: 3
           }}
         >
-          <Button variant='outlined' onClick={handleClickShowmore}>Show more</Button>
+          <Button variant='outlined' onClick={handleClickShowMoreLaptop}>Show more</Button>
         </Box>
+      )}
+
+      {smartphones?.products.length > 0 && (
+        <>
+          <ProductListSection
+            title='Smartphones'
+            products={smartphonesToShow}
+            favorites={favorites}
+            value='Smartphone'
+            sendEvent={sendEvent}
+          />
+          {canShowMoreSmartphone && (
+            <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              mt: 1,
+              mb: 3
+            }}
+          >
+            <Button variant='outlined' onClick={handleClickShowMoreSmartphone}>Show more</Button>
+          </Box>
+          )}
+        </>
       )}
     </>
   );

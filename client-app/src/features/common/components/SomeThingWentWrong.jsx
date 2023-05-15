@@ -1,9 +1,17 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Box, Button, Typography } from '@mui/material';
 
+import { getProductsPerCategory } from '../productDetailsSlice';
 import wrong from '../../../assets/images/wrong.png';
 
 const SomeThingWentWrong = () => {
+  const dispatch = useDispatch();
+
+  const handleClickTryAgain = () => {
+    dispatch(getProductsPerCategory());
+  };
+
   return (
     <Box
       sx={{
@@ -21,7 +29,7 @@ const SomeThingWentWrong = () => {
           alt='something went wrong'
           sx={{
             width: 240,
-            heigth: 240,
+            height: 240,
             objectFit: 'cover',
             mb: 2
           }}
@@ -30,7 +38,7 @@ const SomeThingWentWrong = () => {
           Something went wrong.
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', mt: 2 }}>
-          <Button size='small' variant='outlined' color='primary'>
+          <Button size='small' variant='outlined' color='primary' onClick={handleClickTryAgain}>
             Try again
           </Button>
         </Box>
