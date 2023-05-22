@@ -105,7 +105,7 @@ const productOriginSlice = createSlice({
       })
       .addCase(deleteProductOrigin.fulfilled, (state, action) => {
         state.deleteProductOriginStatus = ACTION_STATUS.SUCCEEDED;
-        productOriginsAdapter.removeOne(state, action.payload);
+        productOriginsAdapter.removeOne(state, action.payload.id);
       })
       .addCase(deleteProductOrigin.rejected, (state) => {
         state.deleteProductOriginStatus = ACTION_STATUS.FAILED;

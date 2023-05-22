@@ -12,6 +12,12 @@ class ProductReviewApi {
 
     return axiosClient.post(url, data);
   };
+
+  edit = (data) => {
+    const url = 'review/edit';
+
+    return axiosClient.put(url, data);
+  };
 }
 
 export default new ProductReviewApi();

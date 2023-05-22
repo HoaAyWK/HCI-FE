@@ -101,7 +101,7 @@ const brandSlice = createSlice({
       })
       .addCase(deleteBrand.fulfilled, (state, action) => {
         state.deleteBrandStatus = ACTION_STATUS.SUCCEEDED;
-        brandsAdapter.removeOne(state, action.payload);
+        brandsAdapter.removeOne(state, action.payload.id);
       })
       .addCase(deleteBrand.rejected, (state) => {
         state.deleteBrandStatus = ACTION_STATUS.FAILED;

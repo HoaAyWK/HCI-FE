@@ -8,6 +8,7 @@ const commentsAdapter = createEntityAdapter();
 const initialState = commentsAdapter.getInitialState({
   getCommentsByProductStatus: ACTION_STATUS.IDLE,
   createCommentStatus: ACTION_STATUS.IDLE,
+  editCommentStatus: ACTION_STATUS.IDLE,
   totalPage: 0,
   totalItems: 0,
 });
@@ -26,6 +27,13 @@ export const createComment = createAsyncThunk(
   'comments/create',
   async (data) => {
     return await commentApi.create(data);
+  }
+);
+
+export const editComment = createAsyncThunk(
+  'comments/edit',
+  async (data) => {
+    return await commentApi.edit(data);
   }
 );
 
@@ -66,13 +74,43 @@ const commentSlice = createSlice({
         const comment = action.payload;
 
         if (comment.reply) {
-          state.entities[action.payload.reply]?.replies?.push(action.payload);
+          state.entities[action.payload.reply]?.replies?.push(comment);
         } else {
           commentsAdapter.addOne(state, comment);
         }
       })
       .addCase(createComment.rejected, (state) => {
         state.createCommentStatus = ACTION_STATUS.FAILED;
+      })
+
+
+      .addCase(editComment.pending, (state) => {
+        state.editCommentStatus = ACTION_STATUS.IDLE;
+      })
+      .addCase(editComment.fulfilled, (state, action) => {
+        state.editCommentStatus = ACTION_STATUS.SUCCEEDED;
+        const comment = action.payload.comment;
+
+        if (comment.reply) {
+          let position = -1;
+          state.entities[comment.reply]?.replies?.forEach((rep, index) => {
+            if (rep.id === comment.id) {
+              position = index;
+            }
+          });
+
+          if (position !== -1) {
+            if (state.entities?.[comment.reply]?.replies?.[position]) {
+              state.entities[comment.reply].replies[position] = comment;
+            }
+          }
+        } else {
+          const { id, ...data } = comment;
+          commentsAdapter.updateOne(state, { id, changes: data });
+        }
+      })
+      .addCase(editComment.rejected, (state) => {
+        state.editCommentStatus = ACTION_STATUS.FAILED;
       })
   }
 });

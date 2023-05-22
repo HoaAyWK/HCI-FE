@@ -30,6 +30,7 @@ const Checkout = () => {
   const [address, setAddress] = useLocalStorage('shippingAddress', 0);
   const { user } = useSelector((state) => state.auth);
   const [selectedAddress, setSelectedAddress] = useState({});
+  const [localCart, setLocalCart] = useLocalStorage("cart", null);
 
   const [paymentOption, setPaymentOption] = useState(PAYMENT_OPTIONS.CASH);
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const Checkout = () => {
 
   useEffect(() => {
     if (getCartStatus === ACTION_STATUS.IDLE) {
-      dispatch(getCart());
+      dispatch(getCart(localCart));
     }
 
     if (checkoutClicked) {
@@ -91,6 +92,11 @@ const Checkout = () => {
     }
   }, [address, user, addressEntities]);
 
+  useEffect(() => {
+    if (getCartStatus === ACTION_STATUS.SUCCEEDED && cart.userId !== localCart) {
+      setLocalCart(cart.userId);
+    }
+  }, [getCartStatus, cart]);
 
   const handleNext = () => {
     setActiveStep(prevStep => prevStep + 1);
@@ -124,7 +130,7 @@ const Checkout = () => {
 
         if (result) {
           enqueueSnackbar('Checkout successfully!', { variant: 'success' });
-          dispatch(getCart());
+          dispatch(getCart(localCart));
           setActiveStep(0);
           navigate('/checkout-success');
         }

@@ -16,8 +16,8 @@ const initialState = {
 
 export const getCart = createAsyncThunk(
   'cart/get',
-  async () => {
-    return await cartApi.get();
+  async (userId) => {
+    return await cartApi.get(userId);
   }
 );
 
@@ -71,6 +71,10 @@ const cartSlice = createSlice({
       state.addToCartStatus = ACTION_STATUS.IDLE;
       state.removeFromCartStatus = ACTION_STATUS.IDLE;
       state.decreaseQuantity = ACTION_STATUS.IDLE;
+    },
+    clearData: (state) => {
+      state.cart = null;
+      state.getCartStatus = ACTION_STATUS.IDLE;
     },
     clickCheckout: (state) => {
       state.checkoutClicked = true;
@@ -162,6 +166,6 @@ const cartSlice = createSlice({
 
 const { reducer, actions } = cartSlice;
 
-export const { refresh, clearCheckoutClick, clickCheckout } = actions;
+export const { refresh, clearCheckoutClick, clickCheckout, clearData } = actions;
 
 export default reducer;

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSnackbar } from 'notistack';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { alpha, styled } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, IconButton, Link, Stack, Rating, Tooltip, Typography } from '@mui/material';
@@ -9,6 +10,8 @@ import { Cover, Label, Iconify } from '../../../components';
 import { fCurrency } from '../../../utils/formatNumber';
 import { Highlight } from 'react-instantsearch-hooks-web';
 import { createFavorite, deleteFavorite } from '../../common/productFavoriteSlice';
+import { addToCart } from '../../common/cartSlice';
+import { useLocalStorage } from '../../../hooks';
 
 const StyledDefaultIconButton = styled(IconButton)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.grey[900], 0.08),
@@ -28,6 +31,8 @@ const StyledRedIconButton = styled(IconButton)(({ theme }) => ({
 const SearchHit = ({ hit, sendEvent, favorites }) => {
   const { objectID, name, price, discount, image, averageRating } = hit;
   const dispatch = useDispatch();
+  const [localCart] = useLocalStorage('cart', null);
+  const user = useSelector((state) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
 
   const priceReal = useMemo(() => {
@@ -67,8 +72,9 @@ const SearchHit = ({ hit, sendEvent, favorites }) => {
   }, [favorites]);
 
   const handleClickAddToCart = async () => {
+    sendEvent('conversion', hit, 'Add to cart');
     try {
-      const actionResult = await dispatch(addToCart({ productId: id, quantity: 1 }));
+      const actionResult = await dispatch(addToCart({ productId: hit.objectID, quantity: 1, userId: localCart }));
       const result = unwrapResult(actionResult);
 
       if (result) {
@@ -129,7 +135,7 @@ const SearchHit = ({ hit, sendEvent, favorites }) => {
           borderBottomRightRadius: 0,
         }
       }}
-      onClick={() => sendEvent('click', hit, 'Product Clicked')}
+      onClick={() => sendEvent('click', hit, 'Product hit Clicked')}
     >
       <Box sx={{ pt: '100%', position: 'relative' }}>
       {isFavorite ? (

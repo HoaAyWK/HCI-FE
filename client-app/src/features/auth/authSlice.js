@@ -15,11 +15,12 @@ const initialState = {
 export const login = createAsyncThunk(
   'login',
   async (body, thunkApi) => {
+    console.log(body);
     const res = await authApi.login(body);
     localStorage.setItem('accessToken', JSON.stringify(res.accessToken));
 
     thunkApi.dispatch(getCurrentUserInfo());
-    thunkApi.dispatch(getCart());
+    thunkApi.dispatch(getCart(res.userId));
 
     return res;
   }
@@ -29,7 +30,6 @@ export const getCurrentUserInfo = createAsyncThunk(
   'getCurrentUser',
   async () => {
     const res = await authApi.getCurrentUserInfo();
-
     return res;
   }
 );
@@ -49,6 +49,7 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.setItem('accessToken', null);
+      localStorage.setItem('cart', null);
       state.user = null;
       state.isAuthenticated = false;
       state.getCurrentUserStatus = ACTION_STATUS.IDLE;

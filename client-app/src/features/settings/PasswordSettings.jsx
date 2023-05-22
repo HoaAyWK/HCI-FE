@@ -89,7 +89,7 @@ const PasswordSettings = () => {
                 <RHFTextField
                   name='confirmPassword'
                   type={showConfirmPassword ? 'text' : 'password' }
-                  label='Password'
+                  label='Confirm Password'
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>

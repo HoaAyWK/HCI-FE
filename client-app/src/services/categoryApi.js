@@ -20,7 +20,7 @@ class CategoryApi {
   };
 
   delete = (id) => {
-    const url = `/categoires/${id}`;
+    const url = `/category/delete/${id}`;
 
     return axiosClient.delete(url);
   };

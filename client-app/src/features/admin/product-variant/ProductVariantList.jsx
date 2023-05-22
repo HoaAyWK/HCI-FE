@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Box, Stack, Link, TableRow, TableCell, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { useSnackbar } from 'notistack';
 
-import { Label, Cover } from '../../../components';
 import { getComparator, applySortFilter } from '../../../utils/tableUtil';
 import { DataTable, FetchDataErrorMessage, Loading } from '../components';
-import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/table';
 
 import { selectAllProductVariants, getProductVariants } from './productVariantSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { COLOR_LIST } from '../../../constants/colors';
+import ProductVariantLine from './ProductVariantLine';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Product Origin', alignRight: false },
@@ -30,7 +24,6 @@ const ProductList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const { getProductVariantsStatus } = useSelector((state) => state.adminProductVariants);
   const productVariants = useSelector(selectAllProductVariants);
@@ -60,18 +53,7 @@ const ProductList = () => {
     setPage(0);
   };
 
-  // const handleClickDelete = async (id) => {
-  //   try {
-  //     const actionResult = await dispatch(deleteProduct(id));
-  //     const result = unwrapResult(actionResult);
 
-  //     if (result) {
-  //       enqueueSnackbar('Deleted successfully', { variant: 'success' });
-  //     }
-  //   } catch (error) {
-  //     enqueueSnackbar(error.message, {variant: 'error' });
-  //   }
-  // };
 
   const filteredProducts = applySortFilter(productVariants, getComparator(order, orderBy), filterName);
 
@@ -99,59 +81,9 @@ const ProductList = () => {
       handleFilterByName={handleFilterByName}
       handleRequestSort={handleRequestSort}
     >
-      {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-        const { id, name, price, specifications, color, status, media } = row;
-
-        return (
-          <TableRow
-            key={id}
-            hover
-            tabIndex={-1}
-          >
-            <TableCell align='left' width={400} sx={{ maxWidth: 400 }}>
-              <Link component={RouterLink} to={`/admin/product-variants/details/${id}`} underline='hover'>
-                <Stack spacing={1} direction='row' alignItems='center'>
-                  {media?.length > 0 && (
-
-                    <Cover
-                      component='img'
-                      src={media?.[0]}
-                      alt={name}
-                      sx={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 1,
-                        objectFit: 'cover'
-                      }}
-                    />
-                  )}
-                  <Typography variant='body1'>{name}</Typography>
-                </Stack>
-              </Link>
-            </TableCell>
-            <TableCell width={200}>
-              {specifications}
-            </TableCell>
-            <TableCell width={200}>
-              {COLOR_LIST[color]}
-            </TableCell>
-            <TableCell width={200}>
-              <Label color={status ? 'success' : 'error'}>{status ? 'Available' : 'Unavailable'}</Label>
-            </TableCell>
-            <TableCell align='right' width={200}>
-              ${price}
-            </TableCell>
-            <TableCell align="right">
-              <MoreMenu>
-                <MoreMenuItemLink title='Details' to={`/admin/product-variants/details/${id}`} iconName='eva:eye-outline' />
-                <MoreMenuItemLink title='Edit' to={`/admin/product-variants/edit/${id}`} iconName='eva:edit-outline' />
-                <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" id={id}/>
-
-              </ MoreMenu>
-            </TableCell>
-          </TableRow>
-        );
-      })}
+      {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+        <ProductVariantLine variant={row} key={row.id} />
+      ))}
     </DataTable>
   );
 };

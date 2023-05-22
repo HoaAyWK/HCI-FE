@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import { Box, Button, Breadcrumbs, Container, Grid, Link, Stack, Typography } from '@mui/material';
 
 import { UserDetails } from '../../../features/admin/users';
@@ -13,6 +13,7 @@ const breadcrumbs = [
 ];
 
 const UserDetailsPage = () => {
+  const { id } = useParams();
   const isMd = useResponsive('up', 'md');
 
   return (
@@ -57,7 +58,7 @@ const UserDetailsPage = () => {
                   })
                 }}
               >
-                <Stack spacing={2} direction='row'>
+                {/* <Stack spacing={2} direction='row'>
                   <Button LinkComponent={RouterLink} to='/admin/users/edit' color='primary' variant='text'>
                     <Stack spacing={1} direction='row'>
                       <Iconify icon='eva:edit-outline' width={24} height={24} />
@@ -82,11 +83,11 @@ const UserDetailsPage = () => {
                       </Typography>
                     </Stack>
                   </Button>
-                </Stack>
+                </Stack> */}
               </Box>
             </Grid>
           </Grid>
-          <UserDetails />
+          <UserDetails id={id} />
         </Box>
       </Container>
     </Page>

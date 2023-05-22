@@ -35,7 +35,13 @@ class ProductDetailsApi {
     const url = `/detail/single/${id}`;
 
     return axiosClient.get(url);
-  }
+  };
+
+  delete = (id) => {
+    const url = `/detail/delete/${id}`;
+
+    return axiosClient.delete(url);
+  };
 };
 
 export default new ProductDetailsApi();

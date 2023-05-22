@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Box, Grid, Pagination } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { usePagination, useHits } from 'react-instantsearch-hooks-web';
@@ -14,6 +14,9 @@ const SearchResult = () => {
   const favorites = useSelector(selectAllFavorites);
   const user = useSelector((state) => state.auth);
   const { getFavoritesStatus } = useSelector((state) => state.favorites);
+  const { availableHits } = useMemo(() => {
+    return hits.filter((hit) => hit.status === true);
+  }, [hits]);
 
 
   useEffect(() => {
@@ -30,7 +33,7 @@ const SearchResult = () => {
     <Box sx={{ height: '100%' }}>
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={2}>
-          {hits.map((hit) => (
+          {availableHits.map((hit) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={hit.objectID}>
               <SearchHit hit={hit} sendEvent={sendEvent} favorites={favorites} />
             </Grid>

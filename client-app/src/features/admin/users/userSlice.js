@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import { v4 as uuidv4 } from 'uuid';
 
 import ACTION_STATUS from '../../../constants/actionStatus';
 import userApi from '../../../services/userApi';
+import { uploadTaskPromise } from '../../../utils/uploadTaskPromise';
 
 const usersAdapter = createEntityAdapter();
 
@@ -22,16 +24,28 @@ export const getUsers = createAsyncThunk(
 export const createUser = createAsyncThunk(
   'users/create',
   async (user) => {
-    return await userApi.create(user);
+    const { avatar, ...data } = user;
+
+    if (avatar) {
+      const filePath = `files/avatar/${uuidv4()}`;
+      data.avatar = await uploadTaskPromise(filePath, avatar);
+    }
+
+    return await userApi.create(data);
   }
 );
 
 export const updateUser = createAsyncThunk(
   'users/update',
   async (user) => {
-    const { id, ...data } = user;
+    const { avatar, ...data } = user;
 
-    return await userApi.update(id, data);
+    if (avatar) {
+      const filePath = `files/avatar/${uuidv4()}`;
+      data.avatar = await uploadTaskPromise(filePath, avatar);
+    }
+
+    return await userApi.update(data);
   }
 );
 

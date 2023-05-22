@@ -1,25 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, Typography, Stack } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { useSnackbar } from 'notistack';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ProductItem from './ProductItem';
 import { Label } from '../../../../components';
 import { STATUS } from '../../../../constants/orderStatus';
 import { fCurrency } from '../../../../utils/formatNumber';
 import { fDateTime } from '../../../../utils/formatTime';
-import { useDispatch, useSelector } from 'react-redux';
-import { useSnackbar } from 'notistack';
 import { cancelOrder, refresh } from '../../../common/orderSlice';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { LoadingButton } from '@mui/lab';
 import ACTION_STATUS from '../../../../constants/actionStatus';
 import { PAYMENT_OPTIONS } from '../../../../constants/payment';
+import ConfirmDialog from '../../../common/ConfirmDialog';
 
 const Order = ({ order }) => {
   const { id, orderDate, status, price, orderItems, paymentType } = order;
   const dispatch = useDispatch();
+  const [openConfirmCancelDialog, setOpenConfirmCancelDialog] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const { cancelOrderStatus } = useSelector((state) => state.orders);
+
 
   const labelColor = (status) => {
     if (status === STATUS.PAID) {
@@ -31,18 +33,12 @@ const Order = ({ order }) => {
     } return 'error';
   };
 
-  const handleClickCancel = async () => {
-    try {
-      const actionResult = await dispatch(cancelOrder(id));
-      const result = unwrapResult(actionResult);
+  const handleOpenConfirmCancelDialog = () => {
+    setOpenConfirmCancelDialog(true);
+  };
 
-      if (result?.success) {
-        enqueueSnackbar('Cancel successfully', { variant: 'success' });
-        dispatch(refresh());
-      }
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
-    }
+  const handleCloseConfirmCancelDialog = () => {
+    setOpenConfirmCancelDialog(false);
   };
 
   return (
@@ -90,14 +86,25 @@ const Order = ({ order }) => {
         <Stack spacing={2} direction='row'>
           <Button LinkComponent={RouterLink} to={`/orders/${id}`} color='inherit' variant='outlined'>Details</Button>
           {status === STATUS.PROCESSING && paymentType === PAYMENT_OPTIONS.CASH && (
-            <LoadingButton
-              color='error'
-              variant='outlined'
-              onClick={handleClickCancel}
-              loading={cancelOrderStatus === ACTION_STATUS.LOADING ? true : false}
-            >
-              Cancel
-            </LoadingButton>
+            <>
+              <LoadingButton
+                color='error'
+                variant='outlined'
+                onClick={handleOpenConfirmCancelDialog}
+                loading={cancelOrderStatus === ACTION_STATUS.LOADING ? true : false}
+              >
+                Cancel
+              </LoadingButton>
+              <ConfirmDialog
+                dialogTitle='Confirm cancel order'
+                dialogContent='Are you sure to cancel this order'
+                open={openConfirmCancelDialog}
+                handleClose={handleCloseConfirmCancelDialog}
+                billId={id}
+                action={cancelOrder}
+                status={cancelOrderStatus}
+              />
+            </>
           )}
         </Stack>
       </Box>

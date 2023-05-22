@@ -14,6 +14,7 @@ import { getMyFavorites, selectAllFavorites } from '../common/productFavoriteSli
 import { Button } from '@mui/material';
 import { useHits } from 'react-instantsearch-hooks-web';
 
+
 const Home = () => {
   const dispatch = useDispatch();
   const [laptopPage, setLaptopPage] = useState(1);
@@ -29,7 +30,6 @@ const Home = () => {
   const favorites = useSelector(selectAllFavorites);
   const { getFavoritesStatus } = useSelector((state) => state.favorites);
   const { sendEvent } = useHits();
-
 
   const canShowMoreLaptop = useMemo(() => {
     if (laptops?.products) {
@@ -151,6 +151,7 @@ const Home = () => {
           )}
         </>
       )}
+
     </>
   );
 };

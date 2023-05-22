@@ -2,7 +2,7 @@ import axiosClient from './axios';
 
 class UserApi {
   getAll = () => {
-    const url = '/user/api';
+    const url = '/user/admin';
 
     return axiosClient.get(url);
   };
@@ -13,8 +13,8 @@ class UserApi {
     return axiosClient.post(url, data);
   };
 
-  update = (id, data) => {
-    const url = `/users`;
+  update = (data) => {
+    const url = `/user/api`;
 
     return axiosClient.put(url, data);
   };

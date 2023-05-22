@@ -24,7 +24,28 @@ export function applySortFilter(array, comparator, query) {
       return a[1] - b[1];
   });
   if (query) {
-      return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+      return filter(array, (_data) => {
+        if (_data?.name) {
+          return _data.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+        }
+
+        if (_data?.firstName) {
+          const fullName = _data.firstName + " " + _data.lastName;
+          return fullName.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+        }
+
+        if (_data?.id && typeof _data?.id === 'string') {
+          return _data.id.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+        }
+
+        if (_data?.productName) {
+          return _data.productName.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+        }
+
+        if (_data?.productId) {
+          return _data.productId.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+        }
+      });
   }
   return stabilizedThis.map((el) => el[0]);
 }

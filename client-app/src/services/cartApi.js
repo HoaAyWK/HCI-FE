@@ -1,8 +1,12 @@
 import axiosClient from './axios/axiosClient';
 
 class CartApi {
-  get = () => {
-    const url = '/cart/user';
+  get = (userId) => {
+    let url = '/cart/user';
+
+    if (userId) {
+      url = `/cart/user?id=${userId}`;
+    }
 
     return axiosClient.get(url);
   };

@@ -15,8 +15,8 @@ const UpdateProductOriginPage = () => {
 
   return (
     <AdminPageLayout
-      pageTitle='Create a new product origin'
-      pageHeaderName='Create product origin'
+      pageTitle='Update product origin'
+      pageHeaderName='Update product origin'
       breadcrumbs={breadcrumbs}
       showCreateButton={false}
     >

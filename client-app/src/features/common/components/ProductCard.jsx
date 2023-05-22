@@ -10,6 +10,7 @@ import { Cover, Iconify, Label } from '../../../components'
 import { fCurrency } from '../../../utils/formatNumber';
 import { addToCart } from '../cartSlice';
 import { createFavorite, deleteFavorite } from '../productFavoriteSlice';
+import { useLocalStorage } from '../../../hooks';
 
 const StyledDefaultIconButton = styled(IconButton)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.grey[900], 0.08),
@@ -29,9 +30,11 @@ const StyledRedIconButton = styled(IconButton)(({ theme }) => ({
 const ProductCard = ({ product, favorites, sendEvent }) => {
   const { id, name, media, price, discount, averageRating } = product;
   const dispatch = useDispatch();
+  const [localCart] = useLocalStorage("cart", null);
   const { user } = useSelector((state) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const hit = { ...product, objectID: product?.id };
 
   const isFavorited = useMemo(() => {
     if (favorites) {
@@ -70,8 +73,9 @@ const ProductCard = ({ product, favorites, sendEvent }) => {
   }, [price, discount]);
 
   const handleClickAddToCart = async () => {
+    sendEvent('conversion', hit, 'Add to cart');
     try {
-      const actionResult = await dispatch(addToCart({ productId: id, quantity: 1 }));
+      const actionResult = await dispatch(addToCart({ productId: id, quantity: 1, userId: localCart }));
       const result = unwrapResult(actionResult);
 
       if (result) {
@@ -83,8 +87,9 @@ const ProductCard = ({ product, favorites, sendEvent }) => {
   };
 
   const handleClickBuyNow = async () => {
+    sendEvent('conversion', hit, 'Add to cart and view cart');
     try {
-      const actionResult = await dispatch(addToCart({ productId: id, quantity: 1 }));
+      const actionResult = await dispatch(addToCart({ productId: id, quantity: 1, userId: localCart }));
       const result = unwrapResult(actionResult);
 
       if (result) {
@@ -146,7 +151,7 @@ const ProductCard = ({ product, favorites, sendEvent }) => {
         },
         transition: 'all 0.3s ease-in-out 0s'
       }}
-      onClick={() => sendEvent('click', product, 'Product Clicked')}
+      onClick={() => sendEvent('click', hit, 'Product Clicked')}
     >
       <Box sx={{ pt: '100%', position: 'relative' }}>
         {isFavorited ? (

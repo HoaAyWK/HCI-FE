@@ -34,6 +34,7 @@ const SearchPage = () => {
             limit={5}
             markCategory={categories}
           />
+          <Divider sx={{ my: 2 }} />
           <SearchRefinement
             label='brands'
             attribute='brand'
@@ -67,7 +68,7 @@ const SearchPage = () => {
 
         </Box>
       </Grid>
-      <Grid item xs={12} sm={9}>
+      <Grid item xs={12} md={9}>
         <Box
           sx={{
             width: '100%',

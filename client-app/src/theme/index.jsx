@@ -25,11 +25,13 @@ export default function ThemeProvider({ children }) {
 
   useEffect(() => {
     if (darkTheme === null) {
-      document.body.classList.add(prefersDarkMode ? 'dark' : '');
+      document.body.classList.add(prefersDarkMode ? 'dark' : 'light');
     } else if (darkTheme === false) {
+      document.body.classList.add('light');
       document.body.classList.remove('dark');
     } else {
       document.body.classList.add('dark');
+      document.body.classList.remove('light');
     }
   }, [darkTheme, prefersDarkMode]);
 

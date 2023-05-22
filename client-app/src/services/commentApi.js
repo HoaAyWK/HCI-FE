@@ -11,6 +11,12 @@ class CommentApi {
     const url = '/comment/api';
 
     return axiosClient.post(url, data);
+  };
+
+  edit = (data) => {
+    const url = '/comment/edit';
+
+    return axiosClient.put(url, data);
   }
 };
 

@@ -7,6 +7,7 @@ const initialState = {
   reviews: [],
   getReviewsStatus: ACTION_STATUS.IDLE,
   createReviewStatus: ACTION_STATUS.IDLE,
+  editReviewStatus: ACTION_STATUS.IDLE,
 };
 
 export const getProductReviewsByProductId = createAsyncThunk(
@@ -22,6 +23,13 @@ export const createProductReview = createAsyncThunk(
     const res = await productReviewApi.createrProductReview(data);
 
     return res;
+  }
+);
+
+export const editProductReview = createAsyncThunk(
+  'productReviews/edit',
+  async (data) => {
+    return await productReviewApi.edit(data);
   }
 );
 
@@ -52,12 +60,22 @@ const productReviewsSlice = createSlice({
       .addCase(createProductReview.pending, (state) => {
         state.createReviewStatus = ACTION_STATUS.LOADING;
       })
-      .addCase(createProductReview.fulfilled, (state, action) => {
+      .addCase(createProductReview.fulfilled, (state) => {
         state.createReviewStatus = ACTION_STATUS.SUCCEEDED;
         // state.reviews.push(action.payload);
       })
       .addCase(createProductReview.rejected, (state) => {
         state.createReviewStatus = ACTION_STATUS.FAILED;
+      })
+
+      .addCase(editProductReview.pending, (state) => {
+        state.editReviewStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(editProductReview.fulfilled, (state) => {
+        state.editReviewStatus = ACTION_STATUS.SUCCEEDED;
+      })
+      .addCase(editProductReview.rejected, (state) => {
+        state.editReviewStatus = ACTION_STATUS.FAILED;
       })
   }
 });

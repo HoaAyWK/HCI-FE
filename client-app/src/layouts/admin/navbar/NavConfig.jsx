@@ -24,10 +24,6 @@ const navConfig = [
             path: '/admin/users/list',
           },
           {
-            title: 'details',
-            path: '/admin/users/details'
-          },
-          {
             title: 'create',
             path: '/admin/users/create'
           }

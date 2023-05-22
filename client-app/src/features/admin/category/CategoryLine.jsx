@@ -4,14 +4,15 @@ import { useSelector } from 'react-redux';
 
 import { Label } from '../../../components';
 import { MoreMenu, MoreMenuItem } from '../../../components/table';
-import { updateCategory } from './categorySlice';
+import { deleteCategory, updateCategory } from './categorySlice';
 import CategoryForm from './CategoryForm';
+import { ConfirmDialog } from '../components';
 
 const CategoryLine = ({ category }) => {
   const { name, status } = category;
   const [openEdit, setOpenEdit] = useState(false);
-  const { updateCategoryStatus } = useSelector((state) => state.adminCategories);
-
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const { updateCategoryStatus, deleteCategoryStatus } = useSelector((state) => state.adminCategories);
 
   const handleClickOpenEdit = () => {
     setOpenEdit(true);
@@ -19,6 +20,14 @@ const CategoryLine = ({ category }) => {
 
   const handleCloseEdit = () => {
     setOpenEdit(false);
+  };
+
+  const handleOpenConfirm = () => {
+    setOpenConfirm(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
   };
 
   return (
@@ -40,7 +49,8 @@ const CategoryLine = ({ category }) => {
         <TableCell align="right">
           <MoreMenu>
             <MoreMenuItem title='Edit' iconName='eva:edit-outline' handleClick={handleClickOpenEdit} />
-          </ MoreMenu>
+            <MoreMenuItem title='Delete' iconName='eva:trash-2-outline' handleClick={handleOpenConfirm} />
+          </MoreMenu>
         </TableCell>
       </TableRow>
       <CategoryForm
@@ -51,6 +61,15 @@ const CategoryLine = ({ category }) => {
         action={updateCategory}
         actionStatus={updateCategoryStatus}
         category={category}
+      />
+      <ConfirmDialog
+        dialogTitle='Confirm Delete'
+        dialogContent='Are you sure to delete this category'
+        open={openConfirm}
+        action={deleteCategory}
+        status={deleteCategoryStatus}
+        handleClose={handleCloseConfirm}
+        id={category.id}
       />
     </>
   );

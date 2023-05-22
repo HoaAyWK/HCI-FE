@@ -12,6 +12,7 @@ import { MoreMenuItemLink, MoreMenu, MoreMenuItem } from '../../../components/ta
 import { getProductOrigins, selectAllProductOrigins, deleteProductOrigin } from './productOriginSlice';
 import ACTION_STATUS from '../../../constants/actionStatus';
 import { createMarkup } from '../../../utils/sanitizeHtml';
+import ProductOriginLine from './ProductOriginLine';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -96,100 +97,9 @@ const ProductOriginList = () => {
       handleFilterByName={handleFilterByName}
       handleRequestSort={handleRequestSort}
     >
-      {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-        const { id, name, description, information } = row;
-
-        return (
-          <TableRow
-            key={id}
-            hover
-            tabIndex={-1}
-          >
-            <TableCell align='left' sx={{ maxWidth: 300 }}>
-              <Link component={RouterLink} to={`/admin/product-origins/details/${id}`} underline='hover'>
-                <Typography
-                  variant='body1'
-                  sx={{
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  {name}
-                </Typography>
-              </Link>
-            </TableCell>
-            <TableCell sx={{ maxWidth: 400 }}>
-              <Typography
-                variant='body1'
-                sx={{
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-
-                  '& p': {
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap'
-                  },
-                  '& span': {
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    color: 'inherit !important',
-                    backgroundColor: 'inherit !important',
-                    width: 'auto'
-                  },
-                }}
-                dangerouslySetInnerHTML={createMarkup(description)}
-              >
-              </Typography>
-            </TableCell>
-            <TableCell sx={{ maxWidth: 400 }}>
-              <Typography
-                variant='body1'
-                sx={{
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-
-                  '& p': {
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap'
-                  },
-                  '& span': {
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    color: 'inherit !important',
-                    backgroundColor: 'inherit !important',
-                    width: 'auto'
-                  },
-                }}
-                dangerouslySetInnerHTML={createMarkup(information)}
-              >
-              </Typography>
-            </TableCell>
-            <TableCell align="right">
-              <MoreMenu>
-                <MoreMenuItemLink
-                  title='Details'
-                  to={`/admin/product-origins/details/${id}`}
-                  iconName='eva:eye-outline'
-                />
-                <MoreMenuItemLink
-                  title='Edit'
-                  to={`/admin/product-origins/edit/${id}`}
-                  iconName='eva:edit-outline'
-                />
-                <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" id={id} handleClick={handleClickDelete}/>
-
-              </ MoreMenu>
-            </TableCell>
-          </TableRow>
-        );
-      })}
+      {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+        <ProductOriginLine productOrigin={row} key={row.id} />
+      ))}
     </DataTable>
   );
 };

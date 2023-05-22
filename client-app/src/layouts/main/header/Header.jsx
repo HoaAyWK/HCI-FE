@@ -96,17 +96,16 @@ const MENU_OPTIONS = [
 export default function Header({ user, onOpenNav }) {
   const dispatch = useDispatch();
   const [, setModeValueStored] = useLocalStorage('darkMode', null);
+  const [localCart, setLocalCart] = useLocalStorage('cart', null);
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const { cart, getCartStatus } = useSelector((state) => state.cart);
   const totalItems = useMemo(() => {
-    if (!cart || !cart?.cartItems) {
-      return 0;
-    }
-
     if (cart?.cartItems?.length) {
       const initialValue = 0;
       return cart.cartItems.reduce((sum, item) => sum + item.quantity, initialValue);
     }
+
+    return 0;
   }, [cart]);
 
   const darkTheme = useAppTheme();
@@ -151,9 +150,21 @@ export default function Header({ user, onOpenNav }) {
 
   useEffect(() => {
     if (getCartStatus === ACTION_STATUS.IDLE) {
-      dispatch(getCart());
+      dispatch(getCart(localCart));
     }
-  }, []);
+  }, [getCartStatus]);
+
+  useEffect(() => {
+    if (cart && !user && cart.userId !== localCart) {
+      setLocalCart(cart.userId);
+    }
+  }, [cart]);
+
+  useEffect(() => {
+    if (user && user.id !== localCart) {
+      setLocalCart(user.id);
+    }
+  }, [user, localCart]);
 
   return (
     <StyledRoot>
@@ -217,7 +228,7 @@ export default function Header({ user, onOpenNav }) {
                 </Badge>
               </IconButton>
             </Link>
-            {user ? (<AccountPopover user={user} menuOptions={MENU_OPTIONS} />)
+            {user ? (<AccountPopover user={user} menuOptions={MENU_OPTIONS} onLocalCartChange={setLocalCart} />)
               : (<Button
                   LinkComponent={RouterLink}
                   to='/login'

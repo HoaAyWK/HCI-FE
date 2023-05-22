@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { TableRow, TableCell, Typography } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { useSnackbar } from 'notistack';
+import { useSelector } from 'react-redux';
 
 import { deleteBrand, updateBrand } from './brandSlice';
 import { MoreMenu, MoreMenuItem } from '../../../components/table';
 import BrandForm from './BrandForm';
+import { ConfirmDialog } from '../components';
 
 const BrandLine = ({ brand }) => {
   const { id, name, phone } = brand;
   const [openEdit, setOpenEdit] = useState(false);
-  const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
-  const { updateBrandStatus } = useSelector((state) => state.adminBrands);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const { updateBrandStatus, deleteBrandStatus } = useSelector((state) => state.adminBrands);
 
   const handleOpenEdit = () => {
     setOpenEdit(true);
@@ -23,17 +21,12 @@ const BrandLine = ({ brand }) => {
     setOpenEdit(false);
   };
 
-  const handleClickDelete = async (id) => {
-    try {
-      const actionResult = await dispatch(deleteBrand(id));
-      const result = unwrapResult(actionResult);
+  const handleOpenConfirm = () => {
+    setOpenConfirm(true);
+  };
 
-      if (result) {
-        enqueueSnackbar('Deleted successfully', { variant: 'success' });
-      }
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
-    }
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
   };
 
   return (
@@ -52,7 +45,7 @@ const BrandLine = ({ brand }) => {
         <TableCell align="right">
           <MoreMenu>
             <MoreMenuItem title='Edit' iconName='eva:edit-outline' handleClick={handleOpenEdit} />
-            <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" handleClick={handleClickDelete} id={id}/>
+            <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" handleClick={handleOpenConfirm} id={id}/>
           </ MoreMenu>
         </TableCell>
       </TableRow>
@@ -64,6 +57,15 @@ const BrandLine = ({ brand }) => {
         action={updateBrand}
         status={updateBrandStatus}
         brand={brand}
+      />
+      <ConfirmDialog
+        dialogTitle='Confirm Delete'
+        dialogContent='Are you sure to delete this brand'
+        open={openConfirm}
+        handleClose={handleCloseConfirm}
+        action={deleteBrand}
+        status={deleteBrandStatus}
+        id={brand.id}
       />
     </>
   );

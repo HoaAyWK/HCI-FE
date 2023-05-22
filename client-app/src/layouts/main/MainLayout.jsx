@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Container } from '@mui/material';
 import algoliaSearch from 'algoliasearch/lite';
-import { InstantSearch } from 'react-instantsearch-hooks-web';
+import { InstantSearch, Configure } from 'react-instantsearch-hooks-web';
 
 import Header from './header/Header';
 import Footer from './footer';
@@ -89,6 +89,7 @@ export default function Layout() {
           routing={searchRouting}
           insights={{ useCookie: true }}
         >
+          <Configure clickAnalytics />
           <Header user={user} />
           <Container maxWidth='lg' sx={{ mt: 8, mb: 20 }}>
             <Suspense fallback={<Loading />}>

@@ -1,12 +1,45 @@
-import React from 'react';
-import { Avatar, Box, Card, CardContent, Divider, Grid, Stack, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { Avatar, Box, Card, CardContent, Divider, Grid, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Label } from '../../../components';
-import { selectUserById } from './userSlice';
+import { Label, Loading } from '../../../components';
+import { getUsers, selectUserById } from './userSlice';
+import { fDate, fDateTime } from '../../../utils/formatTime';
+import { FetchDataErrorMessage } from '../components';
+import { selectOrdersByUserId, getOrders } from '../order/orderSlice';
+import ACTION_STATUS from '../../../constants/actionStatus';
+import emptyBag from '../../../assets/images/empty_bag.png';
+import { fCurrency } from '../../../utils/formatNumber';
 
 const UserDetails = ({ id }) => {
   const user = useSelector((state) => selectUserById(state, id));
+  const { getUsersStatus } = useSelector((state) => state.adminUsers);
+  const { getOrdersStatus } = useSelector((state) => state.adminOrders);
+  const orders = useSelector((state) => selectOrdersByUserId(state, id));
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (getUsersStatus === ACTION_STATUS.IDLE) {
+      dispatch(getUsers());
+    }
+
+    if (getOrdersStatus === ACTION_STATUS.IDLE) {
+      dispatch(getOrders());
+    }
+  }, []);
+
+  if (getOrdersStatus === ACTION_STATUS.IDLE ||
+      getOrdersStatus === ACTION_STATUS.LOADING ||
+      getUsersStatus === ACTION_STATUS.IDLE ||
+      getUsersStatus === ACTION_STATUS.LOADING) {
+    return <Loading />;
+  }
+
+  if (getOrdersStatus === ACTION_STATUS.FAILED ||
+      getUsersStatus === ACTION_STATUS.FAILED) {
+    return <FetchDataErrorMessage />;
+  }
 
   return (
     <Grid container spacing={2}>
@@ -20,11 +53,15 @@ const UserDetails = ({ id }) => {
                 justifyContent: 'center'
               }}
             >
-              <Avatar sx={{ width: 144, height: 144 }} />
+              <Avatar sx={{ width: 144, height: 144 }} src={user?.avatar} />
             </Box>
             <Stack spacing={0.25} sx={{ mt: 1 }} justifyContent='center' alignItems='center'>
-              <Typography variant='subtitle1' component='span' color='text.primary'>Sioay Here</Typography>
-              <Label color='warning'>User</Label>
+              <Typography variant='subtitle1' component='span' color='text.primary'>
+                {user?.firstName + " " + user?.lastName}
+              </Typography>
+              <Label color={user?.role === 'admin' ? 'primary' : 'warning' }>
+                {user?.role === 'admin' ? 'Admin' : 'User'}
+              </Label>
             </Stack>
           </CardContent>
         </Card>
@@ -37,7 +74,7 @@ const UserDetails = ({ id }) => {
                   Email
                 </Typography>
                 <Typography variant='body1' color='text.primary'>
-                  sioay@gmail.com
+                  {user?.email}
                 </Typography>
               </Stack>
               <Stack spacing={1}>
@@ -45,7 +82,7 @@ const UserDetails = ({ id }) => {
                   Phone
                 </Typography>
                 <Typography variant='body1' color='text.primary'>
-                  091238991
+                  {user?.phone}
                 </Typography>
               </Stack>
               <Grid container spacing={0}>
@@ -55,7 +92,7 @@ const UserDetails = ({ id }) => {
                       Date of birth
                     </Typography>
                     <Typography variant='body1' color='text.primary'>
-                      02/05/2000
+                      {fDate(user?.birthDate)}
                     </Typography>
                   </Stack>
                 </Grid>
@@ -65,7 +102,7 @@ const UserDetails = ({ id }) => {
                       Gender
                     </Typography>
                     <Typography variant='body1' color='text.primary'>
-                      Male
+                      {user?.gender}
                     </Typography>
                   </Stack>
                 </Grid>
@@ -75,7 +112,7 @@ const UserDetails = ({ id }) => {
                   Address
                 </Typography>
                 <Typography variant='body1' color='text.primary'>
-                  1 Vo Van Ngan, Thu Duc, Ho Chi Minh, Vietnam
+                  {user?.address}
                 </Typography>
               </Stack>
             </Stack>
@@ -84,62 +121,67 @@ const UserDetails = ({ id }) => {
       </Grid>
       <Grid item xs={12} md={8}>
         <Typography variant='h6' color='text.secondary'>
-          INVOICE HISTORY
+          ORDERS
         </Typography>
-        <Divider sx={{ mt: 1, mb: 3 }} />
-        <Stack spacing={2}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <Typography variant='body1'>
-              03 April 2023
+        <Divider sx={{ mt: 1, mb: 1 }} />
+        {orders?.length === 0 ? (
+          <Stack spacing={2}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <Box
+                sx={{
+
+                  width: 200,
+                  height: 200,
+                  objectFit: 'cover'
+                }}
+                component='img'
+                src={emptyBag}
+              />
+            </Box>
+            <Typography variant='h6' component='p' textAlign='center' color='text.secondary'>
+              This user does not have any orders.
             </Typography>
-            <Typography variant='body1'>
-              $20
-            </Typography>
-            <Typography variant='body1' color='primary'>
-              PDF
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <Typography variant='body1'>
-              03 April 2023
-            </Typography>
-            <Typography variant='body1'>
-              $20
-            </Typography>
-            <Typography variant='body1' color='primary'>
-              PDF
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <Typography variant='body1'>
-              03 April 2023
-            </Typography>
-            <Typography variant='body1'>
-              $20
-            </Typography>
-            <Typography variant='body1' color='primary'>
-              PDF
-            </Typography>
-          </Box>
-        </Stack>
+          </Stack>
+        ) : (
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Order Date</TableCell>
+                  <TableCell>Total</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {orders.map((order) => (
+                  <TableRow key={order.id}>
+                    <TableCell>
+                      <Typography variant='body1'>
+                        {fDateTime(order.orderDate)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant='body1'>
+                        {fCurrency(order.price)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align='right'>
+                      <Link component={RouterLink} to={`/admin/orders/details/${order.id}`} underline='none'>
+                        <Typography variant='body1'>
+                          Details
+                        </Typography>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Grid>
     </Grid>
   );

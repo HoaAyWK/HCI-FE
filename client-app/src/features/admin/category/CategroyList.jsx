@@ -14,12 +14,6 @@ const TABLE_HEAD = [
   { id: '', label: '', alignRight: false },
 ];
 
-const CATEGORIES = [
-  { id: 1, name: 'Laptop', status: 'Available', numberOfProducts: 212 },
-  { id: 2, name: 'Smartphone', status: 'Available', numberOfProducts: 495 },
-  { id: 3, name: 'components', status: 'Unavailable', numberOfProducts: 87 },
-];
-
 const CategroyList = () => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('name');

@@ -124,7 +124,7 @@ const ProfileOrders = () => {
             pt: 2
           }}
         >
-          <Pagination count={totalMyBillsPage} color='primary' onChange={handlePageChange} />
+          <Pagination count={totalMyBillsPage} color='primary' onChange={handlePageChange} page={page} />
         </Box>
       )}
     </Page>

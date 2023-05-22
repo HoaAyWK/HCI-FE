@@ -11,6 +11,7 @@ const initialState = productVariantsAdapter.getInitialState({
   getProductVariantsStatus: ACTION_STATUS.IDLE,
   createProductVariantStatus: ACTION_STATUS.IDLE,
   updateProductVariantStatus: ACTION_STATUS.IDLE,
+  deleteProductVariantStatus: ACTION_STATUS.IDLE,
 });
 
 export const getProductVariants = createAsyncThunk(
@@ -54,7 +55,14 @@ export const updateProductVariant = createAsyncThunk(
 
     return res;
   }
-)
+);
+
+export const deleteProductVariant = createAsyncThunk(
+  'adminProductVariant/delete',
+  async (id) => {
+    return await productDetailsApi.delete(id);
+  }
+);
 
 const productVariantSlice = createSlice({
   name: 'adminProductVariants',
@@ -105,6 +113,18 @@ const productVariantSlice = createSlice({
       })
       .addCase(updateProductVariant.rejected, (state) => {
         state.updateProductVariantStatus = ACTION_STATUS.FAILED;
+      })
+
+
+      .addCase(deleteProductVariant.pending, (state) => {
+        state.deleteProductVariantStatus = ACTION_STATUS.LOADING;
+      })
+      .addCase(deleteProductVariant.fulfilled, (state, action) => {
+        state.deleteProductVariantStatus = ACTION_STATUS.SUCCEEDED;
+        productVariantsAdapter.removeOne(state, action.payload.id);
+      })
+      .addCase(deleteProductVariant.rejected, (state) => {
+        state.deleteProductVariantStatus = ACTION_STATUS.FAILED;
       })
   }
 });

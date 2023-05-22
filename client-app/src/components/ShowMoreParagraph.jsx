@@ -39,7 +39,7 @@ const ShowMoreParagraph = ({ height, isDanger, canShowMore, content }) => {
           </Typography>
         )}
       </Box>
-      {canShowMore &&  !showMore && (
+      {canShowMore && !showMore && (
         <Box
           sx={{
             display: 'flex',

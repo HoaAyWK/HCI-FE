@@ -117,59 +117,75 @@ const ProductOriginDetails = () => {
             <Typography variant='body2' color='text.secondary' textTransform='uppercase'>
               description
             </Typography>
-            <Typography
-              variant='body1'
-              color='text.primary'
-              dangerouslySetInnerHTML={createMarkup(product.description)}
+            <Box
               sx={{
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-
-                '& p': {
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap'
-                },
-                '& span': {
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  color: 'inherit !important',
-                  backgroundColor: 'inherit !important',
-                  width: 'auto'
-                },
+                p: 2,
+                border: (theme) => `2px dashed ${theme.palette.divider}`,
+                borderRadius: 1,
               }}
-            />
+            >
+              <Typography
+                variant='body1'
+                color='text.primary'
+                dangerouslySetInnerHTML={createMarkup(product.description)}
+                sx={{
+                  // textOverflow: 'ellipsis',
+                  // overflow: 'hidden',
+                  // whiteSpace: 'nowrap',
+
+                  // '& p': {
+                  //   textOverflow: 'ellipsis',
+                  //   overflow: 'hidden',
+                  //   whiteSpace: 'nowrap'
+                  // },
+                  // '& span': {
+                  //   textOverflow: 'ellipsis',
+                  //   overflow: 'hidden',
+                  //   whiteSpace: 'nowrap',
+                  //   color: 'inherit !important',
+                  //   backgroundColor: 'inherit !important',
+                  //   width: 'auto'
+                  // },
+                }}
+              />
+            </Box>
           </Stack>
           <Stack spacing={0.5}>
             <Typography variant='body2' color='text.secondary' textTransform='uppercase'>
               information
             </Typography>
-            <Typography
-              variant='body1'
-              color='text.primary'
-              dangerouslySetInnerHTML={createMarkup(product.information)}
+            <Box
               sx={{
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-
-                '& p': {
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap'
-                },
-                '& span': {
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  color: 'inherit !important',
-                  backgroundColor: 'inherit !important',
-                  width: 'auto'
-                },
+                p: 2,
+                border: (theme) => `2px dashed ${theme.palette.divider}`,
+                borderRadius: 1
               }}
-            />
+            >
+              <Typography
+                variant='body1'
+                color='text.primary'
+                dangerouslySetInnerHTML={createMarkup(product.information)}
+                sx={{
+                  // textOverflow: 'ellipsis',
+                  // overflow: 'hidden',
+                  // whiteSpace: 'nowrap',
+
+                  // '& p': {
+                  //   textOverflow: 'ellipsis',
+                  //   overflow: 'hidden',
+                  //   whiteSpace: 'nowrap'
+                  // },
+                  // '& span': {
+                  //   textOverflow: 'ellipsis',
+                  //   overflow: 'hidden',
+                  //   whiteSpace: 'nowrap',
+                  //   color: 'inherit !important',
+                  //   backgroundColor: 'inherit !important',
+                  //   width: 'auto'
+                  // },
+                }}
+              />
+            </Box>
           </Stack>
         </Stack>
         <Box

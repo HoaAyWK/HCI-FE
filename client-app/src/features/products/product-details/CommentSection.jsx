@@ -37,14 +37,14 @@ const CommentSection = ({ productId }) => {
   }, [productId, sortByNewest]);
 
   useEffect(() => {
-    dispatch(getCommentsByProduct({ productId, num: 5, page }));
+    dispatch(getCommentsByProduct({ productId, num: 5, page, sortByNewest }));
   }, [page]);
 
   useEffect(() => {
     if (createCommentStatus === ACTION_STATUS.SUCCEEDED) {
       setPage(1)
       dispatch(refresh());
-      dispatch(getCommentsByProduct({ productId, num: 5, page: 1 }));
+      dispatch(getCommentsByProduct({ productId, num: 5, page: 1, sortByNewest }));
     }
   }, [createCommentStatus]);
 

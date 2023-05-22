@@ -1,15 +1,16 @@
 import React from 'react';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Button, Link, Stack, Typography } from '@mui/material';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 import { Iconify } from '../../../../components';
 import { fToNow } from '../../../../utils/formatTime';
-import { useDispatch } from 'react-redux';
-import { useSnackbar } from 'notistack';
 import { deleteFavorite } from '../../../common/productFavoriteSlice';
-import { unwrapResult } from '@reduxjs/toolkit';
 
 const ProductFavorite = ({ favorite }) => {
-  const { productName, image, totalHeart, createdAt, id } = favorite;
+  const { productName, image, totalHeart, createdAt, id, productId } = favorite;
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -47,7 +48,9 @@ const ProductFavorite = ({ favorite }) => {
           }}
         />
         <Stack spacing={0.5}>
-          <Typography variant='subtitle1'>{productName}</Typography>
+          <Link component={RouterLink} to={`/products/${productId}`} underline='none' color='inherit'>
+            <Typography variant='subtitle1'>{productName}</Typography>
+          </Link>
           <Stack spacing={3} direction='row'>
             <Stack spacing={1} direction='row'>
               <Iconify icon='mdi:cards-heart' width={20} height={20} sx={{ color: 'text.secondary' }} />

@@ -27,6 +27,7 @@ const UserListPage = lazy(() => import('./pages/admin/user/UserListPage'));
 const OrderListPage = lazy(() => import('./pages/admin/order/OrderListPage'));
 const BrandListPage = lazy(() => import('./pages/admin/brand/BrandListPage'));
 const CreateUserPage = lazy(() => import('./pages/admin/user/CreateUserPage'));
+const UpdateUserPage = lazy(() => import('./pages/admin/user/UpdateUserPage'));
 const UserDetailsPage = lazy(() => import('./pages/admin/user/UserDetailsPage'));
 const CategoryListPage = lazy(() => import('./pages/admin/category/CategoryListPage'));
 const AdminOrderDetailsPage = lazy(() => import('./pages/admin/order/OrderDetailsPage'));
@@ -85,7 +86,7 @@ const ProtectedRoute = () => {
     }
   }, []);
 
-  if (getCurrentUserStatus === ACTION_STATUS.LOADINGPage) {
+  if (getCurrentUserStatus === ACTION_STATUS.LOADING) {
     return <LoadingPage />;
   }
 
@@ -191,7 +192,11 @@ const Router = () => {
                   element: <CreateUserPage />
                 },
                 {
-                  path: 'details',
+                  path: 'edit/:id',
+                  element: <UpdateUserPage />
+                },
+                {
+                  path: 'details/:id',
                   element: <UserDetailsPage />
                 }
               ]

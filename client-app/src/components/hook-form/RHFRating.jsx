@@ -10,7 +10,7 @@ const RHFRating = ({ name, ...other }) => {
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <Stack spacing={1} direction='row'>
+        <Stack spacing={1} direction='row' alignItems='center'>
           <Rating
             {...field}
             {...other}

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Card, InputAdornment, CardContent, Grid, IconButton, Switch, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, Switch, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
@@ -11,19 +11,19 @@ import { useSnackbar } from 'notistack';
 import { AvatarUploader } from '../../../components';
 import { FormProvider, RHFDateTextField, RHFRadioGroup, RHFTextField } from '../../../components/hook-form';
 import ACTION_STATUS from '../../../constants/actionStatus';
-import { refresh } from './userSlice';
-import { Iconify } from '../../../components';
+import { refresh, updateUser } from './userSlice';
+import { fDateN } from '../../../utils/formatTime';
 
 const genders = ['Male', 'Female'];
 
-const UserForm = ({  isEdit, defaultUser, action, status }) => {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
+const EditUserForm = ({ user }) => {
+  const [isAdmin, setIsAdmin] = useState(user?.role === 'admin' ? true : false);
+  const { updateUserStatus } = useSelector((state) => state.adminUsers);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const UserSchema = Yup.object().shape({
+    id: Yup.string(),
     firstName: Yup.string()
       .required('First Name is required'),
     lastName: Yup.string()
@@ -40,22 +40,18 @@ const UserForm = ({  isEdit, defaultUser, action, status }) => {
     address: Yup.string()
       .required('Address is required'),
     avatar: Yup.mixed(),
-    password: Yup
-      .string()
-      .required('Password is required')
-
   });
 
-  const defaultValues = defaultUser ? defaultUser : {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    gender: genders[0],
-    birthDate: '',
+  const defaultValues =  {
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phone: user.phone,
+    gender: user.gender,
+    birthDate: fDateN(user.birthDate),
     avatar: '',
-    address: '',
-    password: '',
+    address: user.address,
   };
 
   const methods = useForm({
@@ -69,11 +65,11 @@ const UserForm = ({  isEdit, defaultUser, action, status }) => {
     const formData = { ...data, role: isAdmin ? 'admin' : 'user' };
 
     try {
-      const actionResult = await dispatch(action(formData));
+      const actionResult = await dispatch(updateUser(formData));
       const result = unwrapResult(actionResult);
 
       if (result) {
-        enqueueSnackbar(`${isEdit ? 'Updated' : 'Created'} successfully`, { variant: 'success' });
+        enqueueSnackbar(`Update successfully`, { variant: 'success' });
         dispatch(refresh());
       }
     } catch (error) {
@@ -94,7 +90,7 @@ const UserForm = ({  isEdit, defaultUser, action, status }) => {
               <Box
                 sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <AvatarUploader name='avatar' />
+                <AvatarUploader name='avatar' avatarUrl={user.avatar} />
               </Box>
               <Box
                 sx={{
@@ -119,25 +115,10 @@ const UserForm = ({  isEdit, defaultUser, action, status }) => {
         <Grid item xs={12} md={8}>
           <Card sx={{ borderRadius: 1 }}>
             <CardContent>
+              <RHFTextField name='id' type='hidden' sx={{ display: 'none' }} />
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                   <RHFTextField name='email' label='Email' />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <RHFTextField
-                    name='password'
-                    type={showPassword ? 'text' : 'password' }
-                    label='Password'
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position='end'>
-                          <IconButton onClick={() => setShowPassword(!showPassword)} edge='end'>
-                            <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                          </IconButton>
-                        </InputAdornment>
-                      )
-                    }}
-                  />
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <RHFTextField name='firstName' label='First Name' />
@@ -165,8 +146,12 @@ const UserForm = ({  isEdit, defaultUser, action, status }) => {
                   mt: 3
                 }}
               >
-                <LoadingButton type='submit' variant='contained' loading={status === ACTION_STATUS.LOADING ? true : false}>
-                  {isEdit ? 'Update' : 'Create'}
+                <LoadingButton
+                  type='submit'
+                  variant='contained'
+                  loading={updateUserStatus === ACTION_STATUS.LOADING ? true : false}
+                >
+                  Update
                 </LoadingButton>
               </Box>
             </CardContent>
@@ -177,4 +162,4 @@ const UserForm = ({  isEdit, defaultUser, action, status }) => {
   );
 };
 
-export default UserForm;
+export default EditUserForm;

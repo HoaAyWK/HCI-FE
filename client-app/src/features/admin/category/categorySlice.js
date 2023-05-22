@@ -102,7 +102,7 @@ const categorySlice = createSlice({
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.deleteCategoryStatus = ACTION_STATUS.SUCCEEDED;
-        categoriesAdapter.removeOne(state, action.payload);
+        categoriesAdapter.removeOne(state, action.payload.id);
       })
       .addCase(deleteCategory.rejected, (state) => {
         state.deleteCategoryStatus = ACTION_STATUS.FAILED;

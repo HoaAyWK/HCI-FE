@@ -16,7 +16,7 @@ const AppTableToolbar = ({ numSelected, handleClickDelete }) => {
     <StyledRoot
       sx={{
         ...(numSelected > 0 && {
-          color: 'primary',
+          color: 'primary.main',
           backgroundColor: 'primary.lighter'
         })
       }}

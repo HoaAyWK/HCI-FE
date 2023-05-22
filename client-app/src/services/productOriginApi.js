@@ -20,9 +20,9 @@ class ProductOriginApi {
   };
 
   delete = (id) => {
-    const url = `/product/api/${id}`;
+    const url = `/product/delete/${id}`;
 
-    return axiosClient.delete(url, id);
+    return axiosClient.delete(url);
   };
 }
 

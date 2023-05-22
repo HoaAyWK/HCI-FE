@@ -9,18 +9,24 @@ import { AuthFooter } from '../components';
 import { AuthLayout } from '../layouts';
 import { login } from '../authSlice';
 import { Page } from '../../../components';
+import { useLocalStorage } from '../../../hooks';
 
 const Login = () => {
   const dispatch = useDispatch();
+  const [localCart] = useLocalStorage("cart", null);
   const { enqueueSnackbar } = useSnackbar();
   const { loginStatus } = useSelector(state => state.auth);
 
   const submit = async (data) => {
     try {
+      if (localCart) {
+        data.userCartId = localCart;
+      }
+
       const actionResult = await dispatch(login(data));
       const result = unwrapResult(actionResult);
 
-      if (result.success) {
+      if (result) {
         enqueueSnackbar('Login successfully', { variant: 'success' });
       }
     } catch (error) {

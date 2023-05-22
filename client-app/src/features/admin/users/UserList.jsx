@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TableRow, TableCell, Stack, Typography } from '@mui/material';
+import { Avatar, TableRow, TableCell, Stack, Typography } from '@mui/material';
 
 import { applySortFilter, getComparator } from '../../../utils/tableUtil';
 import { DataTable } from '../components';
@@ -18,14 +18,6 @@ const TABLE_HEAD = [
   { id: '', label: '', alignRight: false }
 ];
 
-const USERS = [
-  { id: 1, firstName: 'Lucas', lastName: 'Steve', email: 'ls@gmail.com', role: 'user', status: 'Active' },
-  { id: 2, firstName: 'Sam', lastName: 'Feldt', email: 'sf@gmail.com', role: 'user', status: 'Banned' },
-  { id: 3, firstName: 'Justin', lastName: 'Mylo', email: 'jm@gmail.com', role: 'user', status: 'Banned' },
-  { id: 4, firstName: 'Mike', lastName: 'Williams', email: 'mw@gmail.com', role: 'user', status: 'Active' },
-  { id: 5, firstName: 'David', lastName: 'Brooks', email: 'db@gmail.com', role: 'user', status: 'Active' },
-];
-
 const UserList = () => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('firstName');
@@ -39,7 +31,7 @@ const UserList = () => {
 
   useEffect(() => {
     if (getUsersStatus === ACTION_STATUS.IDLE) {
-      dispatch(getUsers);
+      dispatch(getUsers());
     }
   }, []);
 
@@ -80,7 +72,7 @@ const UserList = () => {
       handleRequestSort={handleRequestSort}
     >
       {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-        const { id, firstName, lastName, email, role, status } = row;
+        const { id, firstName, lastName, email, role, status, avatar } = row;
 
         return (
           <TableRow
@@ -90,7 +82,11 @@ const UserList = () => {
           >
             <TableCell component='th' scope='row'>
               <Stack spacing={1} direction='row' alignItems='center'>
-                <LetterAvatar name={firstName + ' ' + lastName} />
+                {avatar ? (
+                  <Avatar src={avatar} width={24} height={24} />
+                ) : (
+                  <LetterAvatar name={firstName + ' ' + lastName} />
+                )}
                 <Typography variant='body1'>{firstName + ' ' + lastName}</Typography>
               </Stack>
             </TableCell>
@@ -98,18 +94,15 @@ const UserList = () => {
               {email}
             </TableCell>
             <TableCell>
-              <Label color={role === 'user' ? 'warning' : 'primary'}>{role}</Label>
+              <Label color={role === 'admin' ? 'primary' : 'warning'}>{role === 'admin' ? 'Admin' : 'User'}</Label>
             </TableCell>
             <TableCell>
-              <Label color={status === 'Active' ? 'success' : 'error'}>{status}</Label>
+              <Label color={status === true ? 'success' : 'error'}>{status === true ? 'Active' : 'No active'}</Label>
             </TableCell>
             <TableCell align="right">
               <MoreMenu>
-                <MoreMenuItemLink title='Details' to='/admin/users/details' iconName='eva:eye-outline' />
-                <MoreMenuItemLink title='Edit' to='/admin/users/edit' iconName='eva:edit-outline' />
-                <MoreMenuItem title="Ban" iconName="mdi:ban" id={id}/>
-                <MoreMenuItem title="Delete" iconName="eva:trash-2-outline" id={id}/>
-
+                <MoreMenuItemLink title='Details' to={`/admin/users/details/${id}`} iconName='eva:eye-outline' />
+                <MoreMenuItemLink title='Edit' to={`/admin/users/edit/${id}`} iconName='eva:edit-outline' />
               </ MoreMenu>
             </TableCell>
           </TableRow>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import ProductOriginForm from './ProductOriginForm';
@@ -15,6 +15,10 @@ const CreateProductOriginForm = () => {
   const { getCategoriesStatus } = useSelector((state) => state.adminCategories);
   const { getBrandsStatus } = useSelector((state) => state.adminBrands);
   const { createProductOriginStatus } = useSelector((state) => state.adminProductOrigins);
+
+  const activeCategories = useMemo(() => {
+    return categories.filter((category) => category.status === true);
+  }, [categories]);
 
   useEffect(() => {
     if (getCategoriesStatus === ACTION_STATUS.IDLE) {
@@ -43,7 +47,7 @@ const CreateProductOriginForm = () => {
       action={createProductOrigin}
       status={createProductOriginStatus}
       brands={brands}
-      categories={categories}
+      categories={activeCategories}
     />
   );
 };

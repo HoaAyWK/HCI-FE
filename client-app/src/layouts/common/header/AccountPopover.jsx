@@ -16,9 +16,10 @@ import { useDispatch } from "react-redux";
 
 import { logout } from "../../../features/auth/authSlice";
 import { clearData } from '../../../features/common/productFavoriteSlice';
+import { clearData as clearCart } from '../../../features/common/cartSlice';
 import ROLES from "../../../constants/userRoles";
 
-const AccountPopover = ({ user, menuOptions }) => {
+const AccountPopover = ({ user, menuOptions, onLocalCartChange }) => {
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -33,7 +34,13 @@ const AccountPopover = ({ user, menuOptions }) => {
 
   const handleLogout = () => {
     dispatch(logout());
+
+    if (onLocalCartChange) {
+      onLocalCartChange(null);
+    }
+
     dispatch(clearData());
+    dispatch(clearCart());
     setOpen(null);
     navigate('/');
   };

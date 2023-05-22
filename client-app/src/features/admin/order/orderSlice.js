@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 
 import ACTION_STATUS from '../../../constants/actionStatus';
 import orderApi from '../../../services/orderApi';
@@ -90,6 +90,11 @@ export const {
   selectById: selectOrderById,
   selectIds: selectOderIds,
 } = ordersAdapter.getSelectors((state) => state.adminOrders);
+
+export const selectOrdersByUserId = createSelector(
+  [selectAllOrders, (state, userId) => userId],
+  (orders, userId) => orders.filter((order) => order.userId === userId)
+);
 
 const { reducer, actions } = orderSlice;
 

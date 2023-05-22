@@ -206,7 +206,7 @@ const ProductDetails = (props) => {
             </Typography>
             <ShowMoreParagraph
               isDanger={true} content={productSingle.description}
-              // height={productSingle?.description?.length > 200 ? '190px': 'auto'}
+              height={productSingle?.description?.length > 200 ? '190px': 'auto'}
               canShowMore={productSingle?.description?.length > 200 ? true: false}
             />
             <Box sx={{ pb: 6 }} />
@@ -232,7 +232,7 @@ const ProductDetails = (props) => {
           </StyledPaper>
         </Grid>
       </Grid>
-      {/* <RelatedProducts currentObjectID={id} /> */}
+      <RelatedProducts currentObjectID={id} />
       <ReviewSection
         id={id}
         productSingle={productSingle}

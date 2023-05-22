@@ -1,15 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import { Avatar, Box, Button, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Icon, Stack, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 
 import { Iconify, Label } from '../../../../../components';
 import { fToNow } from '../../../../../utils/formatTime';
 import ROLES from '../../../../../constants/userRoles';
 import CommentForm from '../CommentForm';
+import EditForm from './EditForm';
 
 const Comment = ({ comment, parentCommentId, avatarSize, currentUser, productId, isRoot }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [replyComment, setReplyComment] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleClickLike = () => {
     if (!currentUser) {
@@ -30,6 +32,14 @@ const Comment = ({ comment, parentCommentId, avatarSize, currentUser, productId,
     setReplyComment(false);
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
   return (
     <>
       <Stack direction='row' spacing={2} sx={{ mb: 1 }}>
@@ -42,7 +52,7 @@ const Comment = ({ comment, parentCommentId, avatarSize, currentUser, productId,
         >
           <Avatar src={comment.user.avatar} sx={{ width: avatarSize, height: avatarSize }} />
         </Box>
-        <Stack spacing={0.5} sx={{ mt: 1 }}>
+        <Stack spacing={0.5} sx={{ mt: 1, width: '100%' }}>
           <Stack spacing={1} direction='row' alignItems='center' >
             {currentUser?.id === comment.user.id ? (
               <Box sx={{ color: 'inherit' }}>
@@ -61,25 +71,41 @@ const Comment = ({ comment, parentCommentId, avatarSize, currentUser, productId,
             <Typography variant='body2' color='text.secondary'>
               {fToNow(comment.createdAt)}
             </Typography>
+            {comment.createdAt !== comment.modifiedAt && (
+              <Typography color='text.secondary'>(edited)</Typography>
+            )}
+            {currentUser?.id === comment.user.id && !isEditing && (
+              <Button onClick={handleEdit} size='small' >
+                <Iconify icon='eva:edit-outline' width={20} height={20} />
+                &nbsp;
+                Edit
+              </Button>
+            )}
           </Stack>
-          <Typography
-            variant='body1'
-            color='text.primary'
-          >
-            {comment.content}
-          </Typography>
-          <Stack direction='row' spacing={1}>
-            <Button size='small' color='inherit'>
-              <Iconify icon='mdi:like' width={20} height={20} />
-              &nbsp;
-              Like
-            </Button>
-            <Button size='small' color='inherit' onClick={handleClickReply} >
-              <Iconify icon='material-symbols:reply' width={20} height={20} />
-              &nbsp;
-              Reply
-            </Button>
-          </Stack>
+          {isEditing ? (
+            <EditForm comment={comment} finishEdit={handleCancelEdit} />
+          ) : (
+            <>
+              <Typography
+                variant='body1'
+                color='text.primary'
+              >
+                {comment.content}
+              </Typography>
+              <Stack direction='row' spacing={1}>
+                <Button size='small' color='inherit'>
+                  <Iconify icon='mdi:like' width={20} height={20} />
+                  &nbsp;
+                  Like
+                </Button>
+                <Button size='small' color='inherit' onClick={handleClickReply} >
+                  <Iconify icon='material-symbols:reply' width={20} height={20} />
+                  &nbsp;
+                  Reply
+                </Button>
+              </Stack>
+            </>
+          )}
         </Stack>
       </Stack>
       {replyComment && (
