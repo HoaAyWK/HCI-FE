@@ -6,3 +6,5 @@ export { default as SearchPage } from './SearchPage';
 export { default as CheckoutPage } from './CheckoutPage';
 export { default as OrderDetailsPage } from './OrderDetailsPage';
 export { default as CheckoutSuccessPage } from './CheckoutSuccessPage';
+export { default as LaptopsPage } from './LaptopsPage';
+export { default as SmartphonesPage } from './SmartphonesPage';

@@ -118,7 +118,7 @@ const EditUserForm = ({ user }) => {
               <RHFTextField name='id' type='hidden' sx={{ display: 'none' }} />
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  <RHFTextField name='email' label='Email' />
+                  <RHFTextField name='email' disabled label='Email' />
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <RHFTextField name='firstName' label='First Name' />

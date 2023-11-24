@@ -45,15 +45,7 @@ const StatCard = ({ stat, color }) => {
 
   const [series, setSeries] = useState([{
     name: 'Income',
-    data: [
-      435,
-      560,
-      790,
-      600,
-      420,
-      840,
-      750
-    ]
+    data: stat.data
   }]);
 
   useEffect(() => {

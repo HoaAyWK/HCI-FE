@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Link, Typography } from '@mui/material';
+import { Box, Container, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 import hciLogo from '/new_hci_logo.svg';

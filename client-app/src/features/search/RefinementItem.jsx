@@ -1,7 +1,7 @@
 import React from 'react';
 import { ListItem, ListItemButton, ListItemIcon, Checkbox, ListItemText } from '@mui/material';
 
-const RefinementItem = ({ item, onToggle, refine, markCategory }) => {
+const RefinementItem = ({ item, onToggle, refine }) => {
   const { value, isRefined, label } = item;
 
   const handleToggle = (value) => () => {

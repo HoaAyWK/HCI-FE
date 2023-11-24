@@ -181,8 +181,8 @@ const NavItem = ({ item, miniDrawer }) => {
 
   return (
     <StyledNavItem
-      component={RouterLink}
-      to={path}
+      component={NextLink}
+      href={path}
       sx={{
         '&.active': {
           color: theme.palette.primary.main,

@@ -13,7 +13,15 @@ import { AdminLayout, MainLayout, SettingsLayout } from './layouts';
 import { Login, Register } from './features/auth';
 import { DashboardPage } from './pages/admin';
 
-import { HomePage, CheckoutPage, ProductPage, SearchPage, CheckoutSuccessPage } from './pages';
+import {
+  HomePage,
+  CheckoutPage,
+  ProductPage,
+  SearchPage,
+  LaptopsPage,
+  SmartphonesPage,
+  CheckoutSuccessPage
+} from './pages';
 
 const AdminSettings = lazy(() => import('./features/settings/AdminSettings'));
 const AccountSettings = lazy(() => import('./features/settings/AccountSettings'));
@@ -145,6 +153,8 @@ const Router = () => {
         { path: 'search', element: <SearchPage /> },
         { path: 'products/:id', element: <ProductPage />},
         { path: 'checkout', element: <CheckoutPage /> },
+        { path: 'laptops', element: <LaptopsPage /> },
+        { path: 'smartphones', element: <SmartphonesPage /> },
         {
           path: '',
           element: <ProtectedRoute />,

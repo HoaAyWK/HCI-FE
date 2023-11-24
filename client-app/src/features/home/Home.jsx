@@ -114,6 +114,7 @@ const Home = () => {
         favorites={favorites}
         value='Laptop'
         sendEvent={sendEvent}
+        path='/laptops'
       />
       {canShowMoreLaptop && (
         <Box
@@ -136,6 +137,7 @@ const Home = () => {
             favorites={favorites}
             value='Smartphone'
             sendEvent={sendEvent}
+            path='/smartphones'
           />
           {canShowMoreSmartphone && (
             <Box
@@ -151,7 +153,6 @@ const Home = () => {
           )}
         </>
       )}
-
     </>
   );
 };

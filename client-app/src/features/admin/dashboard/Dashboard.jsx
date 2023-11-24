@@ -13,21 +13,24 @@ const STATS = [
     total: 3912,
     isIncrease: true,
     value: '3',
-    icon: 'ion:people'
+    icon: 'ion:people',
+    data: [ 240, 360, 420, 380, 320, 440, 550]
   },
   {
     label: 'Total Orders',
     total: 587,
     isIncrease: false,
     value: '1',
-    icon: 'solar:delivery-bold'
+    icon: 'solar:delivery-bold',
+    data: [ 340, 380, 265, 320, 358, 442, 390]
   },
   {
     label: 'Total Income',
     total: 42901,
     isIncrease: true,
     value: '4',
-    icon: 'bi:credit-card-2-back'
+    icon: 'bi:credit-card-2-back',
+    data: [ 410, 380, 451, 504, 540, 510, 604]
   }
 ]
 

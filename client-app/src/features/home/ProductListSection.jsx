@@ -17,10 +17,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   }
 }));
 
-const ProductListSection = ({ title, products, favorites, value, sendEvent }) => {
-  const encodedParam = encodeURIComponent('categories[0]');
-  const url = `/search?${encodedParam}=${value}`;
-
+const ProductListSection = ({ title, products, favorites, value, sendEvent, path }) => {
   return (
     <Box
       sx={{ mt: 4 }}
@@ -34,7 +31,7 @@ const ProductListSection = ({ title, products, favorites, value, sendEvent }) =>
         <Grid item xs={12} md={6}>
           <StyledBox>
             <Stack spacing={1} direction='row'>
-              <Button color='primary' LinkComponent={RouterLink} to={url} sx={{ textDecoration: 'underline' }}>
+              <Button color='primary' LinkComponent={RouterLink} to={path} sx={{ textDecoration: 'underline' }}>
                 Show all
               </Button>
             </Stack>

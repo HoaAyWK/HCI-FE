@@ -6,9 +6,9 @@ import { SearchBox } from './components';
 import RefinementItem from './RefinementItem';
 
 const SearchRefinementList = (props) => {
-  const { searchable, label, markCategory } = props;
+  const { searchable, label } = props;
   const [filter, setFilter] = useState('');
-  const { items, refine, canToggleShowMore, toggleShowMore, searchForItems } = useRefinementList(props);
+  const { items, refine, canToggleShowMore, isShowingMore, toggleShowMore, searchForItems } = useRefinementList(props);
 
   const handleToggle = (value) => {
     refine(value);
@@ -33,7 +33,6 @@ const SearchRefinementList = (props) => {
               item={item}
               refine={refine}
               onToggle={handleToggle}
-              markCategory={markCategory?.[0]}
             />
           ))}
           {canToggleShowMore && (
@@ -41,7 +40,7 @@ const SearchRefinementList = (props) => {
               onClick={toggleShowMore}
               fullWidth
             >
-              Show more
+              {isShowingMore ? 'Show less' : 'Show more'}
             </Button>
           )}
         </List>

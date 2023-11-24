@@ -14,10 +14,13 @@ const SearchResult = () => {
   const favorites = useSelector(selectAllFavorites);
   const user = useSelector((state) => state.auth);
   const { getFavoritesStatus } = useSelector((state) => state.favorites);
-  const { availableHits } = useMemo(() => {
-    return hits.filter((hit) => hit.status === true);
-  }, [hits]);
+  const availableHits = useMemo(() => {
+    if (hits) {
+      return hits.filter((hit) => hit.status === true);
+    }
 
+    return [];
+  }, [hits]);
 
   useEffect(() => {
     if (getFavoritesStatus === ACTION_STATUS.IDLE && user) {

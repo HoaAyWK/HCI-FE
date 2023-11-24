@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useRefinementList } from 'react-instantsearch-hooks-web';
 import { Box, Divider, Grid } from '@mui/material';
 
 import { SearchRefinement, SearchResult, RangeSlider } from '../features/search';
@@ -11,7 +12,16 @@ const sortByItems = [
   { label: 'Price (desc)', value: `${SEARCH_INDEX}_price_desc` },
 ];
 
-const SearchPage = () => {
+const SmartphonesPage = () => {
+  const { items, refine } = useRefinementList({ attribute: 'categories' });
+
+  useEffect(() => {
+    items.forEach((item) => {
+      if (item.value === 'Smartphone' && !item.isRefined) {
+        refine(item.value);
+      }
+    })
+  }, [items]);
 
   return (
     <Grid container spacing={2} sx={{ pt: 2 }}>
@@ -23,14 +33,6 @@ const SearchPage = () => {
             borderRadius: 1,
           }}
         >
-          <SearchRefinement
-            label='categories'
-            attribute='categories'
-            sortBy={['name:asc', 'count:desc']}
-            limit={5}
-            showMore={true}
-          />
-          <Divider sx={{ my: 2 }} />
           <SearchRefinement
             label='brands'
             attribute='brand'
@@ -87,4 +89,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default SmartphonesPage;
